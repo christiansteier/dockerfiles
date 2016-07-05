@@ -9,7 +9,3 @@ mariadb:
     - DBPASS=dbadminpass
   volumes:
     - /srv/docker/mariadb/:/var/lib/mysql
-  logging:
-    - log-driver json-file
-    - log-opt max-size=1k
-    - log-opt max-file=10
