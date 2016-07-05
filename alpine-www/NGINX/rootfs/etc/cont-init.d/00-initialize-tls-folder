@@ -1,0 +1,4 @@
+#!/bin/execlineb -P
+
+if -t { s6-test ! -d /etc/nginx/tls }
+if { s6-mkdir /etc/nginx/tls }
