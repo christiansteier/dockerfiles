@@ -1,0 +1,5 @@
+#!/bin/execlineb -P
+
+# initialize Redis data directory (if needed)
+if -t { s6-test ! -d /var/lib/redis }
+if { s6-mkdir /var/lib/redis }
