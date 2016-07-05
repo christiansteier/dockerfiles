@@ -1,0 +1,26 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+DBUSER=${DBUSER:-dbadmin}
+DBPASS=${DBPASS:-dbadminpass}
+  	
+mysql_install_db --user=mysql --datadir=/var/lib/mysql --rpm > /dev/null
+tfile=`mktemp`
+if [ ! -f "$tfile" ]; then
+	return 1
+fi
+cat << EOF > $tfile
+DELETE FROM mysql.user WHERE user = '$DBUSER';
+FLUSH PRIVILEGES;
+CREATE USER '$DBUSER'@'127.0.0.1' IDENTIFIED BY '$DBPASS';
+GRANT ALL PRIVILEGES ON *.* TO '$DBUSER'@'127.0.0.1' WITH GRANT OPTION;
+CREATE USER '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
+GRANT ALL PRIVILEGES ON *.* TO '$DBUSER'@'%' WITH GRANT OPTION;
+EOF
+
+/usr/bin/mysqld --user=mysql --bootstrap --verbose=0 < $tfile
+rm -f $tfile
+
+  echo -e " \n---\n[i] Connecting to the Database:\nmysql -u $DBUSER --password=$DBPASS --protocol=tcp\n---\n "
+
+exit 0

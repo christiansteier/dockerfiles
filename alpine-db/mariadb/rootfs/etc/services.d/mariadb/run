@@ -1,0 +1,11 @@
+#!/bin/execlineb -P
+trap -x
+{
+  term { mysqladmin -u root shutdown }
+}
+exec -c
+/usr/bin/mysqld_safe \
+	--general-log-file=/dev/stdout \
+	--slow-query-log-file=/dev/stdout \
+	--log-warnings \
+	--log-bin-trust-function-creators=1
