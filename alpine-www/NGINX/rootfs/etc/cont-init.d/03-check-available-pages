@@ -1,4 +1,0 @@
-#!/bin/execlineb -P
-
-if -t { s6-test ! -f /etc/nginx/sites-enabled/localhost.site }
-if { cp /etc/nginx/localhost.site /etc/nginx/sites-enabled/example.site }

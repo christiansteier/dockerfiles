@@ -20,6 +20,7 @@ all: build
 build:
 	sed -i "s*alpine-base:ARCHTAG*alpine-base:${ARCHTAG}*g" Dockerfile_NGINX
 	mv Dockerfile_NGINX Dockerfile
+	$(MAKE) -C ../../alpine-base build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG} .
 	mv Dockerfile Dockerfile_NGINX
 

@@ -1,5 +1,0 @@
-#!/bin/execlineb -P
-
-if -t { s6-test ! -d /var/lib/nginx }
-if { s6-mkdir /var/lib/nginx }
-

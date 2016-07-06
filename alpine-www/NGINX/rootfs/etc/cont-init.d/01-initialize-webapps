@@ -1,0 +1,10 @@
+#!/bin/execlineb -P
+
+foregroud {
+ if -t { s6-test ! -d /etc/nginx/sites-enabled }
+ if { s6-mkdir /etc/nginx/sites-enabled }
+}
+
+if -t { s6-test ! -f /etc/nginx/sites-enabled/*.site }
+if { cp /etc/nginx/localhost.site /etc/nginx/sites-enabled/example.site }
+if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/sites-enabled/example.site }

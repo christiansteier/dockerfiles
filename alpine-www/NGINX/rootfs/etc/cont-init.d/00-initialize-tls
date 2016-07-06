@@ -1,0 +1,16 @@
+#!/bin/execlineb -P
+
+foreground {
+ if -t { s6-test ! -d /etc/nginx/tls }
+ if { s6-echo "[i] Create tls forlder" }
+ if { s6-mkdir /etc/nginx/tls }
+}
+
+if -t { s6-test ! -f /etc/nginx/tls/nginx.pem }
+if { s6-echo "[i] Create a server certificate" }
+if { apk -U add openssl }
+if { export RANDFILE /dev/null openssl genrsa -out /etc/nginx/tls/nginx.pem 4096 }
+if { openssl req -new -x509 -days 3650 -key /etc/nginx/tls/nginx.pem -out /etc/nginx/tls/nginx.crt -subj "/C=US/CN=0.0.0.0" }
+if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/tls/nginx.pem }
+if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/tls/nginx.crt }
+if { apk del openssl }
