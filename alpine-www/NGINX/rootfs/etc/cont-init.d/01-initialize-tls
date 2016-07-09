@@ -14,3 +14,4 @@ if { openssl req -new -x509 -days 3650 -key /etc/nginx/tls/nginx.pem -out /etc/n
 if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/tls/nginx.pem }
 if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/tls/nginx.crt }
 if { apk del openssl }
+if { s6-rmrf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp }

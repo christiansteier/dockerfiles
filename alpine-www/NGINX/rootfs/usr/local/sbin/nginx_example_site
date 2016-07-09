@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+if [ ! -d /etc/nginx/sites-enabled ]; then
+  mkdir /etc/nginx/sites-enabled
+  s6-envuidgid nginx s6-chown -U -- /etc/nginx/sites-enabled
+fi
+
+if [ -f /etc/nginx/sites-enabled/*.site ]; then
+  s6-echo "[i] Site(s) for NGINX found."
+else
+  s6-echo "[i] Create example site for NGINX."
+  cp /etc/nginx/localhost.site /etc/nginx/sites-enabled/example.site
+  s6-envuidgid nginx s6-chown -U -- /etc/nginx/sites-enabled/example.site
+  s6-chmod 675 /etc/nginx/sites-enabled/example.site
+fi
+
+exit 0

@@ -1,0 +1,13 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+if [ "$(ls -A /usr/share/webapps/)" ]; then
+  echo "[i] File(s) found in webapps folder."
+else
+  echo "[i] Create PHP info page."
+  echo -e "<?PHP\nphpinfo ();\n?>" > /usr/share/webapps/index.php
+  s6-envuidgid nginx s6-chown -U -- /usr/share/webapps/index.php
+fi
+
+exit 0

@@ -1,7 +1,7 @@
-FROM maxder/alpine-base:ARCHTAG
+FROM maxder/alpine-php-fpm:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-RUN apk --no-cache --no-progress add ca-certificates nginx
+RUN apk --no-cache --no-progress add ca-certificates nginx --repository http://nl.alpinelinux.org/alpine/v3.4/main --allow-untrusted
 
 RUN echo "charset utf-8;" > /etc/nginx/conf.d/charset.conf \
  && echo "client_max_body_size 2M;" > /etc/nginx/conf.d/uploads.conf

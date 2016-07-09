@@ -1,0 +1,70 @@
+FROM maxder/alpine-base:ARCHTAG
+MAINTAINER Christian-Maxilian Steier
+
+RUN echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+ && apk -U add \
+	php7-apcu@testing \
+	php7-bcmath@testing \
+	php7-bz2@testing \
+        php7-cgi@testing \
+        php7-common@testing \
+        php7-ctype@testing \
+	php7-curl@testing \
+	php7-dom@testing \
+	php7-exif@testing \
+	php7-fpm@testing \
+	php7-ftp@testing \
+        php7-gd@testing \
+        php7-gettext@testing \
+        php7-gmp@testing \
+	php7-imap@testing \
+	php7-iconv@testing \
+	php7-intl@testing \
+        php7-json@testing \
+	php7-ldap@testing \
+        php7-mcrypt@testing \
+        php7-memcached@testing \
+	php7-mysqli@testing \
+	php7-opcache@testing \
+        php7-openssl@testing \
+        php7-odbc@testing \
+	php7-pdo_dblib@testing \
+	php7-pdo_odbc@testing \
+        php7-pdo_sqlite@testing \
+        php7-pdo_mysql@testing \
+        php7-pear@testing \
+        php7-phar@testing \
+	php7-soap@testing \
+        php7-sqlite3@testing \
+	php7-xml@testing \
+	php7-xmlreader@testing \
+	php7-xmlrpc@testing \
+        php7-zlib@testing \
+        php7-zip@testing \
+	curl
+
+## Small fixes
+RUN ln -s /etc/php7 /etc/php \
+ && ln -s /usr/bin/php7 /usr/bin/php \
+ && ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm \
+ && ln -s /usr/sbin/php-cgi7 /usr/sbin/php-cgi \
+ && ln -s /usr/lib/php7 /usr/lib/php
+
+## PHP config
+RUN sed -i -e "s/short_open_tag\s*=\s*Off/short_open_tag = On/g" /etc/php/php.ini \
+ && sed -i -e "s/always_populate_raw_post_data\s*=\s*On/always_populate_raw_post_data = -1/g" /etc/php/php.ini
+
+RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
+ && echo "apc.ttl=7200" >> /etc/php/conf.d/apcu.ini \
+ && echo "apc.user_ttl=7200" >> /etc/php/conf.d/apcu.ini \
+ && echo "apc.gc_ttl=3600" >> /etc/php/conf.d/apcu.ini
+ 
+# Install composer global bin
+RUN curl -sS https://getcomposer.org/installer | php \
+ && mv composer.phar /usr/local/bin/composer
+
+RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp \
+ && touch /firstrun
+
+COPY rootfs /
+EXPOSE 9000

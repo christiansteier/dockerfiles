@@ -1,0 +1,11 @@
+#!/bin/execlineb -P
+
+foreground {
+ if { s6-echo "[i] Check if webapps folder exists." }
+ if -t { s6-test ! -d /usr/share/webapps }
+ if { s6-mkdir /usr/share/webapps }
+ if { s6-envuidgid nginx s6-chown -U -- /usr/share/webapps }
+}
+
+if { /usr/local/sbin/php_info_page }
+if { /usr/local/sbin/nginx_example_site }

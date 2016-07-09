@@ -1,0 +1,5 @@
+#!/bin/execlineb -P
+
+if -t { s6-test -f /etc/services.d/php-fpm/setup }
+if { s6-chmod 100 /etc/services.d/php-fpm/setup }
+if { /etc/services.d/php-fpm/setup }

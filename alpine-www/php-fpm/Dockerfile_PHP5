@@ -1,0 +1,67 @@
+FROM maxder/alpine-base:ARCHTAG
+MAINTAINER Christian-Maxilian Steier
+
+RUN echo "http://nl.alpinelinux.org/alpine/v3.3/main/"      | tee /etc/apk/repositories    \
+ && echo "http://nl.alpinelinux.org/alpine/v3.3/community/" | tee -a /etc/apk/repositories \
+ && apk -U --no-cache --no-progress add \
+	php-apcu \
+	php-bcmath \
+	php-bz2 \
+        php-cgi \
+        php-cli \
+        php-common \
+        php-ctype \
+	php-curl \
+	php-dom \
+	php-exif \
+	php-fpm \
+	php-ftp \
+        php-gd \
+        php-gettext \
+        php-gmp \
+	php-imap \
+	php-iconv \
+	php-intl \
+        php-json \
+	php-ldap \
+        php-mcrypt \
+        php-memcache \
+	php-mssql \
+	php-mysqli \
+	php-opcache \
+        php-openssl \
+        php-odbc \
+	php-pdo \
+	php-pdo_dblib \
+	php-pdo_odbc \
+        php-pdo_sqlite \
+        php-pdo_mysql \
+        php-pear \
+        php-phar \
+	php-posix \
+	php-soap \
+        php-sqlite3 \
+	php-xml \
+	php-xmlreader \
+	php-xmlrpc \
+        php-zlib \
+        php-zip
+
+## PHP config
+RUN sed -i -e "s/short_open_tag\s*=\s*Off/short_open_tag = On/g" /etc/php/php.ini \
+ && sed -i -e "s/always_populate_raw_post_data\s*=\s*On/always_populate_raw_post_data = -1/g" /etc/php/php.ini
+
+RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
+ && echo "apc.ttl=7200" >> /etc/php/conf.d/apcu.ini \
+ && echo "apc.user_ttl=7200" >> /etc/php/conf.d/apcu.ini \
+ && echo "apc.gc_ttl=3600" >> /etc/php/conf.d/apcu.ini
+ 
+# Install composer global bin
+RUN curl -sS https://getcomposer.org/installer | php \
+ && mv composer.phar /usr/local/bin/composer
+
+RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp \
+ && touch /firstrun
+
+COPY rootfs /
+EXPOSE 9000

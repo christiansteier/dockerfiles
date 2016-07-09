@@ -1,5 +1,4 @@
 /etc/nginx true nginx 0600 0700
 /etc/nginx/tls true nginx 0600 0700
 /etc/nginx/sites-enabled true nginx 0600 0700
-/var/lib/nginx true nginx 0600 0700
 /var/lib/nginx/tmp true nginx 0700 0700
