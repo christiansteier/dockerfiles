@@ -1,4 +1,4 @@
-FROM maxder/alpine-php-fpm:ARCHTAG
+FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 RUN apk --no-cache --no-progress add ca-certificates nginx --repository http://nl.alpinelinux.org/alpine/v3.4/main --allow-untrusted
