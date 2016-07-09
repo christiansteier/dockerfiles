@@ -1,4 +1,4 @@
-FROM maxder/alpine-mini:x86_64
+FROM maxder/alpine-mini:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 ENV ALPINE_RELEASE v3.4
