@@ -19,7 +19,9 @@ RUN mkdir -p config tls \
  && adduser -S -D -H -h /etc/traefik -s /sbin/nologin -G traefik -g traefik traefik \
  && apk del curl linux-pam
 
-RUN rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp
+# Cleanup and security fixes
+COPY scripts/cleanup.sh /tmp/cleanup.sh
+RUN /tmp/cleanup.sh
 
 COPY rootfs /
 EXPOSE 80/tcp 8080/tcp
