@@ -20,12 +20,14 @@ all: build
 build:
 	mv Dockerfile_PHP5 Dockerfile
 	sed -i "s*alpine-base:ARCHTAG*alpine-base:${ARCHTAG}*g" ./Dockerfile
+	$(MAKE) -C ../../alpine-base build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG} .
 	mv Dockerfile Dockerfile_PHP5
 
 php7build:
 	mv Dockerfile_PHP7 Dockerfile
 	sed -i "s*alpine-base:ARCHTAG*alpine-base:${ARCHTAG}*g" ./Dockerfile
+	$(MAKE) -C ../../alpine-base build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-php7-fpm:${ARCHTAG} .
 	mv Dockerfile Dockerfile_PHP7
 
