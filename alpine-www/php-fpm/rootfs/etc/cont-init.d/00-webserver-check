@@ -1,22 +1,5 @@
-#!/usr/bin/with-contenv sh
+#!/bin/execlineb -P
 
-set -e
-
-if [ -f /firstrun ]; then
-  if [ $(grep -c '^nginx:' /etc/passwd) == 1 ]; then
-	s6-echo "[i] NGINX found."
-	apk -U add linux-pam
-	s6-echo "[i] Configure PHP"
-	sed -i "s*user = nobody*user = nginx*g" /etc/php/php-fpm.conf
-	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
-	sed -i "s*include /etc/nginx/headers.conf\;*include /etc/nginx/headers.conf\;\n        include /etc/nginx/fpm.conf\;\n\n        root /usr/share/webapps\;\nindex index.php\;*g" /etc/nginx/localhost.site
-	mv /nginx_fpm.conf /etc/nginx/fpm.conf
-	apk del linux-pam
-	rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp
-  else
-  	s6-echo "[i] No NGINX found."
-  fi
-  rm /firstrun
-fi
-
-exit 0
+if -t { s6-test -f /etc/services.d/php-fpm/setup }
+if { s6-chmod 100 /etc/services.d/php-fpm/setup }
+if { /etc/services.d/php-fpm/setup }
