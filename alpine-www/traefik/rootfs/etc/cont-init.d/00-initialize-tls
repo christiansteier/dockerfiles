@@ -1,0 +1,17 @@
+#!/bin/execlineb -P
+
+foreground {
+ if -t { s6-test ! -d /etc/traefik/tls }
+ if { s6-echo "[i] Create tls folder" }
+ if { s6-mkdir /etc/traefik/tls }
+}
+
+if -t { s6-test ! -f /etc/traefik/tls/traefik.pem }
+if { s6-echo "[i] Create a server certificate" }
+if { apk -U add openssl }
+if { export RANDFILE /dev/null openssl genrsa -out /etc/traefik/tls/traefik.pem 4096 }
+if { openssl req -new -x509 -days 3650 -key /etc/traefik/tls/traefik.pem -out /etc/traefik/tls/traefik.crt -subj "/C=US/CN=0.0.0.0" }
+if { s6-envuidgid traefik s6-chown -U -- /etc/traefik/tls/traefik.pem }
+if { s6-envuidgid traefik s6-chown -U -- /etc/traefik/tls/traefik.crt }
+if { apk del openssl }
+if { s6-rmrf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp }

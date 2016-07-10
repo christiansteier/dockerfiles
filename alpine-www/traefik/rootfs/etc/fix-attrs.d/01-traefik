@@ -1,0 +1,2 @@
+/etc/traefik true traefik 0600 0700
+/var/log/traefik true traefik 0600 0700
