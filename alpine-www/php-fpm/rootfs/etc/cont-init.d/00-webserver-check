@@ -7,7 +7,6 @@ if [ -f /firstrun ]; then
 	s6-echo "[i] NGINX found."
 	apk -U add linux-pam
 	s6-echo "[i] Configure PHP"
-	addgroup nginx www-data
 	sed -i "s*user = nobody*user = nginx*g" /etc/php/php-fpm.conf
 	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
 	sed -i "s*include /etc/nginx/headers.conf\;*include /etc/nginx/headers.conf\;\n        include /etc/nginx/fpm.conf\;\n\n        root /usr/share/webapps\;\nindex index.php\;*g" /etc/nginx/localhost.site
