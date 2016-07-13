@@ -1,0 +1,4 @@
+/etc/hiawatha true hiawatha 0600 0700
+/etc/hiawatha/config true hiawatha 0600 0700
+/etc/hiawatha/tls true hiawatha 0600 0700
+/etc/hiawatha/sites-enabled true hiawatha 0600 0700

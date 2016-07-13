@@ -7,7 +7,12 @@ if [ "$(ls -A /usr/share/webapps/)" ]; then
 else
   echo "[i] Create PHP info page."
   echo -e "<?PHP\nphpinfo ();\n?>" > /usr/share/webapps/index.php
-  s6-envuidgid nginx s6-chown -U -- /usr/share/webapps/index.php
+  if [ $(grep -c '^hiawatha:' /etc/passwd) == 1 ]; then
+    s6-envuidgid hiawatha s6-chown -U -- /usr/share/webapps/index.php
+  fi
+  if [ $(grep -c '^nginx:' /etc/passwd) == 1 ]; then
+    s6-envuidgid nginx s6-chown -U -- /usr/share/webapps/index.php
+  fi
 fi
 
 exit 0
