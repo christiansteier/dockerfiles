@@ -2,7 +2,7 @@ FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 RUN echo -e "http://nl.alpinelinux.org/alpine/edge/testing\nhttp://nl.alpinelinux.org/alpine/edge/main\nhttp://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk --no-cache --no-progress add \
+RUN apk-U add \
 	ca-certificates \
 	hiawatha \
 	linux-pam \
