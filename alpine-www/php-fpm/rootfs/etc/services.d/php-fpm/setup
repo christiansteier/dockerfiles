@@ -6,7 +6,7 @@ if [ -f /firstrun ]; then
 
   # Hiawatha
   if [ $(grep -c '^hiawatha:' /etc/passwd) == 1 ]; then
-        s6-echo "[i] Webserver NGINX found."
+        s6-echo "[i] Webserver Hiawatha found."
         s6-echo "[i] Configure PHP."
 	sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.conf
 	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf

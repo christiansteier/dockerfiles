@@ -7,7 +7,7 @@ if [ ! -d /etc/hiawatha/sites-enabled ]; then
   s6-envuidgid hiawatha s6-chown -U -- /etc/hiawatha/sites-enabled
 fi
 
-if [ -f /etc/hiawatha/sites-enabled/*.site ]; then
+if test -e /etc/hiawatha/sites-enabled/*.site; then
   s6-echo "[i] Site(s) for Hiawatha found."
 else
   s6-echo "[i] Create example site for Hiawatha."
