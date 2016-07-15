@@ -7,7 +7,7 @@ if [ ! -d /etc/nginx/sites-enabled ]; then
   s6-envuidgid nginx s6-chown -U -- /etc/nginx/sites-enabled
 fi
 
-if [ -f /etc/nginx/sites-enabled/*.site ]; then
+if test -e /etc/nginx/sites-enabled/*.site; then
   s6-echo "[i] Site(s) for NGINX found."
 else
   s6-echo "[i] Create example site for NGINX."
