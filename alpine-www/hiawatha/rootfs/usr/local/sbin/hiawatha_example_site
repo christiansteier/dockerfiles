@@ -22,4 +22,8 @@ else
   s6-chmod 675 /etc/hiawatha/sites-enabled/example.site
 fi
 
+if ! grep -q 'Include /etc/hiawatha/sites-enabled' /etc/hiawatha/hiawatha.conf ; then
+  echo "Include /etc/hiawatha/sites-enabled/" >> /etc/hiawatha/hiawatha.conf
+fi
+
 exit 0
