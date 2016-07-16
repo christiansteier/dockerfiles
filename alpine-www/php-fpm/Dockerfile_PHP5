@@ -45,7 +45,8 @@ RUN echo "http://nl.alpinelinux.org/alpine/v3.3/main/"      | tee /etc/apk/repos
 	php-xmlreader \
 	php-xmlrpc \
         php-zlib \
-        php-zip
+        php-zip \
+ && apk add -U --repository http://nl.alpinelinux.org/alpine/edge/testing/ --allow-untrusted phpredis
 
 ## PHP config
 RUN sed -i -e "s/short_open_tag\s*=\s*Off/short_open_tag = On/g" /etc/php/php.ini \
