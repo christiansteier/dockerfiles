@@ -10,8 +10,10 @@ if [ -f /firstrun ]; then
         s6-echo "[i] Configure PHP."
 	sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.conf
 	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
-	sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.d/www.conf
-	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.d/www.conf
+	if [ -f /etc/php/php-fpm.d/www.conf ]; then
+	  sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.d/www.conf
+	  sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.d/www.conf
+	fi
 	sed -i "s*\# DEFAULT WEBSITE*FastCGIserver \{\n        FastCGIid = PHP5\n        ConnectTo = 127.0.0.1:9000\n        Extension = php\n        SessionTimeout = 600\n\}\n\n\## DEFAULT WEBSITE*g" /etc/hiawatha/hiawatha.conf
 	sed -i "s*\#CGIhandler = /usr/bin/php-cgi:php*CGIhandler = /usr/bin/php-cgi:php*g" /etc/hiawatha/hiawatha.conf
 	sed -i "s*/var/log/hiawatha/error.log*/var/log/hiawatha/error.log \nExecuteCGI = yes\n*g" /etc/hiawatha/hiawatha.conf
