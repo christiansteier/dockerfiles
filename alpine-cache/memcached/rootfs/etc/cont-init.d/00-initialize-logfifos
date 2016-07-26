@@ -1,0 +1,4 @@
+#!/usr/bin/execlineb -P
+
+if { logutil-newfifo -o memcached /var/run/s6/memcached-error-log-fifo }
+if { logutil-newfifo -o memcached /var/run/s6/memcached-general-log-fifo }

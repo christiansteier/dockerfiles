@@ -1,0 +1,3 @@
+#!/usr/bin/execlineb -P
+
+logutil-service -f /var/run/s6/memcached-general-log-fifo /var/log/memcached-general-logs
