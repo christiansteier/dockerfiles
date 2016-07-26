@@ -7,7 +7,15 @@ RUN apk -U --no-progress add \
 
 COPY rootfs /
 
-RUN rm -rf /etc/s6/services/cron /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp
+RUN s6-rmrf \
+    /etc/s6/services/s6-fdholderd/down \
+    /etc/s6/services/cron \
+    /var/cache/apk/* \
+    /usr/share/doc \
+    /usr/share/man/ \
+    /usr/share/info/* \
+    /var/cache/man/* \
+    /var/tmp
 
 EXPOSE 3306/tcp
 VOLUME ["/var/lib/mysql"]
