@@ -1,0 +1,2 @@
+#!/usr/bin/execlineb -P
+logutil-service -f /var/run/s6/hiawatha-system-log-fifo /var/log/hiawatha/system-logs

@@ -15,6 +15,7 @@ RUN addgroup -Sg 82 www-data \
  && adduser -S -D -H -h /var/lib/hiawatha -s /sbin/nologin -G www-data -g www-data hiawatha \
  && sed -i "s*GENERAL SETTINGS*GENERAL SETTINGS\nLogFormat = extended\nServerString = SimpleHTTPserver\n*g;s*ServerId = nobody*ServerId = hiawatha*g" /etc/hiawatha/hiawatha.conf \
  && sed -i "s*\#Binding*Binding \{\n       Port = 443\n       TLScertFile = tls/hiawatha.pem\n       MaxRequestSize = 2048 #2MB\n       TimeForRequest = 30\n\}\n\n\#Binding*g" /etc/hiawatha/hiawatha.conf \
+ && sed -i "s*/var/log/hiawatha/system.log*/var/run/s6/hiawatha-system-log-fifo*g;s*/var/log/hiawatha/garbage.log*/var/run/s6/hiawatha-garbage-log-fifo*g;s*/var/log/hiawatha/error.log*/var/run/s6/hiawatha-error-log-fifo*g;s*/var/log/hiawatha/access.log*/var/run/s6/hiawatha-access-log-fifo*g" /etc/hiawatha/hiawatha.conf \
  && apk del linux-pam
 
 RUN openssl genrsa -out /etc/hiawatha/hiawatha.pem 4096 \
