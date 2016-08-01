@@ -37,7 +37,7 @@ find $sysdirs -xdev \( \
   
 # Remove unnecessary user accounts.
 sed -i -r '/^(nogroup|www-data|hiawatha|root)/!d' /etc/group
-sed -i -r '/^(hiawatha|root)/!d' /etc/passwd
+sed -i -r '/^(nobody|hiawatha|root)/!d' /etc/passwd
 
 # Remove interactive login shell 
 sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
