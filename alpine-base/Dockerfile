@@ -6,7 +6,7 @@ ENV S6OVERLAY_RELEASE v1.18.1.3
 
 RUN echo "http://nl.alpinelinux.org/alpine/$ALPINE_RELEASE/main/" > /etc/apk/repositories    \
  && echo "http://nl.alpinelinux.org/alpine/$ALPINE_RELEASE/community/" >> /etc/apk/repositories \
- && echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+ && echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
  && apk -U --no-progress upgrade
 RUN apk -U --no-progress add bash skalibs execline s6 s6-portable-utils
 
