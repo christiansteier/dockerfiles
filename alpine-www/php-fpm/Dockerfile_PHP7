@@ -48,7 +48,7 @@ RUN echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/re
 RUN ln -s /etc/php7 /etc/php \
  && ln -s /usr/bin/php7 /usr/bin/php \
  && ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm \
- && ln -s /usr/sbin/php-cgi7 /usr/sbin/php-cgi \
+ && ln -s /usr/bin/php-cgi7 /usr/bin/php-cgi \
  && ln -s /usr/lib/php7 /usr/lib/php
 
 ## PHP config
