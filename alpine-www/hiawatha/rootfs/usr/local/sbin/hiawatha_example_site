@@ -17,7 +17,6 @@ else
   else
     echo -e 'VirtualHost {\n  Hostname = localhost\n  WebsiteRoot = /usr/share/webapps\n  StartFile = index.html\n}\n' > /etc/hiawatha/sites-enabled/example.site
   fi
-  echo 'Include /etc/hiawatha/sites-enabled/' >> /etc/hiawatha/hiawatha.conf
   s6-envuidgid hiawatha s6-chown -U -- /etc/hiawatha/sites-enabled/example.site
   s6-chmod 675 /etc/hiawatha/sites-enabled/example.site
 fi
