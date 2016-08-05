@@ -46,7 +46,8 @@ RUN apk -U --no-cache --no-progress add \
 	php5-xmlrpc \
         php5-zlib \
         php5-zip \
- && apk add -U --repository http://nl.alpinelinux.org/alpine/edge/testing/ --allow-untrusted phpredis
+        phpredis@testing \
+        curl
 
 ## Small fixes
 RUN ln -s /etc/php5 /etc/php \
