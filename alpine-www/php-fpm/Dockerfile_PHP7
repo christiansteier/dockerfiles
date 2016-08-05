@@ -21,6 +21,7 @@ RUN apk -U add \
 	php7-intl@testing \
         php7-json@testing \
 	php7-ldap@testing \
+	php7-mbstring@testing \
         php7-mcrypt@testing \
         php7-memcached@testing \
 	php7-mysqli@testing \
