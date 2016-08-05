@@ -24,6 +24,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/v3.3/main/"      | tee /etc/apk/repos
 	php-intl \
         php-json \
 	php-ldap \
+	php-mbstring \
         php-mcrypt \
         php-memcache \
 	php-mssql \
