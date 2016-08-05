@@ -15,7 +15,7 @@ services:
     - 443
 #    labels:
 #    - "traefik.backend=hiawatha"
-#    - "traefik.frontend.rule=Host:hiawath.docker.localhost"
+#    - "traefik.frontend.rule=Host:hiawatha.docker.localhost"
 #    - "traefik.frontend.entryPoints=https"
 #    - "traefik.protocol=http"
 #    - "traefik.port=80"
