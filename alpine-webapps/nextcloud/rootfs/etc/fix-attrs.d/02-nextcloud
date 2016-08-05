@@ -1,0 +1,2 @@
+/usr/share/webapps/nextcloud/config true hiawatha 0600 0700
+/usr/share/webapps/nextcloud/data true hiawatha 0600 0700
