@@ -50,7 +50,6 @@ RUN apk -U --no-cache --no-progress add \
 
 ## Small fixes
 RUN ln -s /etc/php5 /etc/php \
- && ln -s /usr/bin/php5 /usr/bin/php \
  && ln -s /usr/lib/php5 /usr/lib/php
 
 ## PHP config
