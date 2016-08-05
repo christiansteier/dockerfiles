@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  hiawatha:
+    restart: always
+    container_name: hiawatha
+    image: maxder/alpine-hiawatha:x86_64
+    volumes:
+    - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
+    - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enaled
+#    labels:
+#    - "traefik.backend=hiawatha"
+#    - "traefik.frontend.rule=Host:hiawatha.docker.localhost"
+#    - "traefik.port=80"
+#    - "traefik.docker.network=traefik_default"
