@@ -4,12 +4,23 @@ services:
   hiawatha:
     restart: always
     container_name: hiawatha
+    hostname: hiawatha
     image: maxder/alpine-hiawatha:x86_64
+    #image: maxder/alpine-hiawatha-php7:x86_64
     volumes:
     - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
     - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enaled
+    ports:
+    - 80
+    - 443
 #    labels:
 #    - "traefik.backend=hiawatha"
-#    - "traefik.frontend.rule=Host:hiawatha.docker.localhost"
+#    - "traefik.frontend.rule=Host:hiawath.docker.localhost"
+#    - "traefik.frontend.entryPoints=https"
+#    - "traefik.protocol=http"
 #    - "traefik.port=80"
 #    - "traefik.docker.network=traefik_default"
+#networks:
+#  default:
+#    external:
+#      name: traefik_default
