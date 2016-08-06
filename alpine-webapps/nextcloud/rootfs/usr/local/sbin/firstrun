@@ -2,7 +2,6 @@
 
 set -e
 
-until nc -z db 3306; do sleep 1; echo "Waiting for DB to come up..."; done
 apk -U --no-progress add  pwgen
 
 APPDIR=/usr/share/webapps/nextcloud
@@ -13,6 +12,8 @@ DBPASS=${DBPASS:-$DB_ENV_DBPASS}
 APPADMIN=${APPADMIN:-admin}
 APPADMINPASS=${APPADMINPASS:-admin}
 SALT=${SALT:-$(pwgen -s -1 16)}
+
+until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
 
 if [ ! -f $APPDIR/config/config.php ]; then
   echo -e "<?php\n\$AUTOCONFIG = array(\n  \"dbtype\"        => \"mysql\",\n  \"dbname\"        => \"${APPDB}\",\n  \"dbuser\"        => \"${DBUSER}\",\n  \"dbpass\"        => \"${DBPASS}\",\n  \"dbhost\"        => \"${DBHOST}\",\n  \"dbtableprefix\" => \"\",\n  \"directory\"     => \"/usr/share/webapps/nextcloud/data\",\n  \"adminlogin\"    => \"${APPADMIN}\",\n  \"adminpass\"     => \"${APPADMINPASS}\",\n  \"passwordsalt\"  => \"${SALT}\",\n);" > $APPDIR/config/autoconfig.php
