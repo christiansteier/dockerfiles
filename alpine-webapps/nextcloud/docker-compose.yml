@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  redis:
+    restart: always
+    container_name: nextcloud_redis
+    hostname: redis
+    image: maxder/alpine-redis:x86_64
+  mariadb:
+    restart: always
+    container_name: nextcloud_db
+    hostname: mariadb
+    image: maxder/alpine-mariadb:x86_64
+    volumes:
+    - /srv/docker/nextcloud/db:/var/lib/mysql
+    environment:
+    - DBUSER=dbadmin
+    - DBPASS=dbadminpass
+  nextcloud:
+    restart: always
+    container_name: nextcloud
+    hostname: nextcloud
+    image: maxder/alpine-nextcloud:x86_64
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /srv/docker/nextcloud/data:/usr/share/webapps/nextcloud/data
+    - /srv/docker/nextcloud/config:/usr/share/webapps/nextcloud/config
+    environment:
+    - DBUSER=dbadmin
+    - DBPASS=dbadminpass
+    links:
+    - mariadb:db
+    - redis:redis

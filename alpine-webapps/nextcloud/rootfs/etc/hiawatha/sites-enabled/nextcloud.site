@@ -7,7 +7,7 @@ VirtualHost {
   Hostname = localhost
   WebsiteRoot = /usr/share/webapps/nextcloud
   TLScertFile = tls/hiawatha.pem
-  #RequireTLS = yes,15552000
+  RequireTLS = yes,15768000
   
   StartFile = index.php
   #Alias = /cloud:/usr/share/webapps/nextcloud

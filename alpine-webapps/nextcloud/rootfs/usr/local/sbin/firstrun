@@ -1,0 +1,40 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+apk -U --no-progress add  pwgen
+
+APPDIR=/usr/share/webapps/nextcloud
+APPDB=${APPDB:-nextcloud}
+DBHOST=${DBHOST:-db}
+DBUSER=${DBUSER:-$DB_ENV_DBUSER}
+DBPASS=${DBPASS:-$DB_ENV_DBPASS}
+APPADMIN=${APPADMIN:-admin}
+APPADMINPASS=${APPADMINPASS:-admin}
+SALT=${SALT:-$(pwgen -s -1 16)}
+
+if [ ! -f $APPDIR/config/config.php ]; then
+  echo -e "<?php\n\$AUTOCONFIG = array(\n  \"dbtype\"        => \"mysql\",\n  \"dbname\"        => \"${APPDB}\",\n  \"dbuser\"        => \"${DBUSER}\",\n  \"dbpass\"        => \"${DBPASS}\",\n  \"dbhost\"        => \"${DBHOST}\",\n  \"dbtableprefix\" => \"\",\n  \"directory\"     => \"/usr/share/webapps/nextcloud/data\",\n  \"adminlogin\"    => \"${APPADMIN}\",\n  \"adminpass\"     => \"${APPADMINPASS}\",\n  \"passwordsalt\"  => \"${SALT}\",\n);" > $APPDIR/config/autoconfig.php
+chown hiawatha:www-data $APPDIR/config/autoconfig.php
+  
+  echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
+  chown hiawatha:www-data $APPDIR/config/config.php
+
+
+ping -c 3 redis > /dev/null 2>&1
+if [ $? -ne 0 ]
+then
+  echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
+else
+  echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n'memcache.locking' => '\\OC\\Memcache\\Redis',\n'redis' =>array (\n    'host' => 'redis',\n    'port' => 6379,\n  ),\n);\n" > $APPDIR/config/config.php
+fi
+chown hiawatha:www-data $APPDIR/config/config.php 
+
+  echo -e "\n[i] Set automatic configuration:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n Salt: $SALT\n---\n"
+fi
+
+apk del pwgen
+rm /etc/cont-init.d/02-firstrun
+rm /usr/local/sbin/firstrun
+
+exit 0

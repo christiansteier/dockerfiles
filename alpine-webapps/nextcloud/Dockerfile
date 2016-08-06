@@ -15,8 +15,12 @@ RUN apk -U --no-progress add \
     bzip2 \
     graphviz \
     ffmpeg \
-    mariadb-client \
-    pwgen
+    mariadb-client
+
+RUN sed -i "s*MaxRequestSize = 2048 \#2MB*MaxRequestSize = 2097152 \#2GB*g" /etc/hiawatha/hiawatha.conf \
+ && sed -i "s*TimeForRequest = 30*TimeForRequest = 600*g" /etc/hiawatha/hiawatha.conf \
+ && sed -i "s*upload_max_filesize = 2M*upload_max_filesize = 2G*g" /etc/php/php.ini \
+ && sed -i "s*post_max_size = 8M*post_max_size = 2G*g" /etc/php/php.ini
 
 WORKDIR /usr/share/webapps
 ADD https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.${RELEASE}.tar.bz2 app.tar.bz2
@@ -30,6 +34,9 @@ RUN export APPDIR=/usr/share/webapps/nextcloud \
  && chown -R hiawatha:www-data ${APPDIR}/themes/ \
  && chown root:www-data ${APPDIR}/.htaccess \
  && chmod 0644 ${APPDIR}/.htaccess
+
+RUN echo -e "#!/bin/sh \n\n s6-setuidgid hiawatha php /usr/share/webapps/nextcloud/cron.php\n # If music app exists, scan all files\n if [ -d "/usr/share/webapps/nextcloud/apps/music" ]; then s6-setuidgid hiawatha php /usr/share/webapps/nextcloud/occ music:scan --all ;fi\n" > /etc/periodic/15min/nextcloud \
+ && chmod +x /etc/periodic/15min/nextcloud
 
 COPY rootfs/ /
 RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
