@@ -1,5 +1,11 @@
 #!/bin/execlineb -P
 
+foreground {
+ if -t { s6-test ! -d /tmp }
+ if { s6-mkdir /tmp }
+ if { s6-chmod 777 /tmp }
+}
+
 if -t { s6-test -f /etc/services.d/php-fpm/setup }
 if { s6-chmod 100 /etc/services.d/php-fpm/setup }
 if { /etc/services.d/php-fpm/setup }

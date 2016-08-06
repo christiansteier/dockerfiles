@@ -1,8 +1,4 @@
 #!/bin/execlineb -P
 
-if -t { s6-test ! -d /tmp }
-if { s6-mkdir /tmp }
-if { s6-chmod 777 /tmp }
-
 exec -c
 php-fpm --nodaemonize
