@@ -2,7 +2,7 @@
 
 set -e
 
-sleep 10
+until nc -z db 3306; do sleep 1; echo "Waiting for DB to come up..."; done
 apk -U --no-progress add  pwgen
 
 APPDIR=/usr/share/webapps/nextcloud
