@@ -34,6 +34,7 @@ RUN apk -U add \
         php7-pdo_mysql@testing \
         php7-pear@testing \
         php7-phar@testing \
+        php7-posix@testing \
         php7-redis@testing \
 	php7-soap@testing \
         php7-sqlite3@testing \
