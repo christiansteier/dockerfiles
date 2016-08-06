@@ -27,9 +27,21 @@ services:
     volumes:
     - /srv/docker/nextcloud/data:/usr/share/webapps/nextcloud/data
     - /srv/docker/nextcloud/config:/usr/share/webapps/nextcloud/config
+    - /srv/docker/nextcloud/log:/var/log/NGINX
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
     links:
     - mariadb:db
     - redis:redis
+#    labels:
+#    - "traefik.backend=nextcloud"
+#    - "traefik.frontend.rule=Host:nextcloud.docker.localhost"
+#    - "traefik.frontend.entryPoints=https"
+#    - "traefik.protocol=http"
+#    - "traefik.port=80"
+#    - "traefik.docker.network=traefik_default"
+#networks:
+#  default:
+#    external:
+#      name: traefik_default

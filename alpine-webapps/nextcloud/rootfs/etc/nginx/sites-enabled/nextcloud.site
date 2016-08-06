@@ -1,0 +1,136 @@
+server {
+  listen 80;
+  server_name localhost;
+
+  include /etc/nginx/fpm.conf;
+  # Add headers to serve security related headers
+  include /etc/nginx/headers.conf;
+
+  root /usr/share/webapps/nextcloud/;
+  client_max_body_size 10G;
+  fastcgi_buffers 64 4K;
+
+  # Disable gzip to avoid the removal of the ETag header
+  gzip off;
+
+  index index.php;
+  error_page 403 /core/templates/403.php;
+  error_page 404 /core/templates/404.php;
+  
+  rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
+  rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
+  rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
+  
+  rewrite ^/.well-known/carddav /remote.php/carddav/ permanent;
+  rewrite ^/.well-known/caldav /remote.php/caldav/ permanent;
+
+  # The following 2 rules are only needed for the user_webfinger app.
+  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+
+  location ~ ^/(build|tests|config|lib|3rdparty|templates|data)/ {
+    deny all;
+  }
+
+  location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
+    deny all;
+  }
+
+  location / {
+    rewrite ^/remote/(.*) /remote.php last;
+    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
+    try_files $uri $uri/ =404;
+  }
+
+  # Adding the cache control header for js and css files
+  # Make sure it is BELOW the location ~ \.php(?:$|/) { block
+  location ~* \.(?:css|js)$ {
+    add_header Cache-Control "public, max-age=7200";
+    # Add headers to serve security related headers
+    include /etc/nginx/headers.conf;
+    # Optional: Don't log access to assets
+    access_log off;
+  }
+
+  # Optional: Don't log access to other assets
+  location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|swf)$ {
+    access_log off;
+  }
+}
+
+server {
+  listen 443 ssl http2;
+  server_name localhost;
+
+  ssl_certificate /etc/nginx/tls/nginx.crt;
+  ssl_certificate_key /etc/nginx/tls/nginx.pem;
+  ssl_ciphers EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!NULL;
+  ssl_prefer_server_ciphers on;
+
+  include /etc/nginx/fpm.conf;
+  # Add headers to serve security related headers
+  include /etc/nginx/headers.conf;
+
+  root /usr/share/webapps/nextcloud/;
+  client_max_body_size 10G;
+  fastcgi_buffers 64 4K;
+
+  # Disable gzip to avoid the removal of the ETag header
+  gzip off;
+
+  index index.php;
+  error_page 403 /core/templates/403.php;
+  error_page 404 /core/templates/404.php;
+  
+  rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
+  rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
+  rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
+  
+  rewrite ^/.well-known/carddav /remote.php/carddav/ permanent;
+  rewrite ^/.well-known/caldav /remote.php/caldav/ permanent;
+
+  # The following 2 rules are only needed for the user_webfinger app.
+  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+
+  location ~ ^/(build|tests|config|lib|3rdparty|templates|data)/ {
+    deny all;
+  }
+
+  location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
+    deny all;
+  }
+
+  location / {
+    rewrite ^/remote/(.*) /remote.php last;
+    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
+    try_files $uri $uri/ =404;
+  }
+
+  # Adding the cache control header for js and css files
+  # Make sure it is BELOW the location ~ \.php(?:$|/) { block
+  location ~* \.(?:css|js)$ {
+    add_header Cache-Control "public, max-age=7200";
+    # Add headers to serve security related headers
+    include /etc/nginx/headers.conf;
+    # Optional: Don't log access to assets
+    access_log off;
+  }
+
+  # Optional: Don't log access to other assets
+  location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|swf)$ {
+    access_log off;
+  }
+}
