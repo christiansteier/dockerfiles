@@ -1,0 +1,10 @@
+#!/usr/bin/execlineb -P
+
+foreground {
+ if -t { s6-test ! -d /var/log/NGINX }
+ if { s6-mkdir /var/log/NGINX }
+ if { s6-envuidgid nobody s6-chown -U -- /var/log/NGINX }
+ if { s6-chmod 0700 /var/log/NGINX }
+}
+if { logutil-newfifo -o nginx /var/run/s6/nginx-error-log-fifo }
+if { logutil-newfifo -o nginx /var/run/s6/nginx-access-log-fifo }

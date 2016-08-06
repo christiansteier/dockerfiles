@@ -38,6 +38,7 @@ run:
 	-v /srv/docker/${NAME}/tls:/etc/nginx/tls \
 	-v /srv/docker/${NAME}/sites-enabled:/etc/nginx/sites-enabled \
 	-v /srv/docker/${NAME}/www:/usr/share/webapps \
+	-v /srv/docker/${NAME}/log:/var/log/NGINX \
 	${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG}
 
 phprun:
@@ -46,6 +47,7 @@ phprun:
 	-v /srv/docker/${NAME}-php/tls:/etc/nginx/tls \
 	-v /srv/docker/${NAME}-php/sites-enabled:/etc/nginx/sites-enabled \
 	-v /srv/docker/${NAME}-php/www:/usr/share/webapps \
+	-v /srv/docker/${NAME}-php/log:/var/log/NGINX \
 	${NAMESPACE}/${IMAGENAME}-${NAME}-php:${ARCHTAG}
 
 php7run:
@@ -54,6 +56,7 @@ php7run:
 	-v /srv/docker/${NAME}-php7/tls:/etc/nginx/tls \
 	-v /srv/docker/${NAME}-php7/sites-enabled:/etc/nginx/sites-enabled \
 	-v /srv/docker/${NAME}-php7/www:/usr/share/webapps \
+	-v /srv/docker/${NAME}-php7/log:/var/log/NGINX \
 	${NAMESPACE}/${IMAGENAME}-${NAME}-php7:${ARCHTAG}
 
 remove: 

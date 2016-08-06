@@ -7,5 +7,9 @@ foreground {
  if { s6-envuidgid nginx s6-chown -U -- /usr/share/webapps }
 }
 
-if { /usr/local/sbin/php_info_page }
+foreground {
+ if -t { s6-test ! -f /usr/local/sbin/php_info_page }
+ if { /usr/local/sbin/php_info_page }
+}
+
 if { /usr/local/sbin/nginx_example_site }

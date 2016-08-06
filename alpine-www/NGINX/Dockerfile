@@ -1,11 +1,9 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-RUN apk --no-cache --no-progress add ca-certificates nginx --repository http://nl.alpinelinux.org/alpine/v3.4/main --allow-untrusted
-
-RUN echo "charset utf-8;" > /etc/nginx/conf.d/charset.conf \
+RUN apk -U add ca-certificates nginx \
+ && echo "charset utf-8;" > /etc/nginx/conf.d/charset.conf \
  && echo "client_max_body_size 2M;" > /etc/nginx/conf.d/uploads.conf
-
 ADD https://trac.nginx.org/nginx/export/365b31afd276e1a6c8ec864b887d5e3c9008fa2f/nginx/docs/html/50x.html /var/www/localhost/htdocs/50x.html
 RUN chown nginx /var/www/localhost/htdocs/50x.html
 
