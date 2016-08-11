@@ -28,6 +28,7 @@ RUN apk -U add \
 	php7-opcache@testing \
         php7-openssl@testing \
         php7-odbc@testing \
+        php7-pcntl@testing \
 	php7-pdo_dblib@testing \
 	php7-pdo_odbc@testing \
         php7-pdo_sqlite@testing \
