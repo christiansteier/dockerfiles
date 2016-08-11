@@ -29,6 +29,7 @@ RUN apk -U --no-cache --no-progress add \
 	php5-opcache \
         php5-openssl \
         php5-odbc \
+        php5-pcntl \
 	php5-pdo \
 	php5-pdo_dblib \
 	php5-pdo_odbc \
