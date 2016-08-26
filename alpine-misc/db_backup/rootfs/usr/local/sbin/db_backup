@@ -1,0 +1,23 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+DIR=$(dirname $(readlink -f "$0"))
+YESTERDAY=/backup/yesterday
+WEEKLY=/backup/weekly
+MONTHLY=/backup/monthly
+
+if [ ! -d "/backup" ]; then mkdir /backup ;fi
+if [ ! -d "/backup/yesterday" ]; then mkdir /backup/yesterday ;fi
+if [ ! -d "/backup/weekly" ]; then mkdir /backup/weekly ;fi
+if [ ! -d "/backup/monthly" ]; then mkdir /backup/monthly ;fi
+
+DBHOST=${DBHOST:-db}
+DBUSER=${DBUSER:-$DB_ENV_DBUSER}
+DBPASS=${DBPASS:-$DB_ENV_DBPASS}
+
+mysqldump --single-transaction --flush-logs --master-data=2 --all-databases \
+ | gzip > $DIR/db_backup.gz
+echo 'purge master logs before date_sub(now(), interval 7 day);' | mysql
+
+exit 0
