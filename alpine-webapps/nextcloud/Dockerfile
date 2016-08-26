@@ -1,8 +1,8 @@
 FROM maxder/alpine-nginx-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
-ENV VERSION 9.0
-ENV RELEASE 53
+ENV VERSION 10.0
+ENV RELEASE 0
 
 RUN apk -U --no-progress add \
     file \
