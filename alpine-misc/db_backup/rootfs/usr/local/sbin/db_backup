@@ -2,7 +2,7 @@
 
 set -e
 
-DIR=$(dirname $(readlink -f "$0"))
+DIR=$(pwd)
 DBHOST=${DBHOST:-db}
 DBUSER=${DBUSER:-$DB_ENV_DBUSER}
 DBPASS=${DBPASS:-$DB_ENV_DBPASS}
