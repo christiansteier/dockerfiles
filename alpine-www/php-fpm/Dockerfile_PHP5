@@ -47,7 +47,7 @@ RUN apk -U --no-cache --no-progress add \
 	php5-xmlrpc \
         php5-zlib \
         php5-zip \
-        phpredis@testing \
+        php5-redis@testing \
         curl
 
 ## Small fixes
