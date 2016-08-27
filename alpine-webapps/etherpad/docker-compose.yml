@@ -1,0 +1,29 @@
+version: "2"
+
+services:
+  db:
+    container_name: etherpad_db
+    hostname: ep_db
+    image: maxder/alpine-mariadb:x86_64
+    environment:
+      - DBUSER=dbadmin
+      - DBPASS=dbadminpass
+    volumes:
+      - /srv/docker/etherpad/db:/var/lib/mysql
+    restart: always
+  ep:
+    container_name: etherpad
+    hostname: ep
+    image: maxder/alpine-etherpad:x86_64
+    environment:
+      - DBUSER=dbadmin
+      - DBPASS=dbadminpass
+      - ETHERPAD_ADMIN_USER=epadmin
+      - ETHERPAD_ADMIN_PASS=epadminpass
+    volumes:
+      - /srv/docker/etherpad/config:/usr/share/webapps/etherpad/config
+    links:
+      - db
+    ports:
+      - 9001:9001
+    restart: always
