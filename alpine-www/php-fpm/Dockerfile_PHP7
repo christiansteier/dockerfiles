@@ -1,7 +1,8 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-RUN apk -U add \
+RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
+ && apk -U add \
 	php7-apcu@testing \
 	php7-bcmath@testing \
 	php7-bz2@testing \
@@ -43,7 +44,7 @@ RUN apk -U add \
 	php7-xmlreader@testing \
 	php7-xmlrpc@testing \
         php7-zlib@testing \
-        php7-zip@testing \
+        php7-zip \
 	curl
 
 ## Small fixes
