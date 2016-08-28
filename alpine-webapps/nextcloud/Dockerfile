@@ -37,6 +37,8 @@ RUN export APPDIR=/usr/share/webapps/nextcloud \
 
 RUN echo -e "#!/bin/sh \n\n s6-setuidgid nginx php /usr/share/webapps/nextcloud/cron.php\n # If music app exists, scan all files\n if [ -d "/usr/share/webapps/nextcloud/apps/music" ]; then s6-setuidgid nginx php /usr/share/webapps/nextcloud/occ music:scan --all ;fi\n" > /etc/periodic/15min/nextcloud \
  && chmod +x /etc/periodic/15min/nextcloud
+ && echo -e "#!/bin/sh \n\n s6-setuidgid nginx php /usr/share/webapps/nextcloud/occ files:scan --all\n" > /etc/periodic/daily/nextcloud \
+ && chmod +x /etc/periodic/daily/nextcloud
 
 COPY rootfs/ /
 RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
