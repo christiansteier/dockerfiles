@@ -35,7 +35,7 @@ run:
 	docker run -d --hostname ${NAME} --name ${NAME} -p 9000  ${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG}
 
 php7run:
-	docker run -d --hostname ${NAME} --name php7-fpm -p 9000  ${NAMESPACE}/${IMAGENAME}-$php7-fpm:${ARCHTAG}
+	docker run -d --hostname ${NAME} --name php7-fpm -p 9000  ${NAMESPACE}/${IMAGENAME}-php7-fpm:${ARCHTAG}
 
 remove: 
 	docker rm -f ${NAME} 
