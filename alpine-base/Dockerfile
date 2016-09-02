@@ -2,7 +2,7 @@ FROM maxder/alpine-mini:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 ENV ALPINE_RELEASE v3.4
-ENV S6OVERLAY_RELEASE v1.18.1.3
+ENV S6OVERLAY_RELEASE v1.18.1.5
 
 RUN echo "http://nl.alpinelinux.org/alpine/$ALPINE_RELEASE/main/" > /etc/apk/repositories    \
  && echo "http://nl.alpinelinux.org/alpine/$ALPINE_RELEASE/community/" >> /etc/apk/repositories \
