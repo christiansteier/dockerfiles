@@ -24,7 +24,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/reposito
 	php7-ldap \
 	php7-mbstring \
         php7-mcrypt \
-        php7-memcached@testing \
+#        php7-memcached@testing \
 	php7-mysqli \
 	php7-opcache \
         php7-openssl \
