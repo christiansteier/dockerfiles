@@ -4,7 +4,8 @@ set -e
 
 apk -U --no-progress add  pwgen
 
-APPDIR=/usr/share/webapps/nextcloud
+APPFOLDER=${APPFOLDER:-nextcloud}
+APPDIR=/usr/share/webapps/${APPFOLDER}
 APPDB=${APPDB:-nextcloud}
 DBHOST=${DBHOST:-db}
 DBUSER=${DBUSER:-$DB_ENV_DBUSER}
@@ -13,10 +14,22 @@ APPADMIN=${APPADMIN:-admin}
 APPADMINPASS=${APPADMINPASS:-admin}
 SALT=${SALT:-$(pwgen -s -1 16)}
 
+if [ ${APPFOLDER} != "nextcloud" ]; then
+  mv /usr/share/webapps/nextcloud /usr/share/webapps/${APPFOLDER}
+  s6-rmrf /etc/nginx/sites-enabled/nextcloud.site
+  s6-rename /etc/nginx/sites-enabled/subfolder /etc/nginx/sites-enabled/nextcloud.site
+  sed -i "s*nextcloud*${APPFOLDER}*g" /etc/nginx/sites-enabled/nextcloud.site
+else
+  s6-rmrf /etc/nginx/sites-enabled/subfolder
+fi
+
 until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
 
+s6-rmrf $APPDIR/config
+s6-ln -s /etc/nextcloud $APPDIR/config
+
 if [ ! -f $APPDIR/config/config.php ]; then
-  echo -e "<?php\n\$AUTOCONFIG = array(\n  \"dbtype\"        => \"mysql\",\n  \"dbname\"        => \"${APPDB}\",\n  \"dbuser\"        => \"${DBUSER}\",\n  \"dbpass\"        => \"${DBPASS}\",\n  \"dbhost\"        => \"${DBHOST}\",\n  \"dbtableprefix\" => \"\",\n  \"directory\"     => \"/usr/share/webapps/nextcloud/data\",\n  \"adminlogin\"    => \"${APPADMIN}\",\n  \"adminpass\"     => \"${APPADMINPASS}\",\n  \"passwordsalt\"  => \"${SALT}\",\n);" > $APPDIR/config/autoconfig.php
+  echo -e "<?php\n\$AUTOCONFIG = array(\n  \"dbtype\"        => \"mysql\",\n  \"dbname\"        => \"${APPDB}\",\n  \"dbuser\"        => \"${DBUSER}\",\n  \"dbpass\"        => \"${DBPASS}\",\n  \"dbhost\"        => \"${DBHOST}\",\n  \"dbtableprefix\" => \"\",\n  \"directory\"     => \"/data\",\n  \"adminlogin\"    => \"${APPADMIN}\",\n  \"adminpass\"     => \"${APPADMINPASS}\",\n  \"passwordsalt\"  => \"${SALT}\",\n);" > $APPDIR/config/autoconfig.php
 chown nginx:www-data $APPDIR/config/autoconfig.php
   
   echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php

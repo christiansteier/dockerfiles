@@ -26,6 +26,7 @@ WORKDIR /usr/share/webapps
 ADD https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.${RELEASE}.tar.bz2 app.tar.bz2
 RUN export APPDIR=/usr/share/webapps/nextcloud \
  && tar xfvj app.tar.bz2 \
+ && rm app.tar.bz2 \
  && find ${APPDIR}/ -type f -print0 | xargs -0 chmod 0640 \
  && find ${APPDIR}/ -type d -print0 | xargs -0 chmod 0750 \
  && chown -R root:www-data ${APPDIR}/ \

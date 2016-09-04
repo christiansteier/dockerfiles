@@ -25,12 +25,13 @@ services:
     - 80:80
     - 443:443
     volumes:
-    - /srv/docker/nextcloud/data:/usr/share/webapps/nextcloud/data
-    - /srv/docker/nextcloud/config:/usr/share/webapps/nextcloud/config
+    - /srv/docker/nextcloud/data:/data
+    - /srv/docker/nextcloud/config:/etc/nextcloud
     - /srv/docker/nextcloud/log:/var/log/NGINX
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
+    - APPFOLDER=cloud ## Nextcloud in a subdir
     links:
     - mariadb:db
     - redis:redis

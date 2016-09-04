@@ -1,2 +1,2 @@
-/usr/share/webapps/nextcloud/config true nginx 0600 0700
-/usr/share/webapps/nextcloud/data true nginx 0700 0700
+/etc/nextcloud true nginx 0600 0700
+/data true nginx 0700 0700
