@@ -27,7 +27,7 @@ services:
     - APPADMIN=limeadmin
     - APPADMINPASS=pwd123 \
     - APPADMINEMAIL=admin@mydomain.org
-    - APPFOLDER=survey ## limesurvey in a subdir
+#    - APPFOLDER=survey ## limesurvey in a subdir
     links:
     - mariadb:db
 #    labels:
