@@ -19,7 +19,7 @@ server {
   charset UTF-8;
 
   location / {
-   try_files $uri $uri/ /index.php?q=$uri&$args;
+   try_files $uri $uri/ /index.php?$args;
   }    
 
   location = /favicon.ico {
@@ -38,9 +38,11 @@ server {
     access_log off;
   }
 
-  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-    expires max;
-    log_not_found off;
+  location ~ \.(js|css|png|jpg|jpeg|gif|ico|html|woff|ttf|svg|eot|otf)$ {
+    add_header "Access-Control-Allow-Origin" "*";
+    expires 1M;
+    access_log off;
+    add_header Cache-Control "public";
   }
 }
 
@@ -71,7 +73,7 @@ server {
   charset UTF-8;
 
   location / {
-   try_files $uri $uri/ /index.php?q=$uri&$args;
+   try_files $uri $uri/ /index.php?$args;
   }
 
   location = /favicon.ico {
@@ -90,8 +92,10 @@ server {
     access_log off;
   }
 
-  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-    expires max;
-    log_not_found off;
+  location ~ \.(js|css|png|jpg|jpeg|gif|ico|html|woff|ttf|svg|eot|otf)$ {
+    add_header "Access-Control-Allow-Origin" "*";
+    expires 1M;
+    access_log off;
+    add_header Cache-Control "public";
   }
 }
