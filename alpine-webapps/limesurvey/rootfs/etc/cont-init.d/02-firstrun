@@ -1,0 +1,52 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+apk -U --no-progress add pwgen
+
+APPFOLDER=${APPFOLDER:-limesurvey}
+APPDIR=/usr/share/webapps/${APPFOLDER}
+APPDB=${APPDB:-limesurvey}
+DBHOST=${DBHOST:-db}
+DBUSER=${DBUSER:-$DB_ENV_DBUSER}
+DBPASS=${DBPASS:-$DB_ENV_DBPASS}
+APPADMIN=${APPADMIN:-admin}
+APPADMINPASS=${APPADMINPASS:-pwd123}
+APPADMINNAME=${APPADMINNAME:-Admin}
+APPADMINEMAIL=${APPADMINEMAIL:-admin@mydomain.org}
+
+if [ ${APPFOLDER} != "limesurvey" ]; then
+  mv /usr/share/webapps/limesurvey /usr/share/webapps/${APPFOLDER}
+  s6-rmrf /etc/nginx/sites-enabled/limesurvey.site
+  s6-rename /etc/nginx/sites-enabled/subfolder /etc/nginx/sites-enabled/limesurvey.site
+  sed -i "s*limesurvey*${APPFOLDER}*g" /etc/nginx/sites-enabled/limesurvey.site
+else
+  s6-rmrf /etc/nginx/sites-enabled/subfolder
+fi
+
+if [ ! -d ${APPDIR}/conf ]; then
+  mkdir ${APPDIR}/conf
+fi
+
+cp -a ${APPDIR}/application/config/config-sample-mysql.php ${APPDIR}/conf/config.php
+s6-envuidgid nginx s6-chown -U -- ${APPDIR}/conf/config.php
+ln -s ${APPDIR}/conf/config.php ${APPDIR}/application/config/config.php
+sed -i "s*localhost*${DBHOST}*g;s*root*${DBUSER}*g;s*''*'${DBPASS}'*g;s*limesurvey*${APPDB}*g" ${APPFOLDER}/conf/config.php
+
+until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+
+if ! mysql -u $DBUSER --password=$DBPASS -h $DBHOST -e "use ${APPDB}"; then
+  echo "Creating database ${APPDB}"
+  mysql -u $DBUSER --password=$DBPASS -h $DBHOST <<-EOF
+  CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8;
+  GRANT ALL PRIVILEGES ON ${APPDB}.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
+  FLUSH PRIVILEGES;
+EOF
+  s6-setuidgid nginx php ${APPFOLDER}/application/commands/console.php install ${APPADMIN} ${APPADMINPASS} ${APPADMINNAME} ${APPADMINEMAIL}
+  echo -e "\n[i] Set automatic configuration:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n --- \n"
+fi
+
+apk del pwgen
+rm /etc/cont-init.d/02-firstrun
+
+exit 0
