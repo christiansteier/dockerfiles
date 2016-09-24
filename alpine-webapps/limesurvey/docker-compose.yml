@@ -21,6 +21,7 @@ services:
     - 10443:443
     volumes:
     - /srv/docker/limesurvey/log:/var/log/NGINX
+    - /srv/docker/limesurvey/config:/etc/limesurvey
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass

@@ -24,14 +24,14 @@ else
   s6-rmrf /etc/nginx/sites-enabled/subfolder
 fi
 
-if [ ! -d ${APPDIR}/conf ]; then
-  mkdir ${APPDIR}/conf
+if [ ! -d /etc/limesurvey ]; then
+  mkdir /etc/limesurvey
 fi
 
-cp -a ${APPDIR}/application/config/config-sample-mysql.php ${APPDIR}/conf/config.php
-s6-envuidgid nginx s6-chown -U -- ${APPDIR}/conf/config.php
-ln -s ${APPDIR}/conf/config.php ${APPDIR}/application/config/config.php
-sed -i "s*localhost*${DBHOST}*g;s*root*${DBUSER}*g;s*''*'${DBPASS}'*g;s*limesurvey*${APPDB}*g" ${APPFOLDER}/conf/config.php
+cp -a ${APPDIR}/application/config/config-sample-mysql.php /etc/limesurvey/config.php
+s6-envuidgid nginx s6-chown -U -- /etc/limesurvey/config.php
+ln -s /etc/limesurvey/config.php ${APPDIR}/application/config/config.php
+sed -i "s*localhost*${DBHOST}*g;s*root*${DBUSER}*g;s*''*'${DBPASS}'*g;s*limesurvey*${APPDB}*g" /etc/limesurvey/config.php
 
 until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
 
