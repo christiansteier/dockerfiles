@@ -40,7 +40,7 @@ conf() {
 pack() {
   local id
   id=$(tar --numeric-owner -C $ROOTFS -c . | docker import - $DOCKER:$REL)
-  docker tag $id $DOCKER:ARCHTAG
+  docker tag $id $DOCKER:x86_64
   docker rmi -f $DOCKER:${REL}
 }
 
@@ -65,8 +65,8 @@ COM
 
 DOCKER=${IMAGENAME:-alpine}
 REL=${REL:-edge}
-MIRROR=${MIRROR:-http://nl.alpinelinux.org/alpine}
+MIRROR=${MIRROR:-http://dl-cdn.alpinelinux.org/alpine}
 REPO=$MIRROR/$REL/main
-ARCH=ARCHTAG
+ARCH=x86_64
 
 tmp && getapk && mkbase && conf && pack
