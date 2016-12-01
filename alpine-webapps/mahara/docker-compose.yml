@@ -1,0 +1,45 @@
+version: '2'
+
+services:
+  mariadb:
+    restart: always
+    container_name: mahara_db
+    hostname: mahara_db
+    image: maxder/alpine-mariadb:x86_64
+    volumes:
+    - /srv/docker/mahara/db:/var/lib/mysql
+    environment:
+    - DBUSER=dbadmin
+    - DBPASS=dbadminpass
+  mahara:
+    restart: always
+    container_name: mahara
+    hostname: mahara
+    image: maxder/alpine-mahara:x86_64
+    ports:
+    - 10080:80
+    - 10443:443
+    volumes:
+    - /srv/docker/mahara/log:/var/log/NGINX
+    - /srv/docker/mahara/config:/etc/mahara
+    - /srv/docker/mahara/data:/data
+    environment:
+    - DBUSER=dbadmin
+    - DBPASS=dbadminpass
+    - APPADMIN=admin
+    - APPADMINPASS=pwd123
+    - APPADMINEMAIL=admin@mydomain.org
+#    - APPFOLDER=portfolio ## Mahara in a subdir
+    links:
+    - mariadb:db
+#    labels:
+#    - "traefik.backend=mahara"
+#    - "traefik.frontend.rule=Host:mahara.docker.localhost"
+#    - "traefik.frontend.entryPoints=https"
+#    - "traefik.protocol=http"
+#    - "traefik.port=80"
+#    - "traefik.docker.network=traefik_default"
+#networks:
+#  default:
+#    external:
+#      name: traefik_default

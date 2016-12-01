@@ -1,0 +1,2 @@
+/etc/mahara true nginx 0600 0700
+/data true nginx 0700 0700
