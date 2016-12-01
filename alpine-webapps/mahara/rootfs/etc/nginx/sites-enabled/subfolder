@@ -24,9 +24,6 @@ server {
 
   location /mahara {
     rewrite ^ /mahara/index.php?$args;
-  }
-
-  location /mahara/ {
     root /usr/share/webapps/mahara/;
     try_files $uri $uri/ index.php;
     rewrite ^/mahara/user/([a-z0-9-]+)/?$ /mahara/user/view.php?profile=$1&$query_string;
@@ -91,9 +88,6 @@ server {
 
   location /mahara {
     rewrite ^ /mahara/index.php?$args;
-  }
-
-  location /mahara/ {
     root /usr/share/webapps/mahara/;
     try_files $uri $uri/ index.php;
     rewrite ^/mahara/user/([a-z0-9-]+)/?$ /mahara/user/view.php?profile=$1&$query_string;
