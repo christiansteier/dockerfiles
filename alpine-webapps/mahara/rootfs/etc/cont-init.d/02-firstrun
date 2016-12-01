@@ -2,7 +2,7 @@
 
 set -e
 
-apk -U --no-progress add pwgen
+apk -U --no-progress add pwgen openssl
 
 WWWROOT=${WWWROOT:-/}
 APPFOLDER=${APPFOLDER:-mahara}
