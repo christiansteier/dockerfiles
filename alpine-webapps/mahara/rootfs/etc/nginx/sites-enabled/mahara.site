@@ -20,10 +20,6 @@ server {
 
   location / {
     try_files $uri $uri/ /index.php?$args;
-  }    
-
-  location / {
-    try_files $uri $uri/ index.php;
     rewrite ^/user/([a-z0-9-]+)/?$ /user/view.php?profile=$1&$query_string;
     rewrite ^/user/([a-z0-9-]+)/([a-z0-9-]+)/?$ /view/view.php?profile=$1&page=$2&$query_string;
     rewrite ^/group/([a-z0-9-]+)/?$ /group/view.php?homepage=$1&$query_string;
@@ -82,10 +78,6 @@ server {
 
   location / {
     try_files $uri $uri/ /index.php?$args;
-  }
-
-  location / {
-    try_files $uri $uri/ index.php;
     rewrite ^/user/([a-z0-9-]+)/?$ /user/view.php?profile=$1&$query_string;
     rewrite ^/user/([a-z0-9-]+)/([a-z0-9-]+)/?$ /view/view.php?profile=$1&page=$2&$query_string;
     rewrite ^/group/([a-z0-9-]+)/?$ /group/view.php?homepage=$1&$query_string;
