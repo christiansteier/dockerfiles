@@ -17,5 +17,9 @@ RUN export APPDIR=/usr/share/webapps/mahara \
  && find ${APPDIR}/ -type d -print0 | xargs -0 chmod 0750 \
  && chown -R nginx:www-data ${APPDIR}
 
+RUN export APPDIR=/usr/share/webapps/mahara \
+ && echo -e "#!/bin/sh \n\n s6-setuidgid nginx php ${APPDIR}/lib/cron.php\n\nexit 0" > /etc/periodic/15min/mahara \
+ && chmod +x /etc/periodic/15min/mahara
+
 COPY rootfs/ /
 RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
