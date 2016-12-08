@@ -6,8 +6,15 @@ DIR=$(pwd)
 DBHOST=${DBHOST:-db}
 DBUSER=${DBUSER:-$DB_ENV_DBUSER}
 DBPASS=${DBPASS:-$DB_ENV_DBPASS}
+KEEPDAILY=${KEEPDAILY:-6}
+KEEPWEEKLY=${KEEPWEEKLY:-21}
+KEEPMONTHLY=${KEEPMONTHLY:-90}
 
-mysqldump  -u $DBUSER --password=$DBPASS --protocol=tcp -h $DBHOST --single-transaction --flush-logs --master-data=2 --all-databases | gzip > $DIR/db_backup.gz
+find /backup/daily -type f -mtime +$KEEPDAILY -exec rm {} \;
+find /backup/weekly -type f -mtime +$KEEPWEEKLY -exec rm {} \;
+find /backup/monthly -type f -mtime +$KEEPMONTHLY -exec rm {} \;
+
+mysqldump  -u $DBUSER --password=$DBPASS --protocol=tcp -h $DBHOST --single-transaction --flush-logs --master-data=2 --all-databases | gzip > $DIR/all_databases_$(date +%Y-%m-%d-%H.%M.%S)sql.gz
 echo 'purge master logs before date_sub(now(), interval 7 day);' | mysql -u $DBUSER --password=$DBPASS --protocol=tcp -h $DBHOST
 
 exit 0
