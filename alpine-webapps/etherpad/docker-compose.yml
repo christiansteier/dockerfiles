@@ -21,7 +21,7 @@ services:
       - ETHERPAD_ADMIN_USER=epadmin
       - ETHERPAD_ADMIN_PASS=epadminpass
     volumes:
-      - /srv/docker/etherpad/config:/usr/share/webapps/etherpad/config
+      - /srv/docker/etherpad/config:/etc/etherpad
     links:
       - db
     ports:
