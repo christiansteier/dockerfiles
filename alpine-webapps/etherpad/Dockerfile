@@ -46,6 +46,9 @@ RUN bin/installDeps.sh \
  && touch APIKEY.txt \
  && echo "$(pwgen -s -1 16)" > APIKEY.txt \
  && rm settings.json
+ 
+ # Awesome Etherpad Plugins
+RUN npm install ep_adminpads ep_headings2 ep_page_view ep_sociallinks ep_spellcheck ep_historicalsearch ep_horizontal_line ep_stop_writing ep_timesliderdiff ep_offline_edit ep_copy_paste_images ep_delete_empty_pads ep_email_notifications ep_markdownify ep_markdown
 
 RUN rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
 
