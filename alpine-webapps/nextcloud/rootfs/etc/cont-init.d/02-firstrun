@@ -21,8 +21,8 @@ if [ ${APPFOLDER} != "nextcloud" ]; then
   fi
   if [ -f /etc/nginx/sites-enabled/subfolder ]; then
     s6-rename /etc/nginx/sites-enabled/subfolder /etc/nginx/sites-enabled/nextcloud.site
-  fi
     sed -i "s*nextcloud*${APPFOLDER}*g" /etc/nginx/sites-enabled/nextcloud.site
+  fi
     sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/daily/nextcloud
     sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/15min/nextcloud
 else
