@@ -16,11 +16,15 @@ SALT=${SALT:-$(pwgen -s -1 16)}
 
 if [ ${APPFOLDER} != "nextcloud" ]; then
   mv /usr/share/webapps/nextcloud /usr/share/webapps/${APPFOLDER}
-  s6-rmrf /etc/nginx/sites-enabled/nextcloud.site
-  s6-rename /etc/nginx/sites-enabled/subfolder /etc/nginx/sites-enabled/nextcloud.site
-  sed -i "s*nextcloud*${APPFOLDER}*g" /etc/nginx/sites-enabled/nextcloud.site
-  sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/daily/nextcloud
-  sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/15min/nextcloud 
+  if [ -f /etc/nginx/sites-enabled/nextcloud.site ]; then
+    s6-rmrf /etc/nginx/sites-enabled/nextcloud.site
+  fi
+  if [ -f /etc/nginx/sites-enabled/subfolder ]; then
+    s6-rename /etc/nginx/sites-enabled/subfolder /etc/nginx/sites-enabled/nextcloud.site
+  fi
+    sed -i "s*nextcloud*${APPFOLDER}*g" /etc/nginx/sites-enabled/nextcloud.site
+    sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/daily/nextcloud
+    sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/15min/nextcloud
 else
   s6-rmrf /etc/nginx/sites-enabled/subfolder
 fi
@@ -52,5 +56,7 @@ fi
 
 apk del pwgen
 rm /etc/cont-init.d/02-firstrun
+
+echo -e "#!/usr/bin/with-contenv sh\ns6-mv $APPDIR/config $APPDIR/bak.config\ns6-ln -s /etc/nextcloud $APPDIR/config\nexit 0" > /etc/cont-init.d/02-link_config
 
 exit 0
