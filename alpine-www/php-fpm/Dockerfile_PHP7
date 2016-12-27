@@ -3,6 +3,7 @@ MAINTAINER Christian-Maxilian Steier
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
  && apk -U add \
+        icu-libs@testing \
 	php7-apcu \
 	php7-bcmath \
 	php7-bz2 \
