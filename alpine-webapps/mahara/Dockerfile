@@ -2,7 +2,7 @@ FROM maxder/alpine-nginx-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
 ENV VERSION 16.10
-ENV RELEASE 0
+ENV RELEASE 2
 
 RUN apk -U --no-progress add \
     mariadb-client
