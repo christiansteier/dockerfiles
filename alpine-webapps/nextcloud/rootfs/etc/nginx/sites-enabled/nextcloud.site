@@ -20,13 +20,6 @@ server {
   rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
   rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
   rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
-  
-  rewrite ^/.well-known/carddav /remote.php/carddav/ permanent;
-  rewrite ^/.well-known/caldav /remote.php/caldav/ permanent;
-
-  # The following 2 rules are only needed for the user_webfinger app.
-  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
 
   location = /robots.txt {
     allow all;
@@ -43,7 +36,10 @@ server {
   }
 
   location / {
-    rewrite ^/remote/(.*) /remote.php last;
+    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+    rewrite ^/.well-known/carddav /remote.php/carddav/ redirect;
+    rewrite ^/.well-known/caldav /remote.php/caldav/ redirect;
     rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
     try_files $uri $uri/ =404;
   }
@@ -92,13 +88,6 @@ server {
   rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
   rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
   rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
-  
-  rewrite ^/.well-known/carddav /remote.php/carddav/ permanent;
-  rewrite ^/.well-known/caldav /remote.php/caldav/ permanent;
-
-  # The following 2 rules are only needed for the user_webfinger app.
-  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
 
   location = /robots.txt {
     allow all;
@@ -115,7 +104,10 @@ server {
   }
 
   location / {
-    rewrite ^/remote/(.*) /remote.php last;
+    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+    rewrite ^/.well-known/carddav /remote.php/carddav/ redirect;
+    rewrite ^/.well-known/caldav /remote.php/caldav/ redirect;
     rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
     try_files $uri $uri/ =404;
   }
@@ -127,11 +119,13 @@ server {
     # Add headers to serve security related headers
     include /etc/nginx/headers.conf;
     # Optional: Don't log access to assets
+    expires 30d;
     access_log off;
   }
 
   # Optional: Don't log access to other assets
   location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|swf)$ {
+    expires 30d;
     access_log off;
   }
 }
