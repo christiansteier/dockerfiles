@@ -2,8 +2,6 @@
 
 set -e
 
-apk -U --no-progress add pwgen
-
 APPFOLDER=${APPFOLDER:-nextcloud}
 APPDIR=/usr/share/webapps/${APPFOLDER}
 APPDB=${APPDB:-nextcloud}
@@ -12,7 +10,7 @@ DBUSER=${DBUSER:-$DB_ENV_DBUSER}
 DBPASS=${DBPASS:-$DB_ENV_DBPASS}
 APPADMIN=${APPADMIN:-admin}
 APPADMINPASS=${APPADMINPASS:-admin}
-SALT=${SALT:-$(pwgen -s -1 16)}
+INSTALL=${INSTALL:-silent}
 
 if [ ${APPFOLDER} != "nextcloud" ]; then
   mv /usr/share/webapps/nextcloud /usr/share/webapps/${APPFOLDER}
@@ -29,34 +27,43 @@ else
   s6-rmrf /etc/nginx/sites-enabled/subfolder
 fi
 
-until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+if [ $INSTALL == "silent" ]; then
+  until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
 
-s6-rmrf $APPDIR/config
-s6-ln -s /etc/nextcloud $APPDIR/config
+  if ! mysql -u $DBUSER --password=$DBPASS -h $DBHOST -e "use ${APPDB}"; then
+    echo -e "No database ${APPDB} found. Creating database now .."
+    mysql -u $DBUSER --password=$DBPASS -h $DBHOST <<-EOF
+    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8;
+    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
+    FLUSH PRIVILEGES;
+EOF
+  fi
 
-if [ ! -f $APPDIR/config/config.php ]; then
-  echo -e "<?php\n\$AUTOCONFIG = array(\n  \"dbtype\"        => \"mysql\",\n  \"dbname\"        => \"${APPDB}\",\n  \"dbuser\"        => \"${DBUSER}\",\n  \"dbpass\"        => \"${DBPASS}\",\n  \"dbhost\"        => \"${DBHOST}\",\n  \"dbtableprefix\" => \"\",\n  \"directory\"     => \"/data\",\n  \"adminlogin\"    => \"${APPADMIN}\",\n  \"adminpass\"     => \"${APPADMINPASS}\",\n  \"passwordsalt\"  => \"${SALT}\",\n);" > $APPDIR/config/autoconfig.php
-chown nginx:www-data $APPDIR/config/autoconfig.php
-  
-  echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
-  chown nginx:www-data $APPDIR/config/config.php
+  s6-rmrf $APPDIR/config
+  s6-ln -s /etc/nextcloud $APPDIR/config
 
-
-ping -c 3 redis > /dev/null 2>&1
-if [ $? -ne 0 ]
-then
-  echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
+  if [ ! -f $APPDIR/config/config.php ]; then
+    echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
+    chown nginx:www-data $APPDIR/config/config.php
+    ping -c 3 redis > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
 else
-  echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n'memcache.locking' => '\\OC\\Memcache\\Redis',\n'redis' =>array (\n    'host' => 'redis',\n    'port' => 6379,\n  ),\n);\n" > $APPDIR/config/config.php
+      echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n'memcache.locking' => '\\OC\\Memcache\\Redis',\n'redis' =>array (\n    'host' => 'redis',\n    'port' => 6379,\n  ),\n);\n" > $APPDIR/config/config.php
+    fi
+    chown nginx:www-data $APPDIR/config/config.php
+    echo -e "\n---\n[i] Installing Nextcloud via command line. Stay tuned!\n"
+    s6-setuidgid nginx php $APPDIR/occ maintenance:install -nv --database \
+    "mysql" --database-name "$APPDB"  \
+    --database-user "$DBUSER" \
+    --database-pass "$DBPASS" \
+    --database-host "$DBHOST" \
+    --admin-user "$APPADMIN" \
+    --admin-pass "$APPADMINPASS" \
+    --data-dir "/data"
+    echo -e "\n[i] Login:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n---\n"
+  fi
 fi
-chown nginx:www-data $APPDIR/config/config.php 
-
-  echo -e "\n[i] Set automatic configuration:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n Salt: $SALT\n---\n"
-fi
-
-apk del pwgen
 rm /etc/cont-init.d/02-firstrun
-
-echo -e "#!/usr/bin/with-contenv sh\ns6-mv $APPDIR/config $APPDIR/bak.config\ns6-ln -s /etc/nextcloud $APPDIR/config\nexit 0" > /etc/cont-init.d/02-link_config
 
 exit 0

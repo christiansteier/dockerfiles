@@ -31,7 +31,11 @@ services:
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
-    - APPFOLDER=cloud ## Nextcloud in a subdir
+#    - APPFOLDER=cloud          ## Maps Nextcloud to subdir
+    - INSTALL=silent            ## Silent installation via CLI
+    - APPADMINPASS=adminpass    ## Admin password for silent installation
+    - APPADMIN=admin            ## Admin username for silent installation
+
     links:
     - mariadb:db
     - redis:redis
