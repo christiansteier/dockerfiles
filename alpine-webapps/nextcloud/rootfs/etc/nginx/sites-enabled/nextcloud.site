@@ -17,9 +17,13 @@ server {
   error_page 403 /core/templates/403.php;
   error_page 404 /core/templates/404.php;
   
-  rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
-  rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
-  rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
+  location = /.well-known/carddav {
+    return 301 $scheme://$host/remote.php/dav;
+  }
+  
+  location = /.well-known/caldav {
+    return 301 $scheme://$host/remote.php/dav;
+  }
 
   location = /robots.txt {
     allow all;
@@ -27,35 +31,39 @@ server {
     access_log off;
   }
 
-  location ~ ^/(build|tests|config|lib|3rdparty|templates|data)/ {
+  location / {
+    rewrite ^ /index.php$uri;
+  }
+  
+  location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
     deny all;
   }
-
+  
   location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
     deny all;
   }
-
-  location / {
-    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
-    rewrite ^/.well-known/carddav /remote.php/carddav/ redirect;
-    rewrite ^/.well-known/caldav /remote.php/caldav/ redirect;
-    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
-    try_files $uri $uri/ =404;
+  
+  location ~ ^/(?:updater|ocs-provider)(?:$|/) {
+    try_files $uri/ =404;
+    index index.php;
   }
 
   # Adding the cache control header for js and css files
   # Make sure it is BELOW the location ~ \.php(?:$|/) { block
   location ~* \.(?:css|js)$ {
+    try_files $uri /index.php$uri$is_args$args;
     add_header Cache-Control "public, max-age=7200";
     # Add headers to serve security related headers
     include /etc/nginx/headers.conf;
     # Optional: Don't log access to assets
+    expires 30d;
     access_log off;
   }
 
   # Optional: Don't log access to other assets
-  location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|swf)$ {
+  location ~* \.(?:svg|gif|png|html|ttf|woff|ico|jpg|jpeg)$ {
+    try_files $uri /index.php$uri$is_args$args;
+    expires 30d;
     access_log off;
   }
 }
@@ -85,9 +93,13 @@ server {
   error_page 403 /core/templates/403.php;
   error_page 404 /core/templates/404.php;
   
-  rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
-  rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
-  rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
+  location = /.well-known/carddav {
+    return 301 $scheme://$host/remote.php/dav;
+  }
+  
+  location = /.well-known/caldav {
+    return 301 $scheme://$host/remote.php/dav;
+  }
 
   location = /robots.txt {
     allow all;
@@ -95,26 +107,27 @@ server {
     access_log off;
   }
 
-  location ~ ^/(build|tests|config|lib|3rdparty|templates|data)/ {
+  location / {
+    rewrite ^ /index.php$uri;
+  }
+  
+  location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
     deny all;
   }
-
+  
   location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
     deny all;
   }
-
-  location / {
-    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
-    rewrite ^/.well-known/carddav /remote.php/carddav/ redirect;
-    rewrite ^/.well-known/caldav /remote.php/caldav/ redirect;
-    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
-    try_files $uri $uri/ =404;
+  
+  location ~ ^/(?:updater|ocs-provider)(?:$|/) {
+    try_files $uri/ =404;
+    index index.php;
   }
 
   # Adding the cache control header for js and css files
   # Make sure it is BELOW the location ~ \.php(?:$|/) { block
   location ~* \.(?:css|js)$ {
+    try_files $uri /index.php$uri$is_args$args;
     add_header Cache-Control "public, max-age=7200";
     # Add headers to serve security related headers
     include /etc/nginx/headers.conf;
@@ -124,7 +137,8 @@ server {
   }
 
   # Optional: Don't log access to other assets
-  location ~* \.(?:jpg|jpeg|gif|bmp|ico|png|swf)$ {
+  location ~* \.(?:svg|gif|png|html|ttf|woff|ico|jpg|jpeg)$ {
+    try_files $uri /index.php$uri$is_args$args;
     expires 30d;
     access_log off;
   }
