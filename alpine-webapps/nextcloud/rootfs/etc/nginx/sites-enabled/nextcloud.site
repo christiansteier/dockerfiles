@@ -2,7 +2,7 @@ server {
   listen 80;
   server_name localhost;
 
-  include /etc/nginx/fpm.conf;
+  #include /etc/nginx/fpm.conf;
   # Add headers to serve security related headers
   include /etc/nginx/headers.conf;
 
@@ -43,7 +43,8 @@ server {
     deny all;
   }
   
-  location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {            include fastcgi_params;
+  location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {
+            include fastcgi_params;
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             fastcgi_param PATH_INFO $fastcgi_path_info;
@@ -91,7 +92,7 @@ server {
   ssl_ciphers EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!NULL;
   ssl_prefer_server_ciphers on;
 
-  include /etc/nginx/fpm.conf;
+  #include /etc/nginx/fpm.conf;
   # Add headers to serve security related headers
   include /etc/nginx/headers.conf;
 
@@ -132,7 +133,8 @@ server {
     deny all;
   }
   
-  location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {            include fastcgi_params;
+  location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {
+            include fastcgi_params;
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             fastcgi_param PATH_INFO $fastcgi_path_info;
