@@ -8,7 +8,7 @@ foreground {
 }
 
 foreground {
- if -t { s6-test ! -f /usr/local/sbin/php_info_page }
+ if -t { s6-test -f /usr/local/sbin/php_info_page }
  if { /usr/local/sbin/php_info_page }
 }
 

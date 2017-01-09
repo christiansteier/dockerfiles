@@ -1,5 +1,6 @@
 server {
-        listen 80 default;
+        listen 80 default_server;
+        listen [::]:80 default_server;
 	server_name localhost;
 	# enforce https
 	#return 301 https://$server_name$request_uri;
@@ -9,10 +10,16 @@ server {
 
         fastcgi_buffers 64 4K;
 
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /var/www/localhost/htdocs/;
+        # You may need this to prevent return 404 recursion.
+        location = /404.html {
+                internal;
         }
+
+        error_page   500 502 503 504  /50x.html;
+	location = /50x.html {
+    		try_files /50x.html @error;
+    		internal;
+	}
 
         location = /robots.txt {
             allow all;
@@ -37,6 +44,7 @@ server {
 
 server {
         listen 443 ssl http2;
+        listen [::]:443 ssl http2;
         server_name localhost;
 
 	ssl_certificate /etc/nginx/tls/nginx.crt;
@@ -49,10 +57,16 @@ server {
 
         fastcgi_buffers 64 4K;
 
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /var/www/localhost/htdocs/;
+        # You may need this to prevent return 404 recursion.
+        location = /404.html {
+                internal;
         }
+
+        error_page   500 502 503 504  /50x.html;
+	location = /50x.html {
+    		try_files /50x.html @error;
+    		internal;
+	}
 
         location = /robots.txt {
             allow all;
