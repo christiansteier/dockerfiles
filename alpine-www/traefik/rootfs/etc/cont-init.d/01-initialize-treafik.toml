@@ -23,9 +23,7 @@ if [ ! -f /etc/traefik/config/traefik.toml ]; then
   sed -i 's*# \[file\]*\[file\]*g\
          ;s*# filename = "rules.toml"*filename = "/etc/traefik/config/rules.toml"\nwatch = true*g' /etc/traefik/config/traefik.toml
   # Docker
-  sed -i 's*# \[docker\]*\[docker\]*g\
-	 ;s*# endpoint = "unix:///var/run/docker.sock"*endpoint = "unix:///var/run/docker.sock"*g
-         ;s*# domain = "docker.localhost"*domain = "docker.localhost"\nwatch = true*g' /etc/traefik/config/traefik.toml
+  sed -i 's*# endpoint = "unix:///var/run/docker.sock"*# endpoint = "unix:///var/run/docker.sock"\n\n\[docker\]\nendpoint = "unix:///var/run/docker.sock"\ndomain = "docker.localhost"\nwatch = true\n\n*g' /etc/traefik/config/traefik.toml
   s6-ln -s /dev/stdout /var/log/traefik/traefik.log
   s6-chmod 4755 /etc/traefik/config/traefik.toml
   s6-envuidgid traefik s6-chown -U -- /etc/traefik/config/traefik.toml
@@ -36,7 +34,7 @@ fi
 if [ ! -f /etc/traefik/config/rules.toml ]; then
   touch /etc/traefik/config/rules.toml
   s6-chmod 4755 /etc/traefik/config/rules.toml
-  6-envuidgid traefik s6-chown -U -- /etc/traefik/config/rules.toml
+  s6-envuidgid traefik s6-chown -U -- /etc/traefik/config/rules.toml
 fi
 
 exit 0

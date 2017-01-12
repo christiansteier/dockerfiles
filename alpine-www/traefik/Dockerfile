@@ -1,9 +1,9 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-ENV VERSION 1.0
+ENV VERSION 1.1
 ENV RELEASE 2
-ENV ARCH ARCHTAG
+ENV ARCH armhf
 
 RUN apk -U --no-progress add \
         ca-certificates \
