@@ -3,7 +3,7 @@ MAINTAINER Christian-Maxilian Steier
 
 ENV VERSION 1.1
 ENV RELEASE 2
-ENV ARCH armhf
+ENV ARCH ARCHTAG
 
 RUN apk -U --no-progress add \
         ca-certificates \
