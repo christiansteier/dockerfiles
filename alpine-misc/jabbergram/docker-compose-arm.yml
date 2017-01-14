@@ -1,0 +1,17 @@
+version: '2.1'
+
+services:
+  jabbergram:
+    restart: always
+    container_name: jabbergram
+    hostname: jabbergram
+    image: maxder/alpine-jabbergram:armhf
+    volumes:
+    - /srv/docker/jabbergram/config:/etc/jabbergram
+    environment:
+    - JID=exampleJid@nope.org
+    - JIDPASS=difficultPassword
+    - MUC=exampleMuc@muc.nope.org
+    - NICK=jabbergram
+    - TOKEN=jabbergramBotTokken
+    - GROUP=-10293943920
