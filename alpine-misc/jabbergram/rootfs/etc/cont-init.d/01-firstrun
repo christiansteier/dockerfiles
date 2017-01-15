@@ -18,4 +18,6 @@ if [ ${RESPONDING} = "true" ]; then
   sed -i "s*self.bot.sendMessage(tg_group, text=message)*self.bot.sendMessage(tg_group, text=message)\n\n        if msg['mucnick'] != self.nick and self.nick in msg['body']:\n            self.send_message(mto=msg['from'].bare,\n                mbody=\"${RESPONDINGMESSAGE} \" % msg['mucnick'],\n                mtype='groupchat')*g" /usr/bin/jabbergram.py
 fi
 
+rm /etc/cont-init.d/01-firstrun
+
 exit 0
