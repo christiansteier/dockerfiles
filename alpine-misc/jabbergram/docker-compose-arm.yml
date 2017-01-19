@@ -15,5 +15,7 @@ services:
     - NICK=jabbergram
     - TOKEN=jabbergramBotTokken
     - GROUP=-10293943920
-    - RESPONDING=true # When a user mentions bot’s nickname in chat, the bot will respond with a message
-    - RESPONDINGMESSAGE=I am a robot, \%s.
+    - XMPPRESPONDING=true # When a user mentions bot’s nickname in chat, the bot will respond with a message
+    - XMPPRESPONDINGMESSAGE=I am only a robot, \%s.
+    - XMPPGREETING=true
+    - XMPPGREETINGMESSAGE=Hello \%s,\n\nfor your information:\nin this room is a gateway to telegram active.
