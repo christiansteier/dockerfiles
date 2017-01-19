@@ -1,11 +1,38 @@
-#!/bin/execlineb -P
+#!/usr/bin/with-contenv sh
 
-foreground {
- if { s6-echo "[i] Check if webapps folder exists." }
- if -t { s6-test ! -d /usr/share/webapps }
- if { s6-mkdir /usr/share/webapps }
- if { s6-envuidgid hiawatha s6-chown -U -- /usr/share/webapps }
-}
+set -e
 
-if { /usr/local/sbin/php_info_page }
-if { /usr/local/sbin/hiawatha_example_site }
+s6-echo "[i] Check if webapps folder exists."
+if [ ! -d /usr/share/webapps ]; then
+  s6-mkdir /usr/share/webapps
+  s6-envuidgid hiawatha s6-chown -U -- /usr/share/webapps
+fi
+
+if [ -f /usr/local/sbin/php_info_page ]; then
+  sh /usr/local/sbin/php_info_page
+fi
+
+if [ ! -d /etc/hiawatha/sites-enabled ]; then
+  mkdir /etc/hiawatha/sites-enabled
+  s6-envuidgid hiawatha s6-chown -U -- /etc/hiawatha/sites-enabled
+fi
+
+if test -e /etc/hiawatha/sites-enabled/*.site; then
+  s6-echo "[i] Site(s) for Hiawatha found."
+else
+  s6-echo "[i] Create example site for Hiawatha."
+  if [ -d /etc/php ]; then
+    echo -e 'UrlToolkit {\n  ToolkitID = banshee\n  RequestURI isfile Return\n  Match ^/(css|files|images|js)/ Return\n  Match ^/(favicon.ico|robots.txt|sitemap.xml)$ Return\n  Match .*\?(.*) Rewrite /index.php?$1\n  Match .* Rewrite /index.php\n}\n\n' > /etc/hiawatha/sites-enabled/example.site
+    echo -e 'VirtualHost {\n  Hostname = localhost\n  WebsiteRoot = /usr/share/webapps\n  StartFile = index.php\n  UseToolkit = banshee\n  ExecuteCGI = yes\n}\n' >> /etc/hiawatha/sites-enabled/example.site
+  else
+    echo -e 'VirtualHost {\n  Hostname = localhost\n  WebsiteRoot = /usr/share/webapps\n  StartFile = index.html\n}\n' > /etc/hiawatha/sites-enabled/example.site
+  fi
+  s6-envuidgid hiawatha s6-chown -U -- /etc/hiawatha/sites-enabled/example.site
+  s6-chmod 675 /etc/hiawatha/sites-enabled/example.site
+fi
+
+if ! grep -q 'Include /etc/hiawatha/sites-enabled' /etc/hiawatha/hiawatha.conf ; then
+  echo "Include /etc/hiawatha/sites-enabled/" >> /etc/hiawatha/hiawatha.conf
+fi
+
+exit 0
