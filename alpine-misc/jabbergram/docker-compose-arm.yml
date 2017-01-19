@@ -16,4 +16,4 @@ services:
     - TOKEN=jabbergramBotTokken
     - GROUP=-10293943920
     - RESPONDING=true # When a user mentions bot’s nickname in chat, the bot will respond with a message
-    - RESPONDINGMESSAGE="I am a robot, \%s."
+    - RESPONDINGMESSAGE=I am a robot, \%s.
