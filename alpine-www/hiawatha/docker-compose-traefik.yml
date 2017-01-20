@@ -17,8 +17,8 @@ services:
 
   hiawatha:
     restart: always
-    container_name: hiawatha1
-    hostname: hiawatha1
+    container_name: hiawatha
+    hostname: hiawatha
     image: maxder/alpine-hiawatha:x86_64 # or armhf
     volumes:
     - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
