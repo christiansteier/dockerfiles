@@ -29,6 +29,6 @@ services:
     - "traefik.backend=hiawatha"
     - "traefik.frontend.rule=Host:hiawatha.docker.localhost"
     - "traefik.frontend.backend=hiawatha"
-    - "traefik.frontend.entryPoints=http"
+    - "traefik.frontend.entryPoints=http,https"
     - "traefik.protocol=http"
     - "traefik.port=80"
