@@ -12,6 +12,6 @@ services:
     - 443:80
     volumes:
     - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
-    - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enaled
+    - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enabled
     environment:
     - SERVERNAME=localhost # Domain or IP address
