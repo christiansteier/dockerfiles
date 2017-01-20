@@ -1,0 +1,37 @@
+version: '2.1'
+
+services:
+  traefik:
+    restart: always
+    container_name: traefik
+    hostname: traefik
+    image: maxder/alpine-traefik:x86_64 # or armhf
+    ports:
+    - "80:80"
+    - "443:443"
+    - "8080:8080" # Webinterface
+    volumes:
+    - /srv/docker/traefik/tls:/etc/traefik/tls
+    - /srv/docker/traefik/config:/etc/traefik/config
+    - /var/run/docker.sock:/var/run/docker.sock
+
+  hiawatha:
+    restart: always
+    container_name: hiawatha1
+    hostname: hiawatha1
+    image: maxder/alpine-hiawatha:x86_64 # or armhf
+    volumes:
+    - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
+    - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enaled
+    environment:
+    - SERVERNAME=localhost # Domain or IP address
+    volumes:
+    - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
+    - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enaled
+    labels:
+    - "traefik.backend=hiawatha"
+    - "traefik.frontend.rule=Host:hiawatha.docker.localhost"
+    - "traefik.frontend.backend=hiawatha"
+    - "traefik.frontend.entryPoints=http"
+    - "traefik.protocol=http"
+    - "traefik.port=80"

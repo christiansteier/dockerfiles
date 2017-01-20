@@ -5,8 +5,8 @@ services:
     restart: always
     container_name: hiawatha
     hostname: hiawatha
-    image: maxder/alpine-hiawatha:x86_64
-    #image: maxder/alpine-hiawatha-php7:x86_64
+    image: maxder/alpine-hiawatha:armhf
+    #image: maxder/alpine-hiawatha-php7:armhf
     ports:
     - 80:80
     - 443:80
