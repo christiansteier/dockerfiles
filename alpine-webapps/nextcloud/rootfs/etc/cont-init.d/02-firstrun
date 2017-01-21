@@ -65,5 +65,7 @@ else
   fi
 fi
 rm /etc/cont-init.d/02-firstrun
+echo -e "#!/usr/bin/with-contenv sh\ns6-setuidgid nginx php $APPDIR/occ upgrade\ns6-setuidgid nginx php $APPDIR/occ maintenance:mode --off\n\nexit 0" > /etc/cont-init.d/02-nextcloud_check_upgrade
+chmod +x /etc/cont-init.d/02-nextcloud_check_upgrade
 
 exit 0
