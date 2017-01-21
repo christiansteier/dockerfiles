@@ -1,8 +1,20 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
+ARG GNU_LIBICONV_VERSION=1.14
+
 RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
+ && BUILD_DEPS=" \
+    tar \
+    build-base \
+    autoconf \
+    automake \
+    libtool \
+    samba-dev \
+    php7-dev" \
  && apk -U add \
+	${BUILD_DEPS} \
+        file \
         icu-libs@testing \
 	php7-apcu \
 	php7-bcmath \
@@ -48,6 +60,31 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/reposito
         php7-zip \
 	curl
 
+## PHP smbclient
+RUN sed -i "$ s|\-n||g" /usr/bin/pecl && pecl install smbclient \
+ && echo "extension=smbclient.so" > /etc/php7/conf.d/00_smbclient.ini
+
+## libiconv
+ADD http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${GNU_LIBICONV_VERSION}.tar.gz /tmp/libiconv-${GNU_LIBICONV_VERSION}.tar.gz
+ADD https://raw.githubusercontent.com/mxe/mxe/7e231efd245996b886b501dad780761205ecf376/src/libiconv-1-fixes.patch /tmp/libiconv-1-fixes.patch
+ADD http://de1.php.net/get/php-7.0.15.tar.gz/from/this/mirror /tmp/php7.tar.gz
+RUN cd /tmp \
+ && tar xzf libiconv-${GNU_LIBICONV_VERSION}.tar.gz \
+ && cd libiconv-${GNU_LIBICONV_VERSION} \
+ && ./configure --prefix=/usr/local \
+ && patch -p1 -u < /tmp/libiconv-1-fixes.patch \
+ && make \
+ && make install \
+ && libtool --finish /usr/local/lib \
+ && cd /tmp \
+ && tar xzf php7.tar.gz \
+ && cd /tmp/php-7.*/ext/iconv \
+ && phpize7 \
+ && ./configure --with-iconv=/usr/local --with-php-config=/usr/bin/php-config7 \
+ && make \
+ && cp modules/iconv.so /usr/lib/php7/modules \
+ && echo "extension=iconv.so" > /etc/php7/conf.d/00_iconv.ini
+
 ## Small fixes
 RUN ln -s /etc/php7 /etc/php \
  && ln -s /usr/bin/php7 /usr/bin/php \
@@ -68,7 +105,8 @@ RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
 RUN curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
 
-RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp \
+RUN apk del ${BUILD_DEPS} php7-pear php7-dev \
+ && rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp \
  && touch /firstrun
 
 COPY rootfs /
