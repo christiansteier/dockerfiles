@@ -39,6 +39,10 @@ if [ $INSTALL == "silent" ]; then
 EOF
   fi
 
+  if [ ! -d /etc/nextcloud ]; then
+    mkdir /etc/nextcloud
+  fi
+
   s6-rmrf $APPDIR/config
   s6-ln -s /etc/nextcloud $APPDIR/config
 
