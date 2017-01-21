@@ -8,7 +8,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/$ALPINE_RELEASE/main/" > /etc/apk
  && echo "http://dl-cdn.alpinelinux.org/alpine/$ALPINE_RELEASE/community/" >> /etc/apk/repositories \
  && echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
  && apk -U --no-progress upgrade
-RUN apk -U --no-progress add bash skalibs execline s6 s6-portable-utils
+RUN apk -U --no-progress add bash skalibs execline s6 s6-portable-utils gnupg
 
 # Install s6-overlay
 RUN apk add curl \
