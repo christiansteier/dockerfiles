@@ -81,7 +81,7 @@ if [ $INSTALL == "silent" ]; then
     FLUSH PRIVILEGES;
 EOF
     echo -e "\n---\nInstalling Mahara. Stay tuned!\n"
-    s6-setuidgid nginx php ${APPDIR}/admin/cli/install.php --adminpassword='$APPADMINPASS' --adminemail=$APPADMINEMAIL
+    s6-setuidgid nginx php ${APPDIR}/admin/cli/install.php --adminpassword="$APPADMINPASS" --adminemail=$APPADMINEMAIL
     echo -e "\n[i] Installed with \nUsername = $APPADMIN \nPassword = $APPADMINPASS \nEmail = $APPADMINEMAIL\n---\n"
   fi
 fi  
