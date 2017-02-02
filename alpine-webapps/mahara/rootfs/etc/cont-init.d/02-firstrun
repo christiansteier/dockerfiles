@@ -56,10 +56,10 @@ fi
 
 ## Language pack
 cd /tmp/
-if curl --output /dev/null --silent --head --fail "http://langpacks.mahara.org/${LANGUAGE}-MAHARA_VERSION_STABLE.tar.gz"; then
-  wget http://langpacks.mahara.org/${LANGUAGE}-MAHARA_VERSION_STABLE.tar.gz
+if curl --output /dev/null --silent --head --fail "http://langpacks.mahara.org/${LANGUAGE}-${MAHARA_VERSION}_STABLE.tar.gz"; then
+  curl -OL http://langpacks.mahara.org/${LANGUAGE}-${MAHARA_VERSION}_STABLE.tar.gz
 else
- wget http://langpacks.mahara.org/${LANGUAGE}-master.tar.gz
+  curl -OL http://langpacks.mahara.org/${LANGUAGE}-master.tar.gz
 fi
 
 if [ ! -d /data/langpacks  ]; then
