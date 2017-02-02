@@ -26,9 +26,9 @@ services:
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
-    - APPADMIN=admin
-    - APPADMINPASS=pwd123
-    - APPADMINEMAIL=admin@mydomain.org
+#    - INSTALL=silent ## Silent installation via CLI
+#    - APPADMINPASS=pwd123 ## Admin password for silent installation. Username is 'admin'
+#    - APPADMINEMAIL=admin@mydomain.org ## Admin email for silent insatllation
 #    - APPFOLDER=portfolio ## Mahara in a subdir
     links:
     - mariadb:db
