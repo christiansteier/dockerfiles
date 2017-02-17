@@ -1,18 +1,27 @@
 FROM maxder/alpine-mini:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-ENV ALPINE_RELEASE v3.5
-ENV S6OVERLAY_RELEASE v1.18.1.5
+ARG ALPINE=v3.5
+ARG S6OVERLAY=v1.19.1.1
+ARG GPG="DB30 1BA3 F6F8 07E0 D0E6  CCB8 6101 B278 3B2F D161"
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/$ALPINE_RELEASE/main/" > /etc/apk/repositories    \
- && echo "http://dl-cdn.alpinelinux.org/alpine/$ALPINE_RELEASE/community/" >> /etc/apk/repositories \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/${ALPINE}/main/" > /etc/apk/repositories    \
+ && echo "http://dl-cdn.alpinelinux.org/alpine/${ALPINE}/community/" >> /etc/apk/repositories \
  && echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
  && apk -U --no-progress upgrade
-RUN apk -U --no-progress add bash skalibs execline s6 s6-portable-utils gnupg
+RUN apk -U --no-progress add bash skalibs execline s6 s6-portable-utils gnupg curl
 
 # Install s6-overlay
-RUN apk add curl \
- && curl -sL https://github.com/just-containers/s6-overlay/releases/download/${S6OVERLAY_RELEASE}/s6-overlay-nobin.tar.gz | tar xz
+ADD https://github.com/just-containers/s6-overlay/releases/download/${S6OVERLAY}/s6-overlay-nobin.tar.gz s6-overlay-nobin.tar.gz
+ADD https://github.com/just-containers/s6-overlay/releases/download/${S6OVERLAY}/s6-overlay-nobin.tar.gz.sig s6-overlay-nobin.tar.gz.sig
+RUN curl https://keybase.io/justcontainers/key.asc | gpg --import \
+ && FINGERPRINT="$(LANG=C gpg --verify s6-overlay-nobin.tar.gz.sig s6-overlay-nobin.tar.gz 2>&1 | sed -n "s#Primary key fingerprint: \(.*\)#\1#p")" \
+ && gpg --verify s6-overlay-nobin.tar.gz.sig s6-overlay-nobin.tar.gz \
+ && if [ -z "${FINGERPRINT}" ]; then echo "[!!] Invalid GPG signature!" && exit 1; fi \
+ && if [ "${FINGERPRINT}" != "${GPG}" ]; then echo "[!!] Wrong GPG fingerprint!" && exit 1; fi \
+ && echo "All seems good, now unpacking..." \
+ && tar -xf s6-overlay-nobin.tar.gz \
+ && s6-rmrf s6-overlay-nobin*
 
 COPY rootfs /
 
