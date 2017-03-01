@@ -21,6 +21,7 @@ echo "[i] Ensure system dirs are owned by root and not writable by anybody else.
 find $sysdirs -xdev -type d \
   -exec chown root:root {} \; \
   -exec chmod 0755 {} \;
+chmod a=rwx,o+t /tmp
   
 echo "[i] Remove all suid files."
 find $sysdirs -xdev -type f -a -perm +4000 -delete
