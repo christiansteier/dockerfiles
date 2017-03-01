@@ -17,11 +17,8 @@ sysdirs="
 #   /etc/group-
 find $sysdirs -xdev -type f -regex '.*-$' -exec rm -f {} +
 
-echo "[i] Ensure system dirs are owned by root and not writable by anybody else."
-find $sysdirs -xdev -type d \
-  -exec chown root:root {} \; \
-  -exec chmod 0755 {} \;
-chmod a=rwx,o+t /tmp
+echo "[i] Ensure system dirs are owned by root."
+find $sysdirs -xdev -type d -exec chown root:root {} \;
   
 echo "[i] Remove all suid files."
 find $sysdirs -xdev -type f -a -perm +4000 -delete
@@ -46,7 +43,7 @@ for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nobod
 echo "[i] Remove interactive login shell"
 sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
-rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/* /etc/fstab
+rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /etc/fstab
 
 echo "[i] Remove init scripts"
 rm -fr /etc/init.d /lib/rc /etc/conf.d /etc/inittab /etc/runlevels /etc/rc.conf
