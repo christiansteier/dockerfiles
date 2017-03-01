@@ -55,6 +55,4 @@ RUN /tmp/cleanup.sh
 
 ENTRYPOINT ["/init"]
 # Cleanup and security fixes
-COPY scripts/cleanup.sh /tmp/cleanup.sh
-RUN /tmp/cleanup.sh
 CMD []
