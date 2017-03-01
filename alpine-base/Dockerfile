@@ -49,10 +49,12 @@ RUN curl -o /usr/sbin/set_tz -L https://raw.githubusercontent.com/nimmis/docker-
 # Bash/Prompt customization
 RUN echo 'PS1="\[\033[40;1;37m\][`date -R +%H:%M:%S`]\[\033[0m\] [\[\033[1;31m\]\u\[\033[0m\]@\h]:\[\033[01;34m\]\w\[\033[00m\]\$  "' >> /root/.bashrc
 
-# Cleanup
-RUN for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobody); do deluser "$user"; done \
- && for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nobody); do delgroup "$group"; done \
- && rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
+# Cleanup and security fixes
+COPY scripts/cleanup.sh /tmp/cleanup.sh
+RUN /tmp/cleanup.sh
 
 ENTRYPOINT ["/init"]
+# Cleanup and security fixes
+COPY scripts/cleanup.sh /tmp/cleanup.sh
+RUN /tmp/cleanup.sh
 CMD []
