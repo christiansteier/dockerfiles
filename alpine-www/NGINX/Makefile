@@ -18,17 +18,19 @@ IMAGENAME=alpine
 all: build
 	
 build:
-	sed -i "s*alpine-base:ARCHTAG*alpine-base:${ARCHTAG}*g" Dockerfile
+	sed -i "s*ARCHTAG*${ARCHTAG}*g" Dockerfile
 	$(MAKE) -C ../../alpine-base build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG} .
 
 phpbuild:
-	sed -i "s*alpine-base:ARCHTAG*alpine-php-fpm:${ARCHTAG}*g" Dockerfile
+	sed -i "s*ARCHTAG*${ARCHTAG}*g" Dockerfile
+	sed -i "s*alpine-base*alpine-php-fpm*g" Dockerfile
 	$(MAKE) -C ../php-fpm build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}-php:${ARCHTAG} .
 
 php7build:
-	sed -i "s*alpine-base:ARCHTAG*alpine-php7-fpm:${ARCHTAG}*g" Dockerfile
+	sed -i "s*ARCHTAG*${ARCHTAG}*g" Dockerfile
+	sed -i "s*alpine-base*alpine-php7-fpm*g" Dockerfile
 	$(MAKE) -C ../php-fpm php7build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}-php7:${ARCHTAG} .
 
