@@ -1,10 +1,11 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-ARG GNU_LIBICONV_VERSION=1.14
+ARG GNU_LIBICONV_VERSION=1.15
+ARG PHP_VERSION=7.0.16
+ARG PHP_SHA256="bc6709dc7612957d0533c09c9c8a9c2e7c4fd9d64e697707bb1b39670eab61d4"
 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
- && BUILD_DEPS=" \
+RUN BUILD_DEPS=" \
     tar \
     build-base \
     autoconf \
@@ -66,18 +67,20 @@ RUN sed -i "$ s|\-n||g" /usr/bin/pecl && pecl install smbclient \
 
 ## libiconv
 ADD http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${GNU_LIBICONV_VERSION}.tar.gz /tmp/libiconv-${GNU_LIBICONV_VERSION}.tar.gz
-ADD https://raw.githubusercontent.com/mxe/mxe/7e231efd245996b886b501dad780761205ecf376/src/libiconv-1-fixes.patch /tmp/libiconv-1-fixes.patch
-ADD http://de1.php.net/get/php-7.0.15.tar.gz/from/this/mirror /tmp/php7.tar.gz
+ADD http://de1.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror /tmp/php-${PHP_VERSION}.tar.gz
 RUN cd /tmp \
  && tar xzf libiconv-${GNU_LIBICONV_VERSION}.tar.gz \
  && cd libiconv-${GNU_LIBICONV_VERSION} \
  && ./configure --prefix=/usr/local \
- && patch -p1 -u < /tmp/libiconv-1-fixes.patch \
  && make \
  && make install \
  && libtool --finish /usr/local/lib \
  && cd /tmp \
- && tar xzf php7.tar.gz \
+ && echo "Verifying integrity and authenticity..." \
+ && echo "${PHP_SHA256}  php-${PHP_VERSION}.tar.gz" > php-${PHP_VERSION}.tar.gz.sha256 \
+ && CHECKSUM_STATE=$(echo -n $(sha256sum -c php-${PHP_VERSION}.tar.gz.sha256) | tail -c 2) \
+ && if [ "${CHECKSUM_STATE}" != "OK" ]; then echo "[!!] Checksum does not match!" && exit 1; fi \
+ && tar xzf php-${PHP_VERSION}.tar.gz \
  && cd /tmp/php-7.*/ext/iconv \
  && phpize7 \
  && ./configure --with-iconv=/usr/local --with-php-config=/usr/bin/php-config7 \
