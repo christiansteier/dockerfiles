@@ -1,10 +1,9 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-RUN echo -e "http://nl.alpinelinux.org/alpine/edge/testing\nhttp://nl.alpinelinux.org/alpine/edge/main\nhttp://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN apk -U add \
 	ca-certificates \
-	hiawatha \
+	hiawatha@testing \
 	linux-pam \
 	openssl \
 	mbedtls \
@@ -27,9 +26,17 @@ RUN openssl genrsa -out /etc/hiawatha/hiawatha.pem 4096 \
  && s6-envuidgid hiawatha s6-chown -U -- /etc/hiawatha/hiawatha.pem \
  && apk del openssl                
 
-# Cleanup and security fixes
-COPY scripts/cleanup.sh /tmp/cleanup.sh
-RUN /tmp/cleanup.sh
+
+# Cleanup
+RUN rm -rf \
+	/var/cache/apk/* \
+	/usr/share/doc \
+	/usr/share/man/ \
+	/usr/share/info/* \ 
+	/var/cache/man/* \ \
+	/tmp \
+	/var/tmp \
+	/etc/s6/services/s6-fdholderd/down
 
 COPY rootfs /
 EXPOSE 80/tcp 443/tcp
