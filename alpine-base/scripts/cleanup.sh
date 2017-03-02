@@ -8,18 +8,18 @@ sysdirs="
   /sbin
   /usr
 "
-# Remove apk configs.
-#find $sysdirs -xdev -regex '.*apk.*' -exec rm -fr {} +
-
-# Remove crufty...
-#   /etc/shadow-
-#   /etc/passwd-
-#   /etc/group-
+echo -e "[i] Remove crufty...\n   /etc/shadow-\n   /etc/passwd-\n   /etc/group-"
 find $sysdirs -xdev -type f -regex '.*-$' -exec rm -f {} +
 
-echo "[i] Ensure system dirs are owned by root."
-find $sysdirs -xdev -type d -exec chown root:root {} \;
-  
+echo "[i] Ensure system dirs are owned by root and not writable by anybody else."
+find $sysdirs -xdev -type d \
+  -exec chown root:root {} \; \
+  -exec chmod 0755 {} \;
+
+echo "[i] Set wright permissions for /tmp and /var/tmp."
+chmod a=rwx,o+t /tmp
+chmod a=rwx,o+t /var/tmp
+
 echo "[i] Remove all suid files."
 find $sysdirs -xdev -type f -a -perm +4000 -delete
 
@@ -34,16 +34,13 @@ find $sysdirs -xdev \( \
   \) -delete
   
 echo "[i] Remove unnecessary user accounts."
-#sed -i -r '/^(nogroup|root)/!d' /etc/group
-#sed -i -r '/^(nobody|root)/!d' /etc/passwd
 for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobody); do deluser "$user"; done
 for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nobody -ve nogroup); do delgroup "$group"; done
-
 
 echo "[i] Remove interactive login shell"
 sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
-rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /etc/fstab
+rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/* /etc/fstab
 
 echo "[i] Remove init scripts"
 rm -fr /etc/init.d /lib/rc /etc/conf.d /etc/inittab /etc/runlevels /etc/rc.conf
