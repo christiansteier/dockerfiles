@@ -27,8 +27,8 @@ RUN curl -LO https://github.com/just-containers/s6-overlay/releases/download/v${
 COPY rootfs /
 
 # GNU libc (aka glibc) (based on frol/docker-alpine-glibc)
-RUN if [ "${BUILDWITHGLIBC}" = "yes" ]; then export GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" export GLIBC_PACKAGE_VERSION="2.25-r0" \
- && apk -U add --no-cache --virtual=.build-dependencies ca-certificates  \
+RUN if [ $BUILDWITHGLIBC = "yes" ]; then export GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
+ && export GLIBC_PACKAGE_VERSION="2.25-r0" \
  && curl -o /etc/apk/keys/sgerrand.rsa.pub -L https://raw.githubusercontent.com/andyshinn/alpine-pkg-glibc/master/sgerrand.rsa.pub \
  && curl -LO ${GLIBC_BASE_URL}/${GLIBC_PACKAGE_VERSION}/glibc-${GLIBC_PACKAGE_VERSION}.apk \
  && curl -LO ${GLIBC_BASE_URL}/${GLIBC_PACKAGE_VERSION}/glibc-bin-${GLIBC_PACKAGE_VERSION}.apk \
@@ -38,8 +38,7 @@ RUN if [ "${BUILDWITHGLIBC}" = "yes" ]; then export GLIBC_BASE_URL="https://gith
  && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true \
  && echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh  \
  && apk del glibc-i18n  \
- && apk del .build-dependencies  \
- && rm glibc-${GLIBC_PACKAGE_VERSION}.apk glibc-bin-${GLIBC_PACKAGE_VERSION}.apk glibc-i18n-${GLIBC_PACKAGE_VERSION}.apk
+ && rm glibc-${GLIBC_PACKAGE_VERSION}.apk glibc-bin-${GLIBC_PACKAGE_VERSION}.apk glibc-i18n-${GLIBC_PACKAGE_VERSION}.apk; fi
 
 # set_tz from https://github.com/nimmis/docker-utils
 RUN curl -o /usr/sbin/set_tz -L https://raw.githubusercontent.com/nimmis/docker-utils/master/alpine/bin/set_tz \
