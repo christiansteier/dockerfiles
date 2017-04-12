@@ -45,6 +45,11 @@ build:  scratch builder library mini
 	docker build --rm -t ${NAMESPACE}/${IMAGENAME}-base:${ARCHTAG} .
 	make clean_build
 
+buildwithglibc:  scratch builder library mini
+	sed -i "BUILDWITHGLIBC=no*BUILDWITHGLIBC=yes" ./Dockerfile
+        docker build --rm -t ${NAMESPACE}/${IMAGENAME}-base:${ARCHTAG} .
+        make clean_build
+
 clean_build:
 	rm -r ./gliderlabs-docker-alpine*
 	docker rm -f alpine-build-${ARCHTAG}

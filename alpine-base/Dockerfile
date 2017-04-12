@@ -4,12 +4,13 @@ MAINTAINER Christian-Maxilian Steier
 ARG ALPINE=v3.5
 ARG S6OVERLAY=1.19.1.1
 ARG GPG="DB30 1BA3 F6F8 07E0 D0E6  CCB8 6101 B278 3B2F D161"
+ARG BUILDWITHGLIBC=no
 
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/${ALPINE}/main/" > /etc/apk/repositories    \
  && echo "https://dl-cdn.alpinelinux.org/alpine/${ALPINE}/community/" >> /etc/apk/repositories \
  && echo "@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
- && apk -U --no-progress upgrade \
- && apk -U --no-progress add bash skalibs execline s6 s6-portable-utils gnupg curl
+ && apk -U upgrade \
+ && apk add bash skalibs execline s6 s6-portable-utils gnupg curl
 
 # Install s6-overlay
 RUN curl -LO https://github.com/just-containers/s6-overlay/releases/download/v${S6OVERLAY}/s6-overlay-nobin.tar.gz \
@@ -25,10 +26,9 @@ RUN curl -LO https://github.com/just-containers/s6-overlay/releases/download/v${
 
 COPY rootfs /
 
-# GNU libc (aka glibc) and set C.UTF-8 locale as default (based on frol/docker-alpine-glibc)
-ARG GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download"
-ARG GLIBC_PACKAGE_VERSION="2.25-r0"
-RUN apk -U add --no-cache --virtual=.build-dependencies ca-certificates  \
+# GNU libc (aka glibc) (based on frol/docker-alpine-glibc)
+RUN if [ "${BUILDWITHGLIBC}" = "yes" ]; then export GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" export GLIBC_PACKAGE_VERSION="2.25-r0" \
+ && apk -U add --no-cache --virtual=.build-dependencies ca-certificates  \
  && curl -o /etc/apk/keys/sgerrand.rsa.pub -L https://raw.githubusercontent.com/andyshinn/alpine-pkg-glibc/master/sgerrand.rsa.pub \
  && curl -LO ${GLIBC_BASE_URL}/${GLIBC_PACKAGE_VERSION}/glibc-${GLIBC_PACKAGE_VERSION}.apk \
  && curl -LO ${GLIBC_BASE_URL}/${GLIBC_PACKAGE_VERSION}/glibc-bin-${GLIBC_PACKAGE_VERSION}.apk \
@@ -40,7 +40,6 @@ RUN apk -U add --no-cache --virtual=.build-dependencies ca-certificates  \
  && apk del glibc-i18n  \
  && apk del .build-dependencies  \
  && rm glibc-${GLIBC_PACKAGE_VERSION}.apk glibc-bin-${GLIBC_PACKAGE_VERSION}.apk glibc-i18n-${GLIBC_PACKAGE_VERSION}.apk
-ENV LANG=C.UTF-8
 
 # set_tz from https://github.com/nimmis/docker-utils
 RUN curl -o /usr/sbin/set_tz -L https://raw.githubusercontent.com/nimmis/docker-utils/master/alpine/bin/set_tz \
@@ -54,5 +53,4 @@ COPY scripts/cleanup.sh /tmp/cleanup.sh
 RUN /tmp/cleanup.sh
 
 ENTRYPOINT ["/init"]
-# Cleanup and security fixes
 CMD []
