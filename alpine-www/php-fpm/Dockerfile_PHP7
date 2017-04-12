@@ -13,7 +13,8 @@ RUN BUILD_DEPS=" \
     libtool \
     samba-dev \
     php7-dev \
-    zlib-dev" \
+    zlib-dev \
+    git" \
  && apk -U add \
 	${BUILD_DEPS} \
         file \
@@ -73,7 +74,7 @@ RUN git clone git://github.com/eduardok/libsmbclient-php.git /tmp/smbclient \
  && echo "extension=smbclient.so" > /etc/php7/conf.d/00_smbclient.ini
 
 ## libiconv
-ADD http://ftp.gnu.org/pub/gnu/libiconv/libiconv-${GNU_LIBICONV_VERSION}.tar.gz /tmp/libiconv-${GNU_LIBICONV_VERSION}.tar.gz
+ADD https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${GNU_LIBICONV_VERSION}.tar.gz /tmp/libiconv-${GNU_LIBICONV_VERSION}.tar.gz
 ADD http://de1.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror /tmp/php-${PHP_VERSION}.tar.gz
 RUN cd /tmp \
  && tar xzf libiconv-${GNU_LIBICONV_VERSION}.tar.gz \
