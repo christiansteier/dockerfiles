@@ -12,11 +12,13 @@ RUN BUILD_DEPS=" \
     automake \
     libtool \
     samba-dev \
-    php7-dev" \
+    php7-dev \
+    zlib-dev" \
  && apk -U add \
 	${BUILD_DEPS} \
         file \
-        icu-libs@testing \
+        icu-libs \
+	libwebp \
 	php7-apcu \
 	php7-bcmath \
 	php7-bz2 \
@@ -62,7 +64,12 @@ RUN BUILD_DEPS=" \
 	curl
 
 ## PHP smbclient
-RUN sed -i "$ s|\-n||g" /usr/bin/pecl && pecl install smbclient \
+RUN git clone git://github.com/eduardok/libsmbclient-php.git /tmp/smbclient \
+ && cd /tmp/smbclient \
+ && phpize7 \
+ && ./configure --with-php-config=/usr/bin/php-config7 \
+ && make \
+ && make install \
  && echo "extension=smbclient.so" > /etc/php7/conf.d/00_smbclient.ini
 
 ## libiconv
