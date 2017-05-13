@@ -5,6 +5,7 @@ ARG GNU_LIBICONV_VERSION=1.15
 ARG PHP_VERSION=7.0.16
 ARG PHP_SHA256="bc6709dc7612957d0533c09c9c8a9c2e7c4fd9d64e697707bb1b39670eab61d4"
 
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories
 RUN BUILD_DEPS=" \
     tar \
     build-base \
@@ -41,7 +42,7 @@ RUN BUILD_DEPS=" \
 	php7-ldap \
 	php7-mbstring \
         php7-mcrypt \
-#        php7-memcached@testing \
+        php7-memcached \
 	php7-mysqli \
 	php7-opcache \
         php7-openssl \
@@ -54,7 +55,7 @@ RUN BUILD_DEPS=" \
         php7-pear \
         php7-phar \
         php7-posix \
-        php7-redis@testing \
+        php7-redis \
 	php7-soap \
         php7-sqlite3 \
 	php7-xml \
@@ -98,9 +99,7 @@ RUN cd /tmp \
 
 ## Small fixes
 RUN ln -s /etc/php7 /etc/php \
- && ln -s /usr/bin/php7 /usr/bin/php \
  && ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm \
- && ln -s /usr/bin/php-cgi7 /usr/bin/php-cgi \
  && ln -s /usr/lib/php7 /usr/lib/php
 
 ## PHP config
