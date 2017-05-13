@@ -31,14 +31,14 @@ builder:
 
 library:
 	echo "build library alpine"
-	cd ./gliderlabs-docker-alpine* && docker run --name alpine-build-${ARCHTAG} ${NAMESPACE}/${IMAGENAME}-builder:${ARCHTAG} -s -t UTC -r edge -m http://nl.alpinelinux.org/alpine > versions/library-edge/rootfs.tar.gz
+	cd ./gliderlabs-docker-alpine* && docker run --rm ${NAMESPACE}/${IMAGENAME}-builder:${ARCHTAG} -s -t UTC > versions/library-edge/rootfs.tar.xz
 	docker build --rm -t ${NAMESPACE}/${IMAGENAME}:${ARCHTAG} ./gliderlabs-docker-alpine*/versions/library-edge
 
 mini:
 	echo "build alpine-mini based on gliderlabs/alpine"
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" ./Dockerfile
 	docker rm -f alpine-build-${ARCHTAG}
-	cd ./gliderlabs-docker-alpine* && docker run --name alpine-build-${ARCHTAG} ${NAMESPACE}/${IMAGENAME}-builder:${ARCHTAG} -s -c -t UTC -r edge -m http://alpine.gliderlabs.com/alpine > versions/gliderlabs-edge/rootfs.tar.gz
+	cd ./gliderlabs-docker-alpine* && docker run --rm ${NAMESPACE}/${IMAGENAME}-builder:${ARCHTAG} -s -c -t UTC > versions/gliderlabs-edge/rootfs.tar.xz
 	cd ./gliderlabs-docker-alpine* && docker  build --rm -t ${NAMESPACE}/${IMAGENAME}-mini:${ARCHTAG} versions/gliderlabs-edge
 
 buildwithglibc: 
