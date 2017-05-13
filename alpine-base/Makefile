@@ -37,7 +37,6 @@ library:
 mini:
 	echo "build alpine-mini based on gliderlabs/alpine"
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" ./Dockerfile
-	docker rm -f alpine-build-${ARCHTAG}
 	cd ./gliderlabs-docker-alpine* && docker run --rm ${NAMESPACE}/${IMAGENAME}-builder:${ARCHTAG} -s -c -t UTC > versions/gliderlabs-edge/rootfs.tar.xz
 	cd ./gliderlabs-docker-alpine* && docker  build --rm -t ${NAMESPACE}/${IMAGENAME}-mini:${ARCHTAG} versions/gliderlabs-edge
 
@@ -52,7 +51,6 @@ build:  scratch builder library mini
 
 clean_build:
 	rm -r ./gliderlabs-docker-alpine*
-	docker rm -f alpine-build-${ARCHTAG}
 	docker rmi -f maxder/alpine-scratch:${ARCHTAG}
 	docker rmi -f maxder/alpine-builder:${ARCHTAG}
 	docker rmi -f maxder/alpine-mini:${ARCHTAG}
