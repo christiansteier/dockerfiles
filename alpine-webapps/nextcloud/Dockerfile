@@ -2,14 +2,14 @@ FROM maxder/alpine-nginx-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
 ARG VERSION=11.0
-ARG RELEASE=1
+ARG RELEASE=3
 ARG GPG="2880 6A87 8AE4 23A2 8372  792E D758 99B9 A724 937A"
 
 RUN apk -U --no-progress add \
     file \
     libintl \
     perl-xml-simple \
-    perl-xml-writer@testing \
+    perl-xml-writer \
     memcached \
     libmemcached \
     imagemagick \
