@@ -1,8 +1,8 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-ENV VERSION 1.1
-ENV RELEASE 2
+ENV VERSION 1.2
+ENV RELEASE 3
 ENV ARCH ARCHTAG
 
 RUN apk -U --no-progress add \
