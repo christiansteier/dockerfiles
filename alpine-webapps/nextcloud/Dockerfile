@@ -39,6 +39,7 @@ RUN export APPDIR=/usr/share/webapps/nextcloud \
  && echo "All seems good, now unpacking..." \
  && tar xfvj nextcloud-${VERSION}.${RELEASE}.tar.bz2 \
  && rm nextcloud-${VERSION}.${RELEASE}.tar.bz2* \
+ && mkdir -p ${APPDIR}/custom_apps \
  && find ${APPDIR}/ -type f -print0 | xargs -0 chmod 0640 \
  && find ${APPDIR}/ -type d -print0 | xargs -0 chmod 0750 \
  && chown -R root:www-data ${APPDIR}/ \
