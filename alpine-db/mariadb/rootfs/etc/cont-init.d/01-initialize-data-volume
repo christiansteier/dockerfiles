@@ -1,6 +1,0 @@
-#!/bin/execlineb -P
-
-# initialize MySQL data directory (if needed)
-if -t { s6-test ! -d /var/lib/mysql/mysql }
-if { s6-chmod 100 /etc/services.d/mariadb/setup }
-if { /etc/services.d/mariadb/setup }
