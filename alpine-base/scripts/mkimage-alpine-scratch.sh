@@ -40,7 +40,7 @@ conf() {
 pack() {
   local id
   id=$(tar --numeric-owner -C $ROOTFS -c . | docker import - $DOCKER:$REL)
-  docker tag $id $DOCKER:ARCHTAG
+  docker tag $id $DOCKER:${ARCH}
   docker rmi -f $DOCKER:${REL}
 }
 
