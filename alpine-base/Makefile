@@ -1,4 +1,4 @@
-.PHONY: scratch build clean_build push
+.PHONY: scratch build push
 
 UNAME := $(shell uname -m)
 ifeq ($(UNAME), x86_64)
@@ -28,11 +28,7 @@ buildwithglibc:
 
 build:  scratch
 	docker build --rm -t ${NAMESPACE}/${IMAGENAME}-base:${ARCHTAG} .
-	make clean_build
-
-clean_build:
 	docker rmi -f maxder/alpine-mini:${ARCHTAG}
-	docker rmi -f maxder/alpine:${ARCHTAG}
 
 push:
 	docker push ${NAMESPACE}/${IMAGENAME}-base:${ARCHTAG}
