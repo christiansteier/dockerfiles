@@ -14,12 +14,12 @@ endif
 default: build
 NAMESPACE=maxder
 IMAGENAME=alpine
-REL=v3.5
+REL=v3.6
 
 scratch:
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" ./scripts/mkimage-alpine-scratch.sh
-	sed -i "s*ARCHTAG*${ARCHTAG}*g" ./Dockerfile
-	IMAGENAME=$(NAMESPACE)/$(IMAGENAME)-mini REL=$(REL) ./scripts/mkimage-alpine-scratch.sh
+	sed -i "s*ARCHTAG*${ARCHTAG}*g;s*RELEASE*${REL}*g" ./Dockerfile
+	IMAGENAME=$(NAMESPACE)/$(IMAGENAME)-mini REL=${REL} ARCH=${ARCHTAG} ./scripts/mkimage-alpine-scratch.sh
 
 buildwithglibc: 
 	sed -i "s*BUILDWITHGLIBC=no*BUILDWITHGLIBC=yes*g" ./Dockerfile
