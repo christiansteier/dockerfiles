@@ -2,10 +2,9 @@ FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 ARG GNU_LIBICONV_VERSION=1.15
-ARG PHP_VERSION=7.0.16
-ARG PHP_SHA256="bc6709dc7612957d0533c09c9c8a9c2e7c4fd9d64e697707bb1b39670eab61d4"
+ARG PHP_VERSION=7.1.5
+ARG PHP_SHA256="f7ff8039f5c3a7da4d62a3cce6378280224acfa27ab5a5bee25b7439bce01c17"
 
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories
 RUN BUILD_DEPS=" \
     tar \
     build-base \
@@ -76,7 +75,7 @@ RUN git clone git://github.com/eduardok/libsmbclient-php.git /tmp/smbclient \
 
 ## libiconv
 ADD https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${GNU_LIBICONV_VERSION}.tar.gz /tmp/libiconv-${GNU_LIBICONV_VERSION}.tar.gz
-ADD http://de1.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror /tmp/php-${PHP_VERSION}.tar.gz
+ADD http://de2.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror /tmp/php-${PHP_VERSION}.tar.gz
 RUN cd /tmp \
  && tar xzf libiconv-${GNU_LIBICONV_VERSION}.tar.gz \
  && cd libiconv-${GNU_LIBICONV_VERSION} \
@@ -105,11 +104,20 @@ RUN ln -s /etc/php7 /etc/php \
 ## PHP config
 RUN sed -i -e "s*short_open_tag = Off*short_open_tag = On*g" /etc/php/php.ini \
  && sed -i -e "s*;always_populate_raw_post_data = -1*always_populate_raw_post_data = -1*g" /etc/php/php.ini
-
 RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.ttl=7200" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.user_ttl=7200" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.gc_ttl=3600" >> /etc/php/conf.d/apcu.ini
+# set recommended PHP.ini settings
+# see https://secure.php.net/manual/en/opcache.installation.php
+RUN { \
+    echo 'opcache.memory_consumption=128'; \
+    echo 'opcache.interned_strings_buffer=8'; \
+    echo 'opcache.max_accelerated_files=4000'; \
+    echo 'opcache.revalidate_freq=60'; \
+    echo 'opcache.fast_shutdown=1'; \
+    echo 'opcache.enable_cli=1'; \
+} > /etc/php/conf.d/opcache-recommended.ini
  
 # Install composer global bin
 RUN curl -sS https://getcomposer.org/installer | php \
