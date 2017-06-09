@@ -12,7 +12,7 @@ ifeq ($(UNAME), armv7l)
 endif
 
 VERSION:=7
-NAME=php$$VERSION-fpm
+NAME=php${VERSION}-fpm
 NAMESPACE=maxder
 IMAGENAME=alpine
 
