@@ -14,4 +14,4 @@ services:
     - /srv/docker/nginx/tls:/etc/nginx/tls
     - /srv/docker/nginx/sites-enabled:/etc/nginx/sites-enabled
     environment:
-    - SSL=yes
+    - TLS=yes

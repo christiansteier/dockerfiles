@@ -2,9 +2,9 @@
 
 set -e
 
-SSL=${SSL:-no}
+TLS=${TLS:-no}
 
-if [ $SSL == "yes" ]; then
+if [ $TLS == "yes" ]; then
   if [ ! -d /etc/nginx/tls ]; then
     s6-echo "[i] Create tls folder"
     s6-mkdir /etc/nginx/tls

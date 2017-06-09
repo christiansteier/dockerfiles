@@ -1,4 +1,4 @@
-FROM maxder/alpine-php7-fpm:ARCHTAG
+FROM maxder/alpine-php7-fpm:x86_64
 MAINTAINER Christian-Maxilian Steier
 
 RUN apk -U add ca-certificates nginx openssl \
