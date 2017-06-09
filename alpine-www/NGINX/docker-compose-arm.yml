@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  nginx:
+    restart: always
+    container_name: NGINX
+    hostname: NGINX
+    image: maxder/alpine-nginx:armhf
+    #image: maxder/alpine-nginx-php7:armhf
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /srv/docker/nginx/tls:/etc/nginx/tls
+    - /srv/docker/nginx/sites-enabled:/etc/nginx/sites-enabled
+    environment:
+    - SSL=yes

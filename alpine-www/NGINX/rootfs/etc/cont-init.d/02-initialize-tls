@@ -1,17 +1,21 @@
-#!/bin/execlineb -P
+#!/usr/bin/with-contenv sh
 
-foreground {
- if -t { s6-test ! -d /etc/nginx/tls }
- if { s6-echo "[i] Create tls forlder" }
- if { s6-mkdir /etc/nginx/tls }
-}
+set -e
 
-if -t { s6-test ! -f /etc/nginx/tls/nginx.pem }
-if { s6-echo "[i] Create a server certificate" }
-if { apk -U add openssl }
-if { export RANDFILE /dev/null openssl genrsa -out /etc/nginx/tls/nginx.pem 4096 }
-if { openssl req -new -x509 -days 3650 -key /etc/nginx/tls/nginx.pem -out /etc/nginx/tls/nginx.crt -subj "/C=US/CN=0.0.0.0" }
-if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/tls/nginx.pem }
-if { s6-envuidgid nginx s6-chown -U -- /etc/nginx/tls/nginx.crt }
-if { apk del openssl }
-if { s6-rmrf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp }
+SSL=${SSL:-no}
+
+if [ $SSL == "yes" ]; then
+  if [ ! -d /etc/nginx/tls ]; then
+    s6-echo "[i] Create tls folder"
+    s6-mkdir /etc/nginx/tls
+  fi
+  if [ ! -f /etc/nginx/tls/nginx.pem ]; then
+    s6-echo "[i] Create server certificate"
+    mv /etc/nginx/nginx.pem /etc/nginx/tls/
+    mv /etc/nginx/nginx.crt /etc/nginx/tls/
+  fi
+  mv /etc/nginx/localhost-ssl /etc/nginx/localhost.site
+else
+  s6-echo "[i] Use NGINX without TLS"
+  s6-rmrf /etc/nginx/localhost-ssl /etc/nginx/nginx.pem /etc/nginx/nginx.crt
+fi

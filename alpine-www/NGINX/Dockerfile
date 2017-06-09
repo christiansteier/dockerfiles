@@ -1,10 +1,19 @@
 FROM maxder/alpine-php7-fpm:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-RUN apk -U add ca-certificates nginx \
+RUN apk -U add ca-certificates nginx openssl \
  && echo "charset utf-8;" > /etc/nginx/conf.d/charset.conf \
  && echo "client_max_body_size 2M;" > /etc/nginx/conf.d/uploads.conf
 RUN rm /etc/nginx/conf.d/default.conf
+
+RUN openssl genrsa -out /etc/nginx/nginx.pem 4096 \
+ && openssl req -new -x509 -days 3650 -key /etc/nginx/nginx.pem -out /etc/nginx/nginx.crt -subj "/C=US/CN=0.0.0.0" \
+ && echo "" >> /etc/nginx/nginx.pem \
+ && cat /etc/nginx/nginx.crt >> /etc/nginx/nginx.pem \
+ && echo "" >> /etc/nginx/nginx.pem \
+ && s6-envuidgid nginx s6-chown -U -- /etc/nginx/nginx.pem \
+ && s6-envuidgid nginx s6-chown -U -- /etc/nginx/nginx.crt \
+ && apk del openssl
 
 # Cleanup
 RUN rm -rf \
