@@ -30,6 +30,7 @@ services:
     - /srv/docker/nextcloud/apps:/usr/share/webapps/nextcloud/custom_apps ## IMPORTANT: Change the last nextcloud before custom_apps in cloud or what ever, if the APPFOLDER tag is used.
     - /srv/docker/nextcloud/log:/var/log/NGINX
     environment:
+    - TLS=yes
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
 #    - APPFOLDER=cloud          ## Maps Nextcloud to subdir

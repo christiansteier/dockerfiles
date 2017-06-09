@@ -1,8 +1,8 @@
 FROM maxder/alpine-nginx-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
-ARG VERSION=11.0
-ARG RELEASE=3
+ARG VERSION=12.0
+ARG RELEASE=0
 ARG GPG="2880 6A87 8AE4 23A2 8372  792E D758 99B9 A724 937A"
 
 RUN apk -U --no-progress add \
@@ -54,4 +54,4 @@ RUN echo -e "#!/bin/sh \n\n s6-setuidgid nginx php /usr/share/webapps/nextcloud/
  && chmod +x /etc/periodic/daily/nextcloud
 
 COPY rootfs/ /
-RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
+RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/*
