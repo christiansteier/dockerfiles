@@ -1,4 +1,4 @@
-FROM maxder/alpine-base:ARCHTAG
+FROM maxder/alpine-php7-fpm:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 RUN apk -U add ca-certificates nginx \
@@ -14,7 +14,6 @@ RUN rm -rf \
 	/usr/share/info/* \ 
 	/var/cache/man/* \ \
 	/tmp \
-	/var/tmp \
 	/etc/s6/services/s6-fdholderd/down
 
 COPY rootfs /
