@@ -29,6 +29,7 @@ RUN BUILD_DEPS=" \
 	php7-curl \
 	php7-dom \
 	php7-exif \
+	php7-fileinfo \
 	php7-fpm \
 	php7-ftp \
         php7-gd \
@@ -55,11 +56,13 @@ RUN BUILD_DEPS=" \
         php7-phar \
         php7-posix \
         php7-redis \
+	php7-simplexml \
 	php7-soap \
         php7-sqlite3 \
 	php7-xml \
 	php7-xmlreader \
 	php7-xmlrpc \
+	php7-xmlwriter \
         php7-zlib \
         php7-zip \
 	curl
@@ -103,21 +106,19 @@ RUN ln -s /etc/php7 /etc/php \
 
 ## PHP config
 RUN sed -i -e "s*short_open_tag = Off*short_open_tag = On*g" /etc/php/php.ini \
- && sed -i -e "s*;always_populate_raw_post_data = -1*always_populate_raw_post_data = -1*g" /etc/php/php.ini
+ && sed -i -e "s*;always_populate_raw_post_data = -1*always_populate_raw_post_data = -1*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.enable=1*opcache.enable=1*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.enable_cli=1*opcache.enable_cli=1*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.interned_strings_buffer*opcache.interned_strings_buffer*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.max_accelerated_files*opcache.max_accelerated_files*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.memory_consumption*opcache.memory_consumption*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.save_comments*opcache.save_comments*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.revalidate_freq*opcache.revalidate_freq*g" /etc/php/php.ini \
+ && sed -i -e "s*;opcache.fast_shutdown=1*opcache.fast_shutdown=1*g" /etc/php/php.ini
 RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.ttl=7200" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.user_ttl=7200" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.gc_ttl=3600" >> /etc/php/conf.d/apcu.ini
-# set recommended PHP.ini settings
-# see https://secure.php.net/manual/en/opcache.installation.php
-RUN { \
-    echo 'opcache.memory_consumption=128'; \
-    echo 'opcache.interned_strings_buffer=8'; \
-    echo 'opcache.max_accelerated_files=4000'; \
-    echo 'opcache.revalidate_freq=60'; \
-    echo 'opcache.fast_shutdown=1'; \
-    echo 'opcache.enable_cli=1'; \
-} > /etc/php/conf.d/opcache-recommended.ini
  
 # Install composer global bin
 RUN curl -sS https://getcomposer.org/installer | php \
