@@ -13,7 +13,13 @@ APPADMINPASS=${APPADMINPASS:-admin}
 INSTALL=${INSTALL:-silent}
 
 if [ ${APPFOLDER} != "nextcloud" ]; then
-  mv /usr/share/webapps/nextcloud /usr/share/webapps/${APPFOLDER}
+  rsync -au --progress /usr/share/webapps/nextcloud/ /usr/share/webapps/${APPFOLDER}/
+  s6-rmrf /usr/share/webapps/nextcloud
+  chown -R nginx:www-data ${APPFOLDER}/apps/
+  chown -R nginx:www-data ${APPFOLDER}/themes/
+  if [ -d ${APPFOLDER}/custom_apps ]; then
+    chown -R nginx:www-data ${APPFOLDER}/custom_apps/
+  fi
   if [ -f /etc/nginx/sites-enabled/nextcloud.site ]; then
     s6-rmrf /etc/nginx/sites-enabled/nextcloud.site
   fi
@@ -23,6 +29,7 @@ if [ ${APPFOLDER} != "nextcloud" ]; then
   fi
     sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/daily/nextcloud
     sed -i "s*nextcloud*${APPFOLDER}*g" /etc/periodic/15min/nextcloud
+    sed -i "s*nextcloud/custom_apps*${APPFOLDER}/custom_apps*g" /etc/fix-attrs.d/02-nextcloud
 else
   s6-rmrf /etc/nginx/sites-enabled/subfolder
 fi
@@ -41,6 +48,10 @@ EOF
 
   if [ ! -d /etc/nextcloud ]; then
     mkdir /etc/nextcloud
+  fi
+
+  if [ -f $APPDIR/config/apps.config.php ] && [ ! -f /etc/nextcloud/apps.config.php ]; then
+    cp -a $APPDIR/config/apps.config.php /etc/nextcloud/bak.apps.config.php
   fi
 
   s6-rmrf $APPDIR/config
@@ -66,6 +77,9 @@ else
     --admin-pass "$APPADMINPASS" \
     --data-dir "/data"
     echo -e "\n[i] Login:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n---\n"
+  fi
+  if [ -f /etc/nextcloud/bak.apps.config.php ]; then
+    mv /etc/nextcloud/bak.apps.config.php /etc/nextcloud/apps.config.php
   fi
 fi
 rm /etc/cont-init.d/02-firstrun
