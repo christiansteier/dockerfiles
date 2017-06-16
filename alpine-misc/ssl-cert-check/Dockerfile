@@ -1,6 +1,7 @@
 FROM maxder/alpine-ssmtp:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
+RUN apk -U add openssl
 # Script from Matty: https://github.com/Matty9191/ssl-cert-check ##thx Matty
 ADD https://raw.githubusercontent.com/Matty9191/ssl-cert-check/master/ssl-cert-check /usr/local/sbin/ssl-cert-check
 RUN chmod +x /usr/local/sbin/ssl-cert-check \
