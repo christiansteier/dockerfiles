@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+ROOTMAIL=${ROOTMAIL:-username@gmail.com}
+ROOTNAME=${ROOTNAME:-Admin}
+MAILHUB=${MAILHUB:-smtp.gmail.com:587}
+REWRITEDOMAIN=${REWRITEDOMAIN:-gmail.com}
+HOSTDOMAIN=${HOSTDOMAIN:-yourlocalhost.yourlocaldomain.tld}
+USETLS=${USETLS:-Yes}
+USESTARTTLS=${USESTARTTLS:-Yes}
+AUTHUSER=${AUTHUSER:-username}
+AUTHPASS=${AUTHPASS:-password}
+AUTHMETHOD=${AUTHMETHOD:-LOGIN}
+FROMLINEOVERRIDE=${FROMLINEOVERRIDE:-Yes}
+
+echo "root:${ROOTMAIL}:${MAILHUB}" > /etc/ssmtp/revaliases
+echo -e "mailhub=${MAILHUB}\nrewriteDomain=${REWRITEDOMAIN}\nhostname=${HOSTDOMAIN}\nUseTLS=${USETLS}\nUseSTARTTLS=${USESTARTTLS}\nAuthUser=${AUTHUSER}\nAuthPass=${AUTHPASS}\nAuthMethod=${AUTHMETHOD}\nFromLineOverride=${FROMLINEOVERRIDE}" > /etc/ssmtp/ssmtp.conf
+usermod -c "${ROOTNAME}" root
+
+rm /etc/cont-init.d/01-config
+exit 0
