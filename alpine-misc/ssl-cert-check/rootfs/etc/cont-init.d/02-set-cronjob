@@ -4,7 +4,7 @@ set -e
 
 XDAYS=${XDAYS:-30}
 
-echo "ssl-cert-check -d '/etc/tls' -q -x ${XDAYS} -e ${ROOTMAIL}" > /etc/periodic/daily/ssl-cert-check
+echo "ssl-cert-check -a -d '/etc/tls' -q -x ${XDAYS} -e ${ROOTMAIL}" > /etc/periodic/daily/ssl-cert-check
 chmod +x /etc/periodic/daily/ssl-cert-check
 
 exit 0
