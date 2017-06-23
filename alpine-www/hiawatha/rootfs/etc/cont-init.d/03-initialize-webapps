@@ -1,10 +1,8 @@
 #!/usr/bin/with-contenv sh
-
 set -e
-
 SERVERNAME=${SERVERNAME:-localhost}
 
-s6-echo "[i] Check if webapps folder exists."
+s6-echo "[i] Verify that the webapps folder exists."
 if [ ! -d /usr/share/webapps ]; then
   s6-mkdir /usr/share/webapps
   s6-envuidgid hiawatha s6-chown -U -- /usr/share/webapps

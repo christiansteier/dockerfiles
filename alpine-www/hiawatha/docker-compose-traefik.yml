@@ -22,9 +22,9 @@ services:
     image: maxder/alpine-hiawatha:x86_64 # or armhf
     volumes:
     - /srv/docker/hiawatha/tls:/etc/hiawatha/tls
-    - /srv/docker/hiawatha/sites-enabled:/srv/docker/hiawatha/sites-enabled
+    - /srv/docker/hiawatha/sites-enabled:/etc/hiawatha/sites-enabled
     environment:
-    - SERVERNAME=localhost # Domain or IP address
+    - SERVERNAME=hiawatha.docker.localhost # Domain or IP address
     labels:
     - "traefik.backend=hiawatha"
     - "traefik.frontend.rule=Host:hiawatha.docker.localhost"
