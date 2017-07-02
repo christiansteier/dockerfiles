@@ -31,7 +31,7 @@ fi
 
 # Tuning
 if [ $(uname -m) == "armv6l" ] || [ $(uname -m) == "armv7l" ]; then
-  sed -i 's/skip-external-locking/&\nquery_cache_size = 4M/g' /etc/mysql/my.cnf 
+  sed -i 's/skip-external-locking/&\nquery_cache_size = 4M\ndefault-storage-engine = MyISAM/g' /etc/mysql/my.cnf 
 fi
 sed -i "s*#innodb_flush_log_at_trx_commit = 1*innodb_flush_log_at_trx_commit = 2*g" /etc/mysql/my.cnf
 
