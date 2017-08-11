@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  transmission:
+    restart: always
+    container_name: transmission
+    hostname: transmission
+    image: maxder/alpine-transmission:armhf
+    ports:
+    - 9091 
+    - 51413
+    volumes:
+    - /srv/docker/transmission/config:/var/transmission/config
+    - /srv/docker/transmission/downloads:/var/transmission/downloads
+    - /srv/docker/transmission/incomplete:/var/transmission/incomplete
