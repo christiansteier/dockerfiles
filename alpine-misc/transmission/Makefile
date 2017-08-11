@@ -25,7 +25,9 @@ build:
 run:
 	docker run -d --hostname ${NAME} --name ${NAME} \
 	-p 9091:9091 -p 51413:51413 \
-	-e USER=transmission -e PASSWORD=transmission
+	-e USER=transmission -e PASSWORD=transmission \
+	-v /srv/docker/transmission/downloads:/var/transmission/downloads \
+	-v /srv/docker/transmission/incomplete:/var/transmission/incomplete \
 	${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG}
 
 remove:
