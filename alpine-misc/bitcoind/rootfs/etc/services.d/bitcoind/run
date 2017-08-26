@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+RPCUSER=${RPCUSER:bitcoin}
+RPCPASSWORD=${RPCPASSWORD:bitcoinpass}
+
+if [ ! -d /bitcoin ]; then mkdir /bitcoin; fi
+
+exec bitcoind \
+  -server \
+  -rpcuser="$RPCUSER" \
+  -rpcpassword="$RPCPASSWORD" \
+  -rpcallowip="255.255.255.255/0" \
+  -rpcport=8332 \
+  -datadir=/bitcoin
