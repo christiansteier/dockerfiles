@@ -125,7 +125,7 @@ RUN curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
 
 RUN apk del ${BUILD_DEPS} php7-pear php7-dev \
- && rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp \
+ && rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* \
  && touch /firstrun
 
 COPY rootfs /
