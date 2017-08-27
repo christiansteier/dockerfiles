@@ -24,6 +24,7 @@ services:
     - /srv/docker/mahara/config:/etc/mahara
     - /srv/docker/mahara/data:/data
     environment:
+    - TLS=yes
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
 #    - INSTALL=silent ## Silent installation via CLI
