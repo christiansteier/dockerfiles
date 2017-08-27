@@ -22,4 +22,4 @@ RUN export APPDIR=/usr/share/webapps/mahara \
  && chmod +x /etc/periodic/15min/mahara
 
 COPY rootfs/ /
-RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
+RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/*
