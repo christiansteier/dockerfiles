@@ -18,7 +18,7 @@ IMAGENAME=alpine
 all: build
 
 build:
-	$(MAKE) -C ../../alpine-www/NGINX php7build
+	$(MAKE) -C ../../alpine-www/NGINX phpbuild
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" Dockerfile
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG} .
 

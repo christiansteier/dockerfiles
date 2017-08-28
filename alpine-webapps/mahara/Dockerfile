@@ -1,4 +1,4 @@
-FROM maxder/alpine-nginx-php7:ARCHTAG
+FROM maxder/alpine-nginx-php:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
 ARG VERSION=17.04

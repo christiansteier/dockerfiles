@@ -17,13 +17,14 @@ services:
     hostname: mahara
     image: maxder/alpine-mahara:x86_64
     ports:
-    - 10080:80
-    - 10443:443
+    - 80:80
+    - 443:443
     volumes:
     - /srv/docker/mahara/log:/var/log/NGINX
     - /srv/docker/mahara/config:/etc/mahara
     - /srv/docker/mahara/data:/data
     environment:
+    - WWWROOT=http://localhost
     - TLS=yes
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
