@@ -2,7 +2,6 @@ FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 RUN apk -U --no-cache --no-progress add \
-	php5-apcu \
 	php5-bcmath \
 	php5-bz2 \
         php5-cgi \
@@ -23,7 +22,6 @@ RUN apk -U --no-cache --no-progress add \
         php5-json \
 	php5-ldap \
         php5-mcrypt \
-        php5-memcache \
 	php5-mssql \
 	php5-mysqli \
 	php5-opcache \
@@ -41,18 +39,18 @@ RUN apk -U --no-cache --no-progress add \
 	php5-posix \
 	php5-soap \
         php5-sqlite3 \
-        php5-xcache \
 	php5-xml \
 	php5-xmlreader \
 	php5-xmlrpc \
         php5-zlib \
         php5-zip \
-        php5-redis@testing \
         curl
 
 ## Small fixes
 RUN ln -s /etc/php5 /etc/php \
- && ln -s /usr/lib/php5 /usr/lib/php
+ && ln -s /usr/bin/php5 /usr/bin/php \
+ && ln -s /usr/lib/php5 /usr/lib/php \
+ && ln -s /usr/bin/php-fpm5 /usr/bin/php-fpm
 
 ## PHP config
 RUN sed -i -e "s*short_open_tag = Off*short_open_tag = On*g" /etc/php/php.ini \
@@ -62,7 +60,7 @@ RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.ttl=7200" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.user_ttl=7200" >> /etc/php/conf.d/apcu.ini \
  && echo "apc.gc_ttl=3600" >> /etc/php/conf.d/apcu.ini
- 
+
 # Install composer global bin
 RUN curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
@@ -71,4 +69,3 @@ RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /v
  && touch /firstrun
 
 COPY rootfs /
-EXPOSE 9000
