@@ -24,7 +24,7 @@ build:
 
 phpbuild:
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" Dockerfile
-	sed -i "s*alpine-base*alpine-php-fpm*g" Dockerfile
+	sed -i "s*alpine-base*alpine-php5-fpm*g" Dockerfile
 	export VERSION=5; $(MAKE) -C ../php-fpm build
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${IMAGENAME}-${NAME}-php:${ARCHTAG} .
 
