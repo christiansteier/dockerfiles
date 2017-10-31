@@ -11,6 +11,11 @@ services:
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
+  elasticsearch:
+    restart: always
+    container_name: mahara_es
+    hostname: mahara_es
+    image: elasticsearch:5.5-alpine
   mahara:
     restart: always
     container_name: mahara
@@ -32,8 +37,10 @@ services:
 #    - APPADMINPASS=pwd123 ## Admin password for silent installation. Username is 'admin'
 #    - APPADMINEMAIL=admin@mydomain.org ## Admin email for silent insatllation
 #    - APPFOLDER=portfolio ## Mahara in a subdir
+    - ELASTICSEARCH_HOST=es
     links:
     - mariadb:db
+    - elasticsearch:es
 #    labels:
 #    - "traefik.backend=mahara"
 #    - "traefik.frontend.rule=Host:mahara.docker.localhost"

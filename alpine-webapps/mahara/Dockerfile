@@ -1,8 +1,8 @@
 FROM maxder/alpine-nginx-php:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
-ARG VERSION=17.04
-ARG RELEASE=2
+ARG VERSION=17.10
+ARG RELEASE=0
 
 RUN apk -U --no-progress add \
     mariadb-client
