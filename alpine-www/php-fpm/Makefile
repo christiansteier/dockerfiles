@@ -11,7 +11,7 @@ ifeq ($(UNAME), armv7l)
  ARCHTAG=armhf
 endif
 
-VERSION:=7
+VERSION:=5
 NAME=php${VERSION}-fpm
 NAMESPACE=maxder
 IMAGENAME=alpine

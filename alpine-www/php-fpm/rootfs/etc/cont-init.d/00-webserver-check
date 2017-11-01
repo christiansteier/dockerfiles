@@ -18,8 +18,10 @@ if [ -f /firstrun ]; then
   if [ $(grep -c '^hiawatha:' /etc/passwd) == 1 ]; then
         s6-echo "[i] Webserver Hiawatha found."
         s6-echo "[i] Configure PHP."
-	sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.conf
-	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
+	if [ -f /etc/php/php-fpm.conf ]; then
+	  sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.conf
+	  sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
+	fi
 	if [ -f /etc/php/php-fpm.d/www.conf ]; then
 	  sed -i "s*user = nobody*user = hiawatha*g" /etc/php/php-fpm.d/www.conf
 	  sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.d/www.conf
@@ -38,8 +40,10 @@ if [ -f /firstrun ]; then
   if [ $(grep -c '^nginx:' /etc/passwd) == 1 ]; then
 	s6-echo "[i] Webserver NGINX found."
 	s6-echo "[i] Configure PHP."
-	sed -i "s*user = nobody*user = nginx*g" /etc/php/php-fpm.conf
-	sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
+	if [ -f /etc/php/php-fpm.conf ]; then
+	  sed -i "s*user = nobody*user = nginx*g" /etc/php/php-fpm.conf
+	  sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.conf
+	fi
 	if [ -d /etc/php7 ]; then
           sed -i "s*user = nobody*user = nginx*g" /etc/php/php-fpm.d/www.conf
           sed -i "s*group = nobody*group = www-data*g" /etc/php/php-fpm.d/www.conf

@@ -1,7 +1,20 @@
 FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-RUN apk -U --no-cache --no-progress add \
+ARG GNU_LIBICONV_VERSION=1.15
+ARG PHP_VERSION=5.6.31
+ARG PHP_SHA256="6687ed2f09150b2ad6b3780ff89715891f83a9c331e69c90241ef699dec4c43f"
+
+RUN BUILD_DEPS=" \
+    tar \
+    build-base \
+    autoconf \
+    automake \
+    libtool \
+    php5-dev \
+    zlib-dev" \
+ && apk -U add \
+	${BUILD_DEPS} \
 	php5-bcmath \
 	php5-bz2 \
         php5-cgi \
@@ -17,7 +30,6 @@ RUN apk -U --no-cache --no-progress add \
         php5-gettext \
         php5-gmp \
 	php5-imap \
-	php5-iconv \
 	php5-intl \
         php5-json \
 	php5-ldap \
@@ -44,7 +56,32 @@ RUN apk -U --no-cache --no-progress add \
 	php5-xmlrpc \
         php5-zlib \
         php5-zip \
+	gnu-libiconv@testing \
         curl
+
+## libiconv
+ADD https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${GNU_LIBICONV_VERSION}.tar.gz /tmp/libiconv-${GNU_LIBICONV_VERSION}.tar.gz
+ADD http://de2.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror /tmp/php-${PHP_VERSION}.tar.gz
+RUN rm /usr/bin/iconv \
+ && cd /tmp \
+ && tar xzf libiconv-${GNU_LIBICONV_VERSION}.tar.gz \
+ && cd libiconv-${GNU_LIBICONV_VERSION} \
+ && ./configure --prefix=/usr/local \
+ && make \
+ && make install \
+ && libtool --finish /usr/local/lib \
+ && cd /tmp \
+ && echo "Verifying integrity and authenticity..." \
+ && echo "${PHP_SHA256}  php-${PHP_VERSION}.tar.gz" > php-${PHP_VERSION}.tar.gz.sha256 \
+ && CHECKSUM_STATE=$(echo -n $(sha256sum -c php-${PHP_VERSION}.tar.gz.sha256) | tail -c 2) \
+ && if [ "${CHECKSUM_STATE}" != "OK" ]; then echo "[!!] Checksum does not match!" && exit 1; fi \
+ && tar xzf php-${PHP_VERSION}.tar.gz \
+ && cd /tmp/php-5.*/ext/iconv \
+ && phpize5 \
+ && ./configure --with-iconv=/usr/lib --with-php-config=/usr/bin/php-config5 \
+ && make \
+ && cp modules/iconv.so /usr/lib/php5/modules \
+ && echo "extension=iconv.so" > /etc/php5/conf.d/00_iconv.ini
 
 ## Small fixes
 RUN ln -s /etc/php5 /etc/php \
@@ -65,7 +102,7 @@ RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
 RUN curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
 
-RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp \
+RUN rm -rf /var/cache/apk/*  /usr/share/* /var/cache/man/* /var/tmp \
  && touch /firstrun
 
 COPY rootfs /
