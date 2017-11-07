@@ -14,11 +14,3 @@ In bransh [debian](https://github.com/christiansteier/dockerfiles/tree/debian)
 ```
 git clone -b debian https://github.com/christiansteier/dockerfiles.git --depth 1
 ```
-
-## BigBlueButton based on Ubuntu
-In bransh [bigbluebutton](https://github.com/christiansteier/dockerfiles/tree/bigbluebutton)
-
-```
-git clone -b bigbluebutton https://github.com/christiansteier/dockerfiles.git --depth 1
-```
-
