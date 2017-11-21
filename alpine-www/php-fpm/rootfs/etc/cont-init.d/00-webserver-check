@@ -32,7 +32,7 @@ if [ -f /firstrun ]; then
 	sed -i "s#/var/log/hiawatha/error.log#/var/log/hiawatha/error.log\n\#ReverseProxy ^/.* http://www.example.com:80/#g" /etc/hiawatha/hiawatha.conf
   	if [ -f "/fpm.conf" ]; then rm /fpm.conf ;fi
 	if [ -d "/etc/nginx" ]; then rm -rf /etc/nginx ;fi
-	find /etc/cont-init.d/ -type f -exec sed -i "s*nginx*hiawatha*g" {} \;
+	find /etc/cont-init.d/ -type f -not -name "00-webserver-check" -exec sed -i "s*nginx*hiawatha*g" {} \;
 	chown hiawatha:www-data /tmp
   fi
 
@@ -51,8 +51,8 @@ if [ -f /firstrun ]; then
 	sed -i "s*include /etc/nginx/headers.conf\;*include /etc/nginx/headers.conf\;\n        include /etc/nginx/fpm.conf\;\n\n        root /usr/share/webapps\;\nindex index.php\;*g" /etc/nginx/localhost.site
 	mv /nginx_fpm.conf /etc/nginx/fpm.conf
 	if [ -d "/etc/hiawatha" ]; then rm -rf /etc/hiawatha ;fi
-	find /etc/cont-init.d/ -type f -exec sed -i "s*hiawatha*nginx*g" {} \;
-        chown nginx:hiawatha /tmp
+	find /etc/cont-init.d/ -type f -not -name "00-webserver-check" -exec sed -i "s*hiawatha*nginx*g" {} \;
+        chown nginx:www-data /tmp
   fi
 
   rm /firstrun
