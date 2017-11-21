@@ -56,6 +56,7 @@ EOF
 
   s6-rmrf $APPDIR/config
   s6-ln -s /etc/nextcloud $APPDIR/config
+  chown -R nginx:www-data $APPDIR/config
 
   if [ ! -f $APPDIR/config/config.php ]; then
     echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
