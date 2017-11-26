@@ -49,7 +49,7 @@ remove:
 	docker rm -f ${NAME}
 
 phpremove:
-	docker rm -f ${NAME}-php7
+	docker rm -f ${NAME}-php
 
 push:	
 	docker push ${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG}
