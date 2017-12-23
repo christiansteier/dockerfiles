@@ -1,8 +1,8 @@
 FROM maxder/alpine-nginx-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
-ARG VERSION="2.62.1"
-ARG RELEASE="170130"
+ARG VERSION="2.73.0"
+ARG RELEASE="171219"
 
 RUN apk -U --no-progress add \
     mariadb-client
@@ -18,4 +18,4 @@ RUN export APPDIR=/usr/share/webapps/limesurvey \
  && chown -R nginx:www-data ${APPDIR}/
 
 COPY rootfs/ /
-RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp /tmp/*
+RUN rm -rf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/*
