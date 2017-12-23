@@ -23,6 +23,7 @@ services:
     - /srv/docker/limesurvey/log:/var/log/NGINX
     - /srv/docker/limesurvey/config:/etc/limesurvey
     environment:
+    - TLS=yes
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
     - APPADMIN=limeadmin
