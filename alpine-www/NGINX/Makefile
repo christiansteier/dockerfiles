@@ -43,7 +43,9 @@ run:
 	-v /srv/docker/${NAME}/sites-enabled:/etc/nginx/sites-enabled \
 	-v /srv/docker/${NAME}/www:/usr/share/webapps \
 	-v /srv/docker/${NAME}/log:/var/log/NGINX \
+	-e TLS=yes \
 	${NAMESPACE}/${IMAGENAME}-${NAME}:${ARCHTAG}
+	docker exec ${NAME} /usr/sbin/set_tz Europe/Berlin
 
 phprun:
 	docker run -d --hostname ${NAME} --name ${NAME}-php \

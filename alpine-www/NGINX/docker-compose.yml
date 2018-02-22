@@ -13,5 +13,7 @@ services:
     volumes:
     - /srv/docker/nginx/tls:/etc/nginx/tls
     - /srv/docker/nginx/sites-enabled:/etc/nginx/sites-enabled
+    - /srv/docker/nginx/www:/usr/share/webapps
     environment:
     - TLS=yes
+    - SERVERNAME=127.0.0.1 # Domain or IP addres

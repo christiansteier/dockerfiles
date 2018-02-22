@@ -1,7 +1,7 @@
 server {
         listen 80 default_server;
 	listen [::]:80 default_server;
-        server_name localhost;
+        server_name SERVERNAME;
 
         # Add headers to serve security related headers
         include /etc/nginx/headers.conf;
