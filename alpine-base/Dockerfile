@@ -45,7 +45,7 @@ RUN curl -o /usr/sbin/set_tz -L https://raw.githubusercontent.com/nimmis/docker-
  && chmod +x /usr/sbin/set_tz
 
 # Bash/Prompt customization
-RUN echo 'PS1="\[\033[40;1;37m\][`date -R +%H:%M:%S`]\[\033[0m\] [\[\033[1;31m\]\u\[\033[0m\]@\h]:\[\033[01;34m\]\w\[\033[00m\]\$  "' >> /root/.bashrc
+RUN echo 'PS1="\[\033[42;37m\]- DOCKER -\[\033[40;1;37m\][`date -R +%H:%M:%S`]\[\033[0m\] [\[\033[1;31m\]\u\[\033[0m\]@\h]:\[\033[01;34m\]\w\[\033[00m\]\$  "' >> /root/.bashrc
 
 # Cleanup and security fixes
 COPY scripts/cleanup.sh /tmp/cleanup.sh
