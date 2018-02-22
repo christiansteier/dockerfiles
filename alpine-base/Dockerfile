@@ -1,14 +1,14 @@
 FROM maxder/alpine-mini:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
-ARG ALPINE=v3.6
-ARG S6OVERLAY=1.19.1.1
+ARG ALPINE=RELEASE
+ARG S6OVERLAY=1.21.2.2
 ARG GPG="DB30 1BA3 F6F8 07E0 D0E6  CCB8 6101 B278 3B2F D161"
 ARG BUILDWITHGLIBC=no
 
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/${ALPINE}/main/" > /etc/apk/repositories    \
- && echo "https://dl-cdn.alpinelinux.org/alpine/${ALPINE}/community/" >> /etc/apk/repositories \
- && echo "@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v${ALPINE}/main/" > /etc/apk/repositories    \
+ && echo "http://dl-cdn.alpinelinux.org/alpine/v${ALPINE}/community/" >> /etc/apk/repositories \
+ && echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
  && apk -U upgrade \
  && apk add bash skalibs execline s6 s6-portable-utils gnupg curl
 

@@ -14,7 +14,7 @@ endif
 default: build
 NAMESPACE=maxder
 IMAGENAME=alpine
-REL=v3.6
+REL=v3.7
 
 scratch:
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" ./scripts/mkimage-alpine-scratch.sh
@@ -27,7 +27,7 @@ buildwithglibc:
 	sed -i "s*BUILDWITHGLIBC=yes*BUILDWITHGLIBC=no*g" ./Dockerfile
 
 build:  scratch
-	docker build --rm -t ${NAMESPACE}/${IMAGENAME}-base:${ARCHTAG} .
+	docker build --no-cache --rm -t ${NAMESPACE}/${IMAGENAME}-base:${ARCHTAG} .
 	docker rmi -f maxder/alpine-mini:${ARCHTAG}
 
 push:
