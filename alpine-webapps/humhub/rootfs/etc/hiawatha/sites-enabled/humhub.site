@@ -1,0 +1,17 @@
+UrlToolkit {
+  ToolkitID = humhub
+  RequestURI isfile Return
+  Match ^/(css|files|images|js)/ Return
+  Match ^/(favicon.ico|robots.txt|sitemap.xml)$ Return
+  Match .*\?(.*) Rewrite /index.php?$1
+  Match .* Rewrite /index.php
+}
+
+
+VirtualHost {
+  Hostname = localhost
+  WebsiteRoot = /usr/share/webapps/humhub
+  StartFile = index.php
+  UseToolkit = humhub
+  ExecuteCGI = yes
+}
