@@ -1,20 +1,20 @@
 version: '2'
 
 services:
-  mariadb:
+  ls_db:
     restart: always
     container_name: limesurvey_db
-    hostname: mariadb
+    hostname: limesurvey_db
     image: maxder/alpine-mariadb:x86_64
     volumes:
     - /srv/docker/limesurvey/db:/var/lib/mysql
     environment:
     - DBUSER=dbadmin
     - DBPASS=dbadminpass
-  limesurvey:
+  ls:
     restart: always
     container_name: limesurvey
-    hostname: nextcloud
+    hostname: limesurvey
     image: maxder/alpine-limesurvey:x86_64
     ports:
     - 10080:80
@@ -31,7 +31,7 @@ services:
     - APPADMINEMAIL=admin@mydomain.org
 #    - APPFOLDER=survey ## limesurvey in a subdir
     links:
-    - mariadb:db
+    - ls_db:db
 #    labels:
 #    - "traefik.backend=limesurvey"
 #    - "traefik.frontend.rule=Host:limesurvey.docker.localhost"
