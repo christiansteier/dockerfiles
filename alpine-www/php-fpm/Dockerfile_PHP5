@@ -103,7 +103,7 @@ RUN curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
 
 RUN rm -rf \
-	/var/cache/apk/*
+	/var/cache/apk/* \
 	/usr/share/doc \
 	/usr/share/man/ \
 	/usr/share/info/* \ 
