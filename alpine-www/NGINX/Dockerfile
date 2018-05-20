@@ -21,8 +21,9 @@ RUN rm -rf \
 	/usr/share/doc \
 	/usr/share/man/ \
 	/usr/share/info/* \ 
-	/var/cache/man/* \ \
-	/tmp \
+	/var/cache/man/* \
+	/var/tmp/* \
+	/tmp/* \
 	/etc/s6/services/s6-fdholderd/down
 
 COPY rootfs /
