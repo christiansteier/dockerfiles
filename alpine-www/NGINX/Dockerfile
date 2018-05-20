@@ -22,7 +22,6 @@ RUN rm -rf \
 	/usr/share/man/ \
 	/usr/share/info/* \ 
 	/var/cache/man/* \
-	/var/tmp/* \
 	/tmp/* \
 	/etc/s6/services/s6-fdholderd/down
 
