@@ -26,4 +26,3 @@ RUN rm -rf \
 	/etc/s6/services/s6-fdholderd/down
 
 COPY rootfs /
-EXPOSE 80/tcp 443/tcp
