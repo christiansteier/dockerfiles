@@ -102,7 +102,13 @@ RUN echo "apc.shm_size = 128M" >> /etc/php/conf.d/apcu.ini \
 RUN curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
 
-RUN rm -rf /var/cache/apk/*  /usr/share/* /var/cache/man/* /var/tmp \
+RUN rm -rf \
+	/var/cache/apk/*
+	/usr/share/doc \
+	/usr/share/man/ \
+	/usr/share/info/* \ 
+	/var/cache/man/* \
+	/var/tmp/* \
+	/tmp/*
  && touch /firstrun
-
 COPY rootfs /
