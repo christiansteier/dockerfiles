@@ -2,8 +2,8 @@ FROM maxder/alpine-base:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 ENV VERSION 1.6
-ENV RELEASE 0
-ENV ARCH ARCHTAG
+ENV RELEASE 2
+ENV ARCH x86_64
 
 RUN apk -U --no-progress add \
         ca-certificates \
@@ -31,4 +31,3 @@ RUN rm -rf \
 	/etc/s6/services/s6-fdholderd/down
 
 COPY rootfs /
-EXPOSE 80/tcp 8080/tcp
