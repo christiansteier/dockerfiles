@@ -2,7 +2,7 @@ FROM maxder/alpine-hiawatha-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
 ARG VERSION=1.2
-ARG RELEASE=4
+ARG RELEASE=7
 
 RUN apk -U --no-progress add \
     imagemagick \
