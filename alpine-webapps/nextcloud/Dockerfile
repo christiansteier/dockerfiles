@@ -1,8 +1,8 @@
 FROM maxder/alpine-nginx-php7:ARCHTAG
 MAINTAINER Christian-Maximilian Steier
 
-ARG VERSION=12.0
-ARG RELEASE=3
+ARG VERSION=13.0
+ARG RELEASE=4
 ARG GPG="2880 6A87 8AE4 23A2 8372  792E D758 99B9 A724 937A"
 
 RUN apk -U --no-progress add \
