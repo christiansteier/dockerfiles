@@ -10,6 +10,9 @@ endif
 ifeq ($(UNAME), armv7l)
  ARCHTAG=armhf
 endif
+ifeq ($(UNAME), aarch64)
+ ARCHTAG=aarch64
+endif
 
 NAME=nginx
 NAMESPACE=maxder
