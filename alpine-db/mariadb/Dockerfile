@@ -14,8 +14,7 @@ RUN s6-rmrf \
     /usr/share/doc \
     /usr/share/man/ \
     /usr/share/info/* \
-    /var/cache/man/* \
-    /var/tmp
+    /var/cache/man/*
 
 EXPOSE 3306/tcp
 VOLUME ["/var/lib/mysql"]
