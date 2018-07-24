@@ -17,7 +17,7 @@ endif
 default: build
 NAMESPACE=maxder
 IMAGENAME=alpine
-REL=3.7
+REL=3.8
 
 scratch:
 	sed -i "s*ARCHTAG*${ARCHTAG}*g" ./scripts/mkimage-alpine-scratch.sh
