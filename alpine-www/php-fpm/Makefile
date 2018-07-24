@@ -10,8 +10,11 @@ endif
 ifeq ($(UNAME), armv7l)
  ARCHTAG=armhf
 endif
+ifeq ($(UNAME), aarch64)
+ ARCHTAG=aarch64
+endif
 
-VERSION:=5
+VERSION:=7
 NAME=php${VERSION}-fpm
 NAMESPACE=maxder
 IMAGENAME=alpine
