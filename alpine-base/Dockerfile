@@ -1,4 +1,4 @@
-FROM maxder/alpine-mini:
+FROM maxder/alpine-mini:ARCHTAG
 MAINTAINER Christian-Maxilian Steier
 
 ARG ALPINE=3.7
