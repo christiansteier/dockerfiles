@@ -34,18 +34,6 @@ else
   s6-rmrf /etc/nginx/sites-enabled/subfolder
 fi
 
-if [ $INSTALL == "silent" ]; then
-  until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
-
-  if ! mysql -u $DBUSER --password=$DBPASS -h $DBHOST -e "use ${APPDB}"; then
-    echo -e "No database ${APPDB} found. Creating database now .."
-    mysql -u $DBUSER --password=$DBPASS -h $DBHOST <<-EOF
-    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8;
-    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
-    FLUSH PRIVILEGES;
-EOF
-  fi
-
   if [ ! -d /etc/nextcloud ]; then
     mkdir /etc/nextcloud
   fi
@@ -57,6 +45,18 @@ EOF
   s6-rmrf $APPDIR/config
   s6-ln -s /etc/nextcloud $APPDIR/config
   chown -R nginx:www-data $APPDIR/config
+
+if [ $INSTALL == "silent" ]; then
+  until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+
+  if ! mysql -u $DBUSER --password=$DBPASS -h $DBHOST -e "use ${APPDB}"; then
+    echo -e "No database ${APPDB} found. Creating database now .."
+    mysql -u $DBUSER --password=$DBPASS -h $DBHOST <<-EOF
+    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8;
+    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
+    FLUSH PRIVILEGES;
+EOF
+  fi
 
   if [ ! -f $APPDIR/config/config.php ]; then
     echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $APPDIR/config/config.php
