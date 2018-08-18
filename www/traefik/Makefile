@@ -31,7 +31,7 @@ buildlatest:
 
 run:
 	docker run -d --hostname ${NAME} --name ${NAME} \
-	-p 80:80 -p 8080:8080 \
+	-p 80:80 -p 443:443 -p 8080:8080 \
 	-v /srv/docker/${NAME}:/config/traefik \
 	-v /var/run/docker.sock:/var/run/docker.sock \
 	${NAMESPACE}/${IMAGENAME}-${NAME}.${ARCHTAG}:${TRAEFIKVERSION}
