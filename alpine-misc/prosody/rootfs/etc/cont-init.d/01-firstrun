@@ -1,5 +1,0 @@
-#!/bin/execlineb -P
-
-if -t { s6-test -d /firstrun }
-if { s6-chmod 100 /usr/local/sbin/firstrun }
-if { /usr/local/sbin/firstrun }

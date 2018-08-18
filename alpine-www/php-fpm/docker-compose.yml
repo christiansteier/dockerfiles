@@ -1,9 +1,0 @@
-version: '2'
-
-services:
-  php-fpm:
-    container_name: php
-    restart: always
-    image: maxder/alpine-php-fpm:x86_64
-    ports:
-    - "9000"

@@ -1,2 +1,0 @@
-/var/log/memcached-error-logs true nobody,32768:32768 0644 2700
-/var/log/memcached-general-logs true nobody,32768:32768 0644 2700

@@ -1,3 +1,0 @@
-#!/bin/execlineb -P
-
-if { sysctl -w net.core.somaxconn=1024 }

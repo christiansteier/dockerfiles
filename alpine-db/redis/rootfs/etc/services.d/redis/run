@@ -1,4 +1,0 @@
-#!/bin/execlineb -P
-
-exec -c
-s6-setuidgid redis redis-server --protected-mode no

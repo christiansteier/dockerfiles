@@ -1,4 +1,0 @@
-/var/transmission true transmission 0600 0700
-/var/transmission/config true transmission 0600 0700
-/var/transmission/downloads true transmission 0700 0700
-/var//transmission/incomplete true transmission 0700 0700

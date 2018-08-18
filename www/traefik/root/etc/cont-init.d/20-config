@@ -1,0 +1,41 @@
+#!/bin/execlineb -P
+
+foreground {
+ if -t { s6-test ! -d /config/traefik/config }
+ if { s6-echo "[i] Create config folder" } 
+ if { s6-mkdir -p /config/traefik/config }
+}
+
+foreground {
+ if -t { s6-test ! -f /config/traefik/config/rules.toml }
+ if { touch /config/traefik/config/rules.toml }
+ if { s6-chmod 4755 /config/traefik/config/rules.toml }
+ if { s6-envuidgid abc s6-chown -U -- /config/traefik/config/rules.toml }
+}
+
+if -t { s6-test ! -f /config/traefik/config/traefik.toml }
+if { s6-echo "[i] Create config (traefik.toml)" }
+if { apk -U add curl }
+if { curl -o /config/traefik/config/traefik.toml -L https://raw.githubusercontent.com/containous/traefik/master/traefik.sample.toml }
+if { sed -i "s*# logLevel = \"DEBUG\"*logLevel = \"DEBUG\"*g" /config/traefik/config/traefik.toml }
+if { sed -i "s*# filePath = \"log/traefik.log\"*filePath = \"/config/traefik/traefik.log\"*g" /config/traefik/config/traefik.toml }
+if { sed -i "s*# dashboard = false*dashboard = true*g" /config/traefik/config/traefik.toml }
+if { echo "filename = \"/etc/traefik/config/rules.toml\"" >> /config/traefik/config/traefik.toml }
+if { sed -i "s*# domain = \"docker.localhost\"*domain = \"docker.localhost\"*g" /config/traefik/config/traefik.toml }
+if { s6-chmod 4755 /config/traefik/config/traefik.toml }
+if { s6-envuidgid abc s6-chown -U -- /config/traefik/config/traefik.toml }
+if { apk del curl }
+if { s6-rmrf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp/* }
+
+foreground {
+ if -t { s6-test -f /config/traefik/traefik.log }
+ if { s6-rmrf /config/traefik/traefik.log }
+}
+
+foreground {
+ if -t { s6-test ! -f /config/traefik/traefik.log }
+ if { touch /config/traefik/traefik.log }
+ if { ln -s /dev/stdout /config/traefik/traefik.log }
+}
+
+exit 0
