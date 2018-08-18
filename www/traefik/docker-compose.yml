@@ -11,5 +11,5 @@ services:
     - "443:443"
     - "8080:8080" # Webinterface
     volumes:
-    - /srv/docker/traefik/tls:/config/traefik
+    - /srv/docker/traefik:/config/traefik
     - /var/run/docker.sock:/var/run/docker.sock
