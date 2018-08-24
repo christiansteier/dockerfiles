@@ -27,6 +27,7 @@ build:
 run:
 	docker run -d --hostname ${NAME} --name ${NAME} \
 	-p 6379:6379 \
+	--privileged \
 	-v /srv/docker/${NAME}:/config/redis \
 	${NAMESPACE}/${IMAGENAME}-${NAME}.${ARCHTAG}
 
