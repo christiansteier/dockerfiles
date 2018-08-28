@@ -1,0 +1,5 @@
+# Cron
+*/15 * * * * s6-setuidgid abc php7 -f /usr/share/webapps/nextcloud/cron.php
+
+# File scan
+0 0 * * * s6-setuidgid abc php7 /usr/share/webapps/nextcloud/occ files:scan --all

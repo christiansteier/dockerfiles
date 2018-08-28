@@ -1,0 +1,92 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+APPFOLDER=${APPFOLDER:-nextcloud}
+NEXTCLOUD_PATH=/usr/share/webapps/${APPFOLDER}
+APPDB=${APPDB:-nextcloud}
+DBHOST=${DBHOST:-db}
+DBUSER=${DBUSER:-nextcloud}
+DBPASS=${DBPASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 88 | head -n 1)}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-$DB_ENV_MYSQL_ROOT_PASSWORD}
+APPADMIN=${APPADMIN:-admin}
+APPADMINPASS=${APPADMINPASS:-admin}
+SILENTINSTALL=${SILENTINSTALL:-no}
+
+if [ ${APPFOLDER} != "nextcloud" ]; then
+  rsync -au --progress /usr/share/webapps/nextcloud/ /usr/share/webapps/${APPFOLDER}/
+  sed -i "s*nextcloud*${APPFOLDER}*g" /defaults/default /config/nginx/site-confs/default
+fi
+
+if [ ! -d /config/nextcloud ]; then
+  mkdir -p /config/nextcloud
+  chown abc:abc /config/nextcloud
+fi
+
+s6-rmrf $NEXTCLOUD_PATH/config
+s6-ln -s /config/nextcloud $NEXTCLOUD_PATH/config
+
+echo -e "Creating possible missing Directories\n"
+mkdir -p $NEXTCLOUD_PATH/data $NEXTCLOUD_PATH/assets $NEXTCLOUD_PATH/updater
+
+printf "chmod Files and Directories\n"
+find ${NEXTCLOUD_PATH}/ -type f -print0 | xargs -0 chmod 0640
+find ${NEXTCLOUD_PATH}/ -type d -print0 | xargs -0 chmod 0750
+
+echo -e "chown Directories\n"
+chown -R root:abc ${NEXTCLOUD_PATH}/
+chown -R abc:abc ${NEXTCLOUD_PATH}/apps/
+chown -R abc:abc ${NEXTCLOUD_PATH}/assets/
+chown -R abc:abc ${NEXTCLOUD_PATH}/config/
+chown -R abc:abc ${NEXTCLOUD_PATH}/data/
+chown -R abc:abc ${NEXTCLOUD_PATH}/themes/
+chown -R abc:abc ${NEXTCLOUD_PATH}/updater/
+chmod +x ${NEXTCLOUD_PATH}/occ
+
+echo -e "chmod/chown .htaccess\n"
+if [ -f ${NEXTCLOUD_PATH}/.htaccess ]; then
+  chmod 0644 ${NEXTCLOUD_PATH}/.htaccess
+  chown root:abc ${NEXTCLOUD_PATH}/.htaccess
+fi
+if [ -f ${NEXTCLOUD_PATH}/data/.htaccess ]; then
+  chmod 0644 ${NEXTCLOUD_PATH}/data/.htaccess
+  chown root:abc ${NEXTCLOUD_PATH}/data/.htaccess
+fi
+
+if [ $SILENTINSTALL == "yes" ]; then
+  until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+  if ! mysql -u root --password=$MYSQL_ROOT_PASSWORD -h $DBHOST -e "use ${APPDB}"; then
+    echo -e "No database ${APPDB} found. Creating database now .."
+    mysql -u root --password=$MYSQL_ROOT_PASSWORD -h $DBHOST <<-EOF
+    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8;
+    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
+    FLUSH PRIVILEGES;
+EOF
+  fi
+  if [ ! -f $NEXTCLOUD_PATH/config/config.php ]; then
+    ping -c 3 redis > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n);\n" > $NEXTCLOUD_PATH/config/config.php
+    else
+      echo -e  "<?php \n\$CONFIG = array (\n  'memcache.local' => '\\OC\\Memcache\\APCu',\n'memcache.locking' => '\\OC\\Memcache\\Redis',\n'redis' =>array (\n    'host' => 'redis',\n    'port' => 6379,\n  ),\n);\n" > $NEXTCLOUD_PATH/config/config.php
+    fi
+    chown abc:abc $NEXTCLOUD_PATH/config/config.php
+    echo -e "\n---\n[i] Installing Nextcloud via command line. Stay tuned!\n"
+    s6-setuidgid abc php7 $NEXTCLOUD_PATH/occ maintenance:install -nv --database \
+    "mysql" --database-name "$APPDB"  \
+    --database-user "$DBUSER" \
+    --database-pass "$DBPASS" \
+    --database-host "$DBHOST" \
+    --admin-user "$APPADMIN" \
+    --admin-pass "$APPADMINPASS" \
+    --data-dir "/data"
+  echo -e "\n[i] Login:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n---\n"
+  fi
+fi
+
+# set cronjob
+crontab /defaults/nextcloud
+
+rm /etc/cont-init.d/50-install
+
+exit 0

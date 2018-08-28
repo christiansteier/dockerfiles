@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  redis:
+    restart: always
+    container_name: nextcloud_redis
+    hostname: nextcloud_redis
+    image: maxder/alpine-redis.x86_64
+    volumes:
+    - /srv/docker/nextcloud/db/redis/data:/data
+  mariadb:
+    restart: always
+    container_name: nextcloud_db
+    hostname: nextcloud_db
+    image: linuxserver/mariadb
+    volumes:
+    - /srv/docker/nextcloud/db/mariadb/lib:/var/lib/mysql
+    - /srv/docker/nextcloud/db/mariadb/conf:/config
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpasswd
+  nextcloud:
+    restart: always
+    container_name: nextcloud
+    hostname: nextcloud
+    image: maxder/alpine-nextcloud.x86_64:13.0.5
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /srv/docker/nextcloud/conf:/config/nextcloud
+    - /srv/docker/nextcloud/data:/data
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpasswd
+    #- APPFOLDER=cloud          ## Maps Nextcloud to subdir
+    - SILENTINSTALL=yes
+    - APPADMINPASS=adminpass    ## Admin password for silent installation
+    - APPADMIN=admin            ## Admin username for silent installation
+
+    links:
+    - mariadb:db
+    - redis:redis
+#    labels:
+#    - "traefik.backend=nextcloud"
+#    - "traefik.frontend.rule=Host:nextcloud.docker.localhost"
+#    - "traefik.frontend.entryPoints=https"
+#    - "traefik.protocol=http"
+#    - "traefik.port=80"
+#    - "traefik.docker.network=traefik_default"
+#networks:
+#  default:
+#    external:
+#      name: traefik_default
