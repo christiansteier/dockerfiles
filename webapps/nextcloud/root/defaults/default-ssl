@@ -6,6 +6,16 @@ upstream php-handler {
 server {
   listen 80;
   server_name SERVERNAME;
+  # enforce https
+  return 301 https://$server_name$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name SERVERNAME;
+
+  ssl_certificate /config/keys/cert.crt;
+  ssl_certificate_key /config/keys/cert.key;
 
   # Add headers to serve security related headers
   add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
@@ -58,7 +68,9 @@ server {
   location / {
 
     rewrite ^/remote/(.*) /remote.php last;
+
     rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
+
     try_files $uri $uri/ =404;
   }
 

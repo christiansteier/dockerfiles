@@ -35,7 +35,8 @@ services:
     - SILENTINSTALL=yes
     - APPADMINPASS=adminpass    ## Admin password for silent installation
     - APPADMIN=admin            ## Admin username for silent installation
-
+    - SERVERNAME=inuxserver.io
+    - TLS=yes
     links:
     - mariadb:db
     - redis:redis

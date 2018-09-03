@@ -12,6 +12,8 @@ MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-$DB_ENV_MYSQL_ROOT_PASSWORD}
 APPADMIN=${APPADMIN:-admin}
 APPADMINPASS=${APPADMINPASS:-admin}
 SILENTINSTALL=${SILENTINSTALL:-no}
+SERVERNAME=${SERVERNAME:-localhost}
+TLS=${TLS:-no}
 
 if [ ${APPFOLDER} != "nextcloud" ]; then
   rsync -au --progress /usr/share/webapps/nextcloud/ /usr/share/webapps/${APPFOLDER}/
@@ -80,6 +82,10 @@ EOF
     --admin-user "$APPADMIN" \
     --admin-pass "$APPADMINPASS" \
     --data-dir "/data"
+  sed -i "s*localhost*$SERVERNAME*g" $NEXTCLOUD_PATH/config/config.php
+  if [ $SILENTINSTALL == "yes" ]; then
+    sed -i 's*http://*https://*g' $NEXTCLOUD_PATH/config/config.php
+  fi
   echo -e "\n[i] Login:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n---\n"
   fi
 fi
