@@ -27,9 +27,10 @@ foreground {
 
 if -t { s6-test -f /config/redis/conf/redis.conf }
 if { sed -i "s/^bind 127.0.0.1/bind 0.0.0.0/" /config/redis/conf/redis.conf }
-if { sed -i "s/^daemonize yes/daemonize no/" /config/redis/conf/redis.conf }
+if { sed -i "s/daemonize yes/daemonize no/" /config/redis/conf/redis.conf }
 if { sed -i "s/^\(logfile .*\)$/# \1/" /config/redis/conf/redis.conf }
 if { sed -i "s*logfile*#logfile*g" /config/redis/conf/redis.conf }
+if { sed -i "s*stop-writes-on-bgsave-error yes*stop-writes-on-bgsave-error no*g" /config/redis/conf/redis.conf }
 if { s6-chmod 4755 /config/redis/conf/redis.conf }
 if { s6-envuidgid abc s6-chown -U -- /config/redis/conf/redis.conf }
 
