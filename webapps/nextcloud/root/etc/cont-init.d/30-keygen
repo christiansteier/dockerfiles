@@ -4,7 +4,7 @@ set -e
 SERVERNAME=${SERVERNAME:-localhost}
 TLS=${TLS:-no}
 
-sed -i "s*SERVERNAME*$SERVERNAME*g" /defaults/default
+sed -i "s*SERVERNAME*$SERVERNAME*g" /defaults/default /config/nginx/site-confs/default
 if [ $TLS == "yes" ]; then
   SUBJECT="/C=US/ST=CA/L=Carlsbad/O=$SERVERNAME/OU=LSIO Server/CN=*"
   if [[ -f /config/keys/cert.key && -f /config/keys/cert.crt ]]; then

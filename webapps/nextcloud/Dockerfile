@@ -1,4 +1,4 @@
-FROM lsiobase/alpine.nginx.ARCHTAG:3.7
+FROM lsiobase/alpine.nginx-ARCHTAG:3.7
 MAINTAINER Christian-Maxilian Steier
 
 ARG VERSION=13.0.5
