@@ -3,7 +3,7 @@
 set -e
 
 APPFOLDER=${APPFOLDER:-nextcloud}
-NEXTCLOUD_PATH=/config/www/${APPFOLDER}
+NEXTCLOUD_PATH=/usr/share/webapps/${APPFOLDER}
 APPDB=${APPDB:-nextcloud}
 DBHOST=${DBHOST:-db}
 DBUSER=${DBUSER:-nextcloud}
