@@ -42,4 +42,4 @@ remove:
 
 push:	buildlatest
 	docker push ${NAMESPACE}/${IMAGENAME}-${NAME}.${ARCHTAG}:${NEXTCLOUDVERSION}
-docker push ${NAMESPACE}/${IMAGENAME}-${NAME}.${ARCHTAG}:latest
+	docker push ${NAMESPACE}/${IMAGENAME}-${NAME}.${ARCHTAG}:latest

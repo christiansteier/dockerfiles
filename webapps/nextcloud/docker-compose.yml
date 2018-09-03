@@ -22,12 +22,14 @@ services:
     restart: always
     container_name: nextcloud
     hostname: nextcloud
+wnextcloud/
     image: maxder/alpine-nextcloud.x86_64:13.0.5
     ports:
     - 80:80
     - 443:443
     volumes:
     - /srv/docker/nextcloud/conf:/config/nextcloud
+    - /srv/docker/nextcloud/apps:/usr/share/webapps/nextcloud/custom_apps
     - /srv/docker/nextcloud/data:/data
     environment:
     - MYSQL_ROOT_PASSWORD=rootpasswd
