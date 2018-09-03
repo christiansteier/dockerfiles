@@ -1,4 +1,4 @@
-FROM lsiobase/alpine.nginx-ARCHTAG:3.7
+FROM lsiobase/alpine.nginx.ARCHTAG:3.7
 MAINTAINER Christian-Maxilian Steier
 
 ARG VERSION=13.0.5
@@ -95,6 +95,9 @@ RUN echo "Verifying integrity and authenticity..." \
  && echo "All seems good, now unpacking..." \
  && tar xfvj nextcloud-${VERSION}.tar.bz2 \
  && rm nextcloud-${VERSION}.tar.bz2* nextcloud.asc \
+ && printf "chmod Files and Directories\n" \ 
+ && find ${NEXTCLOUD_PATH}/ -type f -print0 | xargs -0 chmod 0640 \
+ && find ${NEXTCLOUD_PATH}/ -type d -print0 | xargs -0 chmod 0750 \
  && chown -R abc:abc ${NEXTCLOUD_PATH}
 
 # Cleanup and security fixes

@@ -31,10 +31,6 @@ s6-ln -s /config/nextcloud $NEXTCLOUD_PATH/config
 echo -e "Creating possible missing Directories\n"
 mkdir -p $NEXTCLOUD_PATH/data $NEXTCLOUD_PATH/assets $NEXTCLOUD_PATH/updater
 
-printf "chmod Files and Directories\n"
-find ${NEXTCLOUD_PATH}/ -type f -print0 | xargs -0 chmod 0640
-find ${NEXTCLOUD_PATH}/ -type d -print0 | xargs -0 chmod 0750
-
 echo -e "chown Directories\n"
 chown -R root:abc ${NEXTCLOUD_PATH}/
 chown -R abc:abc ${NEXTCLOUD_PATH}/apps/
