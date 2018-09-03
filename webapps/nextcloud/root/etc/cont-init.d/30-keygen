@@ -4,6 +4,7 @@ set -e
 SERVERNAME=${SERVERNAME:-localhost}
 TLS=${TLS:-no}
 
+sed -i "s*SERVERNAME*$SERVERNAME*g" /defaults/default
 if [ $TLS == "yes" ]; then
   SUBJECT="/C=US/ST=CA/L=Carlsbad/O=$SERVERNAME/OU=LSIO Server/CN=*"
   if [[ -f /config/keys/cert.key && -f /config/keys/cert.crt ]]; then
@@ -12,6 +13,7 @@ if [ $TLS == "yes" ]; then
     echo "generating self-signed keys in /config/keys, you can replace these with your own keys if required"
     openssl req -new -x509 -days 3650 -nodes -out /config/keys/cert.crt -keyout /config/keys/cert.key -subj "$SUBJECT"
   fi
+  sed -i "s*SERVERNAME*$SERVERNAME*g" /defaults/default-ssl
   mv /defaults/default-ssl /defaults/default
   cp /defaults/default /config/nginx/site-confs/default
 fi

@@ -4,7 +4,7 @@ MAINTAINER Christian-Maxilian Steier
 ARG VERSION=13.0.5
 ARG GPG="2880 6A87 8AE4 23A2 8372  792E D758 99B9 A724 937A"
 # environment settings
-ENV NEXTCLOUD_PATH="/usr/share/webapps/nextcloud"
+ENV NEXTCLOUD_PATH="/config/www/nextcloud"
 
 RUN echo "**** install build packages ****" \
  && apk add --no-cache --virtual=build-dependencies \
@@ -80,7 +80,7 @@ RUN echo "**** install build packages ****" \
 		/etc/php7/php.ini \
  && echo "env[PATH] = /usr/local/bin:/usr/bin:/bin" >> /etc/php7/php-fpm.conf
 
-WORKDIR /usr/share/webapps
+WORKDIR /config/www
 ADD https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.tar.bz2 nextcloud-${VERSION}.tar.bz2
 ADD https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.tar.bz2.sha256 nextcloud-${VERSION}.tar.bz2.sha256
 ADD https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.tar.bz2.asc nextcloud-${VERSION}.tar.bz2.asc
