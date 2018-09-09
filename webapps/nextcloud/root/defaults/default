@@ -61,10 +61,10 @@ server {
   }
 
   location / {
-
     rewrite ^/remote/(.*) /remote.php last;
     rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
     try_files $uri $uri/ =404;
+    rewrite ^ /index.php$uri;
   }
 
   location ~ \.php(?:$|/) {
