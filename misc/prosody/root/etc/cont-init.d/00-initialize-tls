@@ -23,6 +23,6 @@ foreground {
 
 if { s6-echo "[i] Create a server certificate for localhost" }
 if { apk -U add openssl }
-if { prosodyctl --root cert generate localhost }
+if { prosodyctl --config /config/prosody/conf/prosody.cfg.lua --root cert generate localhost }
 if { apk del openssl }
 if { s6-rmrf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp }
