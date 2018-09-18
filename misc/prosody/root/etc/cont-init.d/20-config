@@ -1,0 +1,26 @@
+#!/bin/execlineb -P
+
+foreground {
+ if -t { s6-test ! -d /config/prosody }
+ if { s6-mkdir -p /config/prosody }
+}
+
+foreground {
+ if -t { s6-test ! -d /config/prosody/conf }
+ if { s6-echo "[i] Create conf folder" }
+ if { s6-mkdir -p /config/prosody/conf }
+}
+
+foreground {
+if -t { s6-test -f /config/prosody/conf/prosody.cfg.lua }
+if { s6-echo "[i] Config found." }
+if { mv /etc/prosody/prosody.cfg.lua /config/prosody/conf/orig.prosody.cfg.lua }
+}
+
+foreground {
+ if -t { s6-test ! -f /config/prosody/conf/prosody.cfg.lua }
+ if { s6-echo "[i] Create config (prosody.cfg.lua)" }
+ if { mv /etc/prosody/prosody.cfg.lua /config/prosody/conf/prosody.cfg.lua }
+}
+
+exit 0

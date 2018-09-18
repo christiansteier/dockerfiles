@@ -1,0 +1,28 @@
+#!/bin/execlineb -P
+
+foreground {
+ if -t { s6-test ! -d /config/prosody }
+ if { s6-echo "[i] Create prosody folder in /config" }
+ if { s6-mkdir -p /config/prosody }
+}
+
+foreground {
+ if -t { s6-test -d /etc/prosody/certs }
+ if { s6-rmrf /etc/prosody/certs }
+}
+
+foreground {
+ if -t { s6-test ! -d /config/prosody/certs }
+ if { s6-echo "[i] Create certs folder" }
+ if { s6-mkdir -p /config/prosody/certs }
+}
+
+foreground {
+ if { s6-ln -s /config/prosody/certs /etc/prosody/certs }
+}
+
+if { s6-echo "[i] Create a server certificate for localhost" }
+if { apk -U add openssl }
+if { prosodyctl --root cert generate localhost }
+if { apk del openssl }
+if { s6-rmrf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp }

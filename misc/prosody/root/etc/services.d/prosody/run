@@ -1,0 +1,4 @@
+#!/usr/bin/execlineb -P
+fdmove -c 2 1
+exec -c
+/usr/bin/prosodyctl --config /config/prosody/conf/prosody.cfg.lua --root start
