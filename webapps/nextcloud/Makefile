@@ -15,7 +15,7 @@ ifeq ($(UNAME), aarch64)
 endif
 
 NAME=nextcloud
-NEXTCLOUDVERSION=13.0.5
+NEXTCLOUDVERSION=14.0.0
 NAMESPACE=maxder
 IMAGENAME=alpine
 
