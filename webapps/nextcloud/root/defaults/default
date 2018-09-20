@@ -40,11 +40,11 @@ server {
   location = /.well-known/caldav {
     return 301 $scheme://$host/remote.php/dav;
   }
-
+  
   # The following 2 rules are only needed for the user_webfinger app.
   # Uncomment it if you're planning to use this app.
-  #rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-  #rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
 
   location = /robots.txt {
     allow all;
@@ -64,7 +64,7 @@ server {
     rewrite ^/remote/(.*) /remote.php last;
     rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
     try_files $uri $uri/ =404;
-    rewrite ^ /index.php$uri;
+    rewrite ^ /index.php$request_uri;
   }
 
   location ~ \.php(?:$|/) {
