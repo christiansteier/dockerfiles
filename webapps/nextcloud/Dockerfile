@@ -1,7 +1,7 @@
 FROM lsiobase/alpine.nginx.ARCHTAG:3.7
 MAINTAINER Christian-Maxilian Steier
 
-ARG VERSION=13.0.5
+ARG VERSION=14.0.0
 ARG GPG="2880 6A87 8AE4 23A2 8372  792E D758 99B9 A724 937A"
 # environment settings
 ENV NEXTCLOUD_PATH="/usr/share/webapps/nextcloud"
