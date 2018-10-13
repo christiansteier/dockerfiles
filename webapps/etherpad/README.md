@@ -22,9 +22,10 @@ Build a small AlpineLinux Docker image based on [LinuxServer.io](https://github.
 
 ## Environment variables
 
-- **ETHERPAD_TITLE** : *(default: "Etherpad")*
+- **ETHERPAD_TITLE** : Name your instance *(default: "Etherpad")*
 - **ETHERPAD_ADMIN_USER** : *(default: "admin")*
 - **ETHERPAD_ADMIN_PASS** : *(default: "generate random password")*
+- **ETHERPAD_APIKEY** : Token for API-Authentication *(default: "generate random token at the first start")*
 
 ###### Silent Install ######
 - **SILENTINSTALL** : yes/no *(default: "yes")*
