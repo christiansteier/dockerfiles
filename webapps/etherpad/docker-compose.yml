@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    restart: always
+    container_name: etherpad_db
+    hostname: ep_db
+    image: linuxserver/mariadb
+    volumes:
+    - /srv/docker/etherpad/db/mariadb/lib:/var/lib/mysql
+    - /srv/docker/etherpad/db/mariadb/conf:/config
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpasswd
+  ep:
+    restart: always
+    container_name: etherpad
+    hostname: ep
+    image: maxder/alpine-etherpad.x86_64
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpasswd
+      - ETHERPAD_ADMIN_USER=epadmin
+      - ETHERPAD_ADMIN_PASS=epadminpass
+      - NODE_ENV=production
+      - SILENTINSTALL=yes
+    volumes:
+      - /srv/docker/etherpad/config:/config/etherpad
+    links:
+      - db
+    ports:
+      - 9001:9001
