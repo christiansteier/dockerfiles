@@ -34,7 +34,6 @@ services:
     - MYSQL_ROOT_PASSWORD=rootpasswd
     - SERVERNAME=127.0.0.1
     - TLS=no
-    - LANGUAGE=de
     - SILENTINSTALL=yes ## Silent installation via CLI
     - APPADMINPASS=pwd123 ## Admin password for silent installation. Username is 'admin'
     - APPADMINEMAIL=admin@mydomain.org ## Admin email for silent insatllation
