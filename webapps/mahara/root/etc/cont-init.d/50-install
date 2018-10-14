@@ -37,7 +37,7 @@ if [ ! -f /config/mahara/config.php ]; then
   sed -i "s|dbpass   = ''|dbpass = '$DBPASS'|g" /config/mahara/config.php
   sed -i "s|dbhost   = 'localhost'|dbhost = '$DBHOST'|g" /config/mahara/config.php
   sed -i 's|\/\/ \$cfg->wwwroot|\$cfg->wwwroot|g' /config/mahara/config.php
-  sed -i "s|wwwroot = 'https:\/\/myhost.com\/mahara\/'|wwwroot = 'http:\/\/$SERVERNAME'|g" /config/mahara/config.php
+  sed -i "s|wwwroot = 'https:\/\/myhost.com\/mahara\/'|wwwroot = 'http:\/\/$SERVERNAME\/'|g" /config/mahara/config.php
   sed -i "s|dataroot = '\/path\/to\/uploaddir'|dataroot = '\/data'|g" /config/mahara/config.php
   sed -i 's|\/\/ \$cfg->passwordsaltmain|\$cfg->passwordsaltmain|g' /config/mahara/config.php
   sed -i "s|passwordsaltmain = 'some long random string here with lots of characters'|passwordsaltmain = '$APPSALD'|g" /config/mahara/config.php
