@@ -1,0 +1,2 @@
+# Cron
+*/15 * * * * s6-setuidgid abc php7 -f /usr/share/webapps/mahara/cron.php

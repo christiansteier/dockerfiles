@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+
+  mariadb:
+    restart: always
+    container_name: mahara_db
+    hostname: mahara_db
+    image: linuxserver/mariadb
+    volumes:
+    - /srv/docker/mahara/db/lib:/var/lib/mysql
+    - /srv/docker/mahara/db/conf:/config
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpasswd
+
+  elasticsearch:
+    restart: always
+    container_name: mahara_es
+    hostname: mahara_es
+    image: elasticsearch:5.5-alpine
+
+  mahara:
+    restart: always
+    container_name: mahara
+    hostname: mahara
+    image: maxder/alpine-mahara.x86_64
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /srv/docker/mahara/config:/config
+    - /srv/docker/mahara/data:/data
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpasswd
+    - SERVERNAME=127.0.0.1
+    - TLS=no
+    - LANGUAGE=de
+    - SILENTINSTALL=yes ## Silent installation via CLI
+    - APPADMINPASS=pwd123 ## Admin password for silent installation. Username is 'admin'
+    - APPADMINEMAIL=admin@mydomain.org ## Admin email for silent insatllation
+    #- APPFOLDER=portfolio ## Mahara in a subdir
+    - ELASTICSEARCH_HOST=es
+    links:
+    - mariadb:db
+    - elasticsearch:es
+#    labels:
+#    - "traefik.backend=mahara"
+#    - "traefik.frontend.rule=Host:mahara.docker.localhost"
+#    - "traefik.frontend.entryPoints=https"
+#    - "traefik.protocol=http"
+#    - "traefik.port=80"
+#    - "traefik.docker.network=traefik_default"
+
+#networks:
+#  default:
+#    external:
+#      name: traefik_default
