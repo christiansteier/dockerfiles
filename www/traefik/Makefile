@@ -15,7 +15,7 @@ ifeq ($(UNAME), aarch64)
 endif
 
 NAME=traefik
-TRAEFIKVERSION=1.6.5
+TRAEFIKVERSION=1.7.2
 NAMESPACE=maxder
 IMAGENAME=alpine
 
