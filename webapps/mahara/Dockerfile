@@ -38,6 +38,7 @@ RUN echo "**** install runtime packages ****" \
 	php7-sqlite3 \
 	php7-xml \
 	php7-xmlreader \
+	php7-xmlrpc \
 	php7-zip \
 	sudo \
 	tar \
