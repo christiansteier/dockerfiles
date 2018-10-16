@@ -41,15 +41,3 @@ services:
     links:
     - mariadb:db
     - elasticsearch:es
-#    labels:
-#    - "traefik.backend=mahara"
-#    - "traefik.frontend.rule=Host:mahara.docker.localhost"
-#    - "traefik.frontend.entryPoints=https"
-#    - "traefik.protocol=http"
-#    - "traefik.port=80"
-#    - "traefik.docker.network=traefik_default"
-
-#networks:
-#  default:
-#    external:
-#      name: traefik_default
