@@ -21,8 +21,7 @@ services:
     hostname: mahara_db
     image: linuxserver/mariadb
     volumes:
-     - /srv/docker/mahara/db/lib:/var/lib/mysql
-     - /srv/docker/mahara/db/conf:/config
+     - /srv/docker/mahara/db:/config
     environment:
      - MYSQL_ROOT_PASSWORD=rootpasswd
     labels:
