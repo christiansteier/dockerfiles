@@ -1,0 +1,81 @@
+upstream php-handler {
+  server 127.0.0.1:9000;
+# server unix:/var/run/php/php7.0-fpm.sock;
+}
+
+server {
+  listen 80;
+  server_name SERVERNAME;
+
+  # Add headers to serve security related headers
+  add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
+  add_header X-Content-Type-Options nosniff;
+  #add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block";
+  add_header X-Robots-Tag none;
+  add_header X-Download-Options noopen;
+  add_header X-Permitted-Cross-Domain-Policies none;
+
+  # Path to the root of your installation
+  root /usr/share/webapps/humhub/;
+  # set max upload size
+  client_max_body_size 50M;
+  fastcgi_buffers 64 4K;
+
+  # Uncomment if your server is build with the ngx_pagespeed module
+  # This module is currently not supported.
+  #pagespeed off;
+
+  index index.php;
+
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.php?$args;
+  }
+
+  location ~ /\.ht {
+    deny all;
+  }
+
+  location /protected {
+    deny all;
+  } 
+  
+  location /uploads/file {
+    deny all;
+  } 
+
+  location ~ \.php(?:$|/) {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    include /etc/nginx/fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PATH_INFO $fastcgi_path_info;
+    fastcgi_param HTTPS on;
+    fastcgi_param modHeadersAvailable true; #Avoid sending the security headers twice
+    fastcgi_pass php-handler;
+    fastcgi_intercept_errors on;
+  }
+
+  # Adding the cache control header for js and css files
+  # Make sure it is BELOW the location ~ \.php(?:$|/) { block
+  location ~* \.(?:ico|css|js|gif|bmo|jpe?g|png|ttf|woff|swf)$ {
+    add_header Cache-Control "public, max-age=7200, mustrevalidate, proxy-revalidate";
+    # Add headers to serve security related headers
+    add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Robots-Tag none;
+    add_header X-Download-Options noopen;
+    add_header X-Permitted-Cross-Domain-Policies none;
+    # Optional: Don't log access to assets
+    access_log off;
+    expires 30d;
+  }
+}
+

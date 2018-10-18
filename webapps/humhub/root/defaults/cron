@@ -1,0 +1,5 @@
+# hourly
+0 * * * *  s6-setuidgid abc php7 -f /usr/share/webapps/humhub/protected/yii cron/hourly
+
+# daily
+0 0 * * * s6-setuidgid abc php7 /usr/share/webapps/humhub/protected/yii cron/daily
