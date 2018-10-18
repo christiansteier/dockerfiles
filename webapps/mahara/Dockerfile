@@ -57,6 +57,27 @@ RUN echo "**** install runtime packages ****" \
  && echo "env[PATH] = /usr/local/bin:/usr/bin:/bin" >> /etc/php7/php-fpm.conf \
  && echo "**** set default_bits in openssl to 2048 ****" \
  && sed -i "s*#default_bits*default_bits*g" /etc/ssl/openssl.cnf
+ 
+# Fix iconv extension
+ARG BUILD_PACKAGES="wget build-base php7-dev"
+RUN PHP_VER=$(php -r \@phpinfo\(\)\; | grep 'PHP Version' -m 1 | sed "s*PHP Version => **g") \
+ && apk add --no-cache --virtual .php-build-dependencies $BUILD_PACKAGES \
+ && apk add --no-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/ gnu-libiconv-dev \
+ && (mv /usr/bin/gnu-iconv /usr/bin/iconv; mv /usr/include/gnu-libiconv/*.h /usr/include; rm -rf /usr/include/gnu-libiconv) \
+ && mkdir -p /opt \
+ && cd /opt \
+ && wget https://secure.php.net/distributions/php-$PHP_VER.tar.gz \
+ && tar xzf php-$PHP_VER.tar.gz \
+ && cd php-$PHP_VER/ext/iconv \
+ && phpize \
+ && ./configure --with-iconv=/usr \
+ && make \
+ && make install \
+ && mkdir -p /etc/php7/conf.d \
+ && echo "extension=iconv.so" >> /etc/php7/conf.d/iconv.ini \
+ && apk del .php-build-dependencies \
+ && rm -rf /opt/*
+# END Fix iconv extension
 
 WORKDIR /usr/share/webapps
 ADD https://launchpad.net/mahara/${VERSION}/${VERSION}${RELEASE}/+download/mahara-${VERSION}${RELEASE}.tar.gz mahara-${VERSION}${RELEASE}.tar.gz
