@@ -17,6 +17,7 @@ ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-127.0.0.1}
 SILENTINSTALL=${SILENTINSTALL:-no}
 SERVERNAME=${SERVERNAME:-localhost}
 TLS=${TLS:-no}
+POSTMAXSIZE=${POSTMAXSIZE:-50M}
 
 if [ ${APPFOLDER} != "mahara" ]; then
   rsync -au --progress /usr/share/webapps/mahara/ /usr/share/webapps/${APPFOLDER}/
@@ -69,6 +70,10 @@ EOF
   fi
   echo -e "\n[i] Login:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n---\n"
 fi
+
+# set post_max_size and upload_max_filesize
+sed -i 's/^post_max_size.*$/post_max_size=$POSTMAXSIZE/g' /etc/php7/php.ini
+sed -i 's/^upload_max_filesize.*$/upload_max_filesize=$POSTMAXSIZE/g' /etc/php7/php.ini
 
 # set cronjob
 crontab /defaults/cron
