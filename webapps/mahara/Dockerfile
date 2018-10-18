@@ -52,7 +52,6 @@ RUN echo "**** install runtime packages ****" \
 	-e 's/;opcache.memory_consumption.*=.*/opcache.memory_consumption=128/g' \
 	-e 's/;opcache.save_comments.*=.*/opcache.save_comments=1/g' \
 	-e 's/;opcache.revalidate_freq.*=.*/opcache.revalidate_freq=1/g' \
-	-e 's/;post_max_size.*=.*/post_max_size=50M/g' \
 	-e 's/;always_populate_raw_post_data.*=.*/always_populate_raw_post_data=-1/g' /etc/php7/php.ini \
  && sed -i '/opcache.enable=1/a opcache.enable_cli=1' /etc/php7/php.ini \
  && echo "env[PATH] = /usr/local/bin:/usr/bin:/bin" >> /etc/php7/php-fpm.conf \
