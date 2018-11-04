@@ -5,8 +5,11 @@ ARG WEB_USER=www-data
 ARG WEB_GROUP=www-data
 ARG APACHE_ROOT_DIR=/usr/local/apache2
 
-COPY defaults/httpd-vhosts.conf ${APACHE_ROOT_DIR}/conf/extra/httpd-vhosts.conf
-COPY defaults/httpd.conf ${APACHE_ROOT_DIR}/conf/httpd.conf
+# Load files directly from Github, so that an automatic build on github is possible
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/www/apache2/defaults/httpd-vhosts.conf ${AP
+ACHE_ROOT_DIR}/conf/extra/httpd-vhosts.conf
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/www/apache2/defaults/httpd.conf ${APACHE_RO
+OT_DIR}/conf/httpd.conf
 
 RUN chgrp -R ${WEB_GROUP} ${APACHE_ROOT_DIR}/conf/httpd.conf \
  && chgrp -R ${WEB_GROUP} ${APACHE_ROOT_DIR}/conf/extra/httpd-vhosts.conf
