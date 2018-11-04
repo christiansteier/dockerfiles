@@ -16,3 +16,9 @@ RUN apk --no-cache add shadow \
  && usermod -u 1000 ${WEB_USER} \
  && groupmod -g 1000 ${WEB_GROUP} \
  && chgrp -R ${WEB_GROUP} ${APACHE_ROOT_DIR}
+ 
+ # Cleanup and security fixes
+RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteier/dd8c5544c69504d29bd938726691255b/raw/2db7fa799c6aea3d0b1e9d1c729f7be2b937e3da/docker-alpine-cleanup.sh \
+ && chmod +x /tmp/cleanup.sh \
+ && apk del --purge shadow linux-pam \
+ && /tmp/cleanup.sh
