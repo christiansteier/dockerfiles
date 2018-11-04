@@ -1,6 +1,6 @@
 # Apache Docker image
 
-Small Apine Docker image.
+Small Apine Docker image ready to use with php-fpm.
 
 ## Build automagical for x86 64-bit or ARM
 
