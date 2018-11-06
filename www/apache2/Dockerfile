@@ -22,3 +22,7 @@ ADD https://gist.githubusercontent.com/christiansteier/dd8c5544c69504d29bd938726
 RUN chmod +x /tmp/cleanup.sh \
  && apk del --purge shadow linux-pam \
  && /tmp/cleanup.sh
+
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/www/apache2/defaults/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["httpd-foreground"]
