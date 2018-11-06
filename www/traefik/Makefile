@@ -21,6 +21,7 @@ all: build
 
 build:
 	sed -i "s*FROM lsiobase/alpine*FROM lsiobase/alpine${ARCHTAG}*g;s*FROM lsiobase/alpine.x86_64*FROM lsiobase/alpine*g" Dockerfile
+	sed -i "s*ARCH=.x86_64*ARCH=${ARCHTAG}*g" Dockerfile
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${NAME}${ARCHTAG} .
 
 run:
