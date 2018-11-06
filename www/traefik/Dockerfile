@@ -1,8 +1,8 @@
-FROM lsiobase/alpine.ARCHTAG
+FROM lsiobase/alpine
 MAINTAINER Christian-Maxilian Steier
 
-ENV VERSION TRAEFIKVERSION
-ENV ARCH ARCHTAG
+ARG VERSION=1.7.4
+ARG ARCH=$(uname -m)
 
 RUN apk -U --no-progress add \
         ca-certificates \
