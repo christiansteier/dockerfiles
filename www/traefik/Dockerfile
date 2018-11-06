@@ -2,7 +2,7 @@ FROM lsiobase/alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
 ARG VERSION=1.7.4
-ARG ARCH=x86_64
+ARG ARCH=.x86_64
 RUN apk -U --no-progress add \
         ca-certificates \
 	curl
