@@ -10,10 +10,10 @@ RUN apk -U --no-progress add \
 VOLUME /config
 WORKDIR /config/traefik
 RUN mkdir -p config tls \
- && if [ ${ARCH} == armhf ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-arm ; fi \
- && if [ ${ARCH} == arm64 ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-arm64 ; fi \
- && if [ ${ARCH} == x86_64 ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-amd64 ; fi \
- && if [ ${ARCH} == aarch64 ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-arm64 ; fi \
+ && if [ ${ARCH} == .armhf ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-arm ; fi \
+ && if [ ${ARCH} == .arm64 ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-arm64 ; fi \
+ && if [ ${ARCH} == .x86_64 ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-amd64 ; fi \
+ && if [ ${ARCH} == .aarch64 ]; then curl -o /usr/sbin/traefik -L https://github.com/containous/traefik/releases/download/v${VERSION}/traefik_linux-arm64 ; fi \
  && chmod +x /usr/sbin/traefik
 
 # add local files
