@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-SERVERNAME=${SERVERNAME:-localhost}
 
 if [ ! -d /usr/local/apache2/sites ]; then
   mkdir -p /usr/local/apache2/sites
@@ -17,7 +16,7 @@ else
 fi
 
 # Set server name.
-sed -i "s*SERVERNAME*${SERVERNAME}*g" /usr/local/apache2/sites/httpd-vhosts.conf
+sed -i "s*localhost*${SERVERNAME}*g" /usr/local/apache2/sites/httpd-vhosts.conf
 echo "[i] Configured server name to ${SERVERNAME}."
 
 exec "$@"
