@@ -24,5 +24,6 @@ RUN chmod +x /tmp/cleanup.sh \
  && /tmp/cleanup.sh
 
 ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/www/apache2/defaults/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["httpd-foreground"]
