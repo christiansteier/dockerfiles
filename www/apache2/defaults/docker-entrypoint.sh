@@ -17,7 +17,7 @@ else
 fi
 
 # Set server name.
-sed -i 's/%SERVERNAME%/'"${SERVERNAME}"'/' /usr/local/apache2/sites/httpd-vhosts.conf
+sed -i "s*SERVERNAME*${SERVERNAME}*g" /usr/local/apache2/sites/httpd-vhosts.conf
 echo "[i] Configured server name to ${SERVERNAME}."
 
 exec "$@"
