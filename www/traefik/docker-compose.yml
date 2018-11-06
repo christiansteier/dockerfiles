@@ -1,15 +1,18 @@
-version: '2.0'
+version: '3'
 
 services:
   traefik:
     restart: always
     container_name: traefik
-    hostname: traefik
-    image: maxder/alpine-traefik.x86_64
+    hostname: DOCKER - traefik
+    image: cms0/traefik
     ports:
     - "80:80"
     - "443:443"
     - "8080:8080" # Webinterface
     volumes:
-    - /srv/docker/traefik:/config/traefik
+    - traefik-config:/config/traefik
     - /var/run/docker.sock:/var/run/docker.sock
+ 
+volumes:
+  traefik-config:
