@@ -1,5 +1,5 @@
 FROM lsiobase/alpine
-MAINTAINER Christian-Maxilian Steier
+LABEL maintainer="Christian-Maximilian Steier"
 
 ARG VERSION=1.7.4
 ARG ARCH=$(uname -m)
