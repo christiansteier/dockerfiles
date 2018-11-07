@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv sh
+set -eu
+
+if ls /etc/apache2/sites-enabled/* > /dev/null 2>&1
+then
+  s6-echo "[i] Site(s) for Apache found."
+else
+  cp -a /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+  s6-echo "[i] Create example site."
+fi
+
+exit 0

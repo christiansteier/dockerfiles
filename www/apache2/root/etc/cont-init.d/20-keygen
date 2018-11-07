@@ -1,0 +1,23 @@
+#!/usr/bin/with-contenv bash
+set -eu
+
+SERVERNAME=${SERVERNAME:-localhost}
+TLS=${TLS:-no}
+
+if [ $TLS == "yes" ]; then
+  if [ ! -d /etc/tls ]; then
+    mkdir /etc/tls
+  fi
+  SUBJECT="/C=US/ST=CA/L=Carlsbad/O=$SERVERNAME/OU=LSIO Server/CN=*"
+  if [[ -f /etc/tls/cert.key && -f /etc/tls/cert.crt ]]; then
+    echo "using keys found in /etc/tls"
+  else
+    echo "generating self-signed keys in /etc/tls, you can replace these with your own keys if required"
+    openssl req -new -x509 -days 3650 -nodes -out /etc/tls/cert.crt -keyout /etc/tls/cert.key -subj "$SUBJECT"
+  fi
+  cp -a /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/default-ssl.conf
+  sed -i "s*/etc/ssl/certs/ssl-cert-snakeoil.pem*/etc/tls/cert.crt*g" /etc/apache2/sites-enabled/default-ssl.conf
+  sed -i "s*/etc/ssl/private/ssl-cert-snakeoil.key*/etc/tls/cert.key*g" /etc/apache2/sites-enabled/default-ssl.conf
+fi
+
+exit 0
