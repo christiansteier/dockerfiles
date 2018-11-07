@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+SERVERNAME=${SERVERNAME:-localhost}
 
 if [ ! -d /usr/local/apache2/sites ]; then
   mkdir -p /usr/local/apache2/sites
