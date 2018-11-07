@@ -1,5 +1,6 @@
-#!/bin/sh
-set -e
+#!/usr/bin/env bash
+set -eu
+
 SERVERNAME=${SERVERNAME:-localhost}
 
 if [ ! -d /usr/local/apache2/sites ]; then
