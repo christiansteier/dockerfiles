@@ -28,7 +28,7 @@ find $sysdirs -xdev \( \
   
 echo "[i] Remove unnecessary user accounts."
 for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobody -ve daemon -ve www-data -ve _apt ); do deluser "$user"; done
-for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nogroup -ve daemon -ve www-data); do delgroup "$group"; done
+for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nogroup -ve daemon -ve www-data -ve crontab ); do delgroup "$group"; done
 echo "[i] Remove interactive login shell"
 sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/* /etc/fstab
