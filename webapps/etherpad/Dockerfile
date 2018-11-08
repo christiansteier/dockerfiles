@@ -1,13 +1,12 @@
-FROM lsiobase/alpine.ARCHTAG
-MAINTAINER Christian-Maximilian Steier
-
-ARG ETHERPAD_VERSION=1.7.0
+FROM lsiobase/alpine
+LABEL maintainer="Christian-Maximilian Steier"
 
 RUN echo "**** install build packages ****" \
  && apk add --no-cache --virtual=build-dependencies \
  	g++ \
 	make \
 	rsync \
+	grep \
  && echo "**** install runtime packages ****" \
  && apk -U --no-progress add \
         ca-certificates \
@@ -20,8 +19,9 @@ RUN echo "**** install build packages ****" \
 	mariadb-client
 
 WORKDIR /usr/share/webapps
-ADD https://github.com/ether/etherpad-lite/archive/${ETHERPAD_VERSION}.tar.gz etherpad.tar.gz
-RUN tar -xvzf etherpad.tar.gz \
+RUN export ETHERPAD_VERSION=$(curl -s https://api.github.com/repos/ether/etherpad-lite/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') \
+ && curl -L https://github.com/ether/etherpad-lite/archive/${ETHERPAD_VERSION}.tar.gz -o etherpad.tar.gz \
+ && tar -xvzf etherpad.tar.gz \
  && cd etherpad-lite-${ETHERPAD_VERSION} \
  && rsync \
 	--delete \
