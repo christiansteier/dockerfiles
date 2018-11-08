@@ -6,7 +6,7 @@ ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/debian/scripts
 ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/debian/scripts/prepare.sh  /scripts/prepare.sh
 ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/debian/scripts/system_services.sh /scripts/system_services.sh
 ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/debian/scripts/utilities.sh /scripts/utilities.sh
-ADD https://gist.githubusercontent.com/christiansteier/5553e32f2f289fefd40641758117b1fe/raw/74fdbdb4511744323db6470cdf596fdbf9fe1897/docker-debian-cleanup.sh /scripts/cleanup.sh
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/debian/scripts/cleanup.sh /scripts/cleanup.sh
 RUN chmod +x /scripts/* && \
     /scripts/prepare.sh && \
     /scripts/utilities.sh && \
