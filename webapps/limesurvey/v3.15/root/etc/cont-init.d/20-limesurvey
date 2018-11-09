@@ -1,0 +1,73 @@
+#!/usr/bin/with-contenv sh
+set -eu
+
+APPDIR=${APPDIR:-/var/www/html}
+SUBDIR=${SUBDIR:-}
+if [ ! $SUBDIR = "" ]; then
+ LIMEDIR=$APPDIR/${SUBDIR}
+else
+ LIMEDIR=$APPDIR
+fi
+APPADMIN=${APPADMIN:-admin}
+APPADMINNAME=${APPADMINNAME:-admin}
+APPADMINPASS=${APPADMINPASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)}
+APPADMINEMAIL=${APPADMINEMAIL:-admin@lochalhost.local}
+APPDB=${APPDB:-limesurvey}
+APPDBUSER=${APPDBUSER:-$APPDB}
+APPDBPASS=${APPDBPASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)}
+APPVERSION=$VERSION
+SITENAME=${SITENAME:-LimeSurvey}
+DEFAULTTHEME={DEFAULTTHEME:-fruity}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$MARIADB_ENV_MYSQL_ROOT_PASSWORD}
+MYSQL_HOST=${MYSQL_HOST:-mariadb}
+SILENTINSTALL=${SILENTINSTALL:-no}
+
+function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
+
+if [ -f $LIMEDIR/installed_version ]; then
+  INSTALLED_VERSION=$(cat $LIMEDIR/installed_version)
+else
+  INSTALLED_VERSION="0.0"
+fi
+
+
+if version_gt $INSTALLED_VERSION $APPVERSION; then
+  echo -e "\n[Error] Can't start LimeSurvey because the version of the data ($INSTALLED_VERSION) is higher than the docker image version ($APPVERSION)."
+  exit 1
+fi
+
+if version_gt $APPVERSION $INSTALLED_VERSION; then
+  if [ ! $SUBDIR = "" ]; then
+    mkdir $LIMEDIR
+    rsync -rlDog --chown www-data:www-data --delete /usr/src/limesurvey/ $LIMEDIR/
+  else
+    rsync -rlDog --chown www-data:www-data --delete /usr/src/limesurvey/ $LIMEDIR/
+  fi
+  if [ $SILENTINSTALL = "yes" ]; then
+    echo -e "\n[i] Silentinstall! Be patient :) \n"
+    apk add -U --no-cache netcat-openbsd mariadb-client
+    sleep 3
+    until nc -z ${MYSQL_HOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+    if [ ! -f ${LIMEDIR}/config.php ]; then
+      cp -a ${LIMEDIR}/application/config/config-sample-mysql.php ${LIMEDIR}/config.php
+      s6-envuidgid www-data s6-chown -U -- ${LIMEDIR}/config.php
+      sed -i "s*localhost*${MYSQL_HOST}*g;s*''*'${MYSQL_ROOT_PASSWORD}'*g;s*limesurvey*${APPDB}*g" ${LIMEDIR}/config.php
+      sed -i "s*Update default LimeSurvey config here*Update default LimeSurvey config here\n        'defaulttheme'              => '$DEFAULTTHEME', \n        'sitename'           => '$SITENAME', \n        'defaultuser'        => '$APPADMIN',\n        'defaultpass'        => '$APPADMINPASS',\n        'siteadminemail'        => '$APPADMINEMAIL',*g" ${LIMEDIR}/config.php
+    fi
+    s6-setuidgid www-data php ${LIMEDIR}/application/commands/console.php installfromconfig  ${LIMEDIR}/config.php
+    apk del --purge netcat-openbsd mariadb-client
+    echo -e "\n[i] Set automatic configuration:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n --- \n"
+  fi
+fi
+
+if [ ! -f ${LIMEDIR}/config.php ]; then
+  echo -e "\n\n[Error] Can't start LimeSurvey because no ${LIMEDIR}/config.php where found. If LimeSurvey has not been installed before, use environment 'SILENTINSTALL=yes'.\n\n"
+fi
+
+# Cron
+echo -e "*/1 * * * * /usr/local/bin/php $LIMEDIR/application/commands/console.php plugin cron --interval=1 \n" > /limesurvey
+crontab /limesurvey && rm /limesurvey
+
+# self-destruction
+rm /etc/cont-init.d/20-limesurvey
+exit 0
