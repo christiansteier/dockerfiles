@@ -26,4 +26,4 @@ Use make:
 
 ```
 git clone -b alpine https://github.com/christiansteier/dockerfiles.git --depth 1
-cd dockerfiles/web/limesurvey && make 
+cd dockerfiles/web/limesurvey/v3.15 && make 
