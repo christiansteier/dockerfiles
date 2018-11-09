@@ -14,7 +14,7 @@ ETHERPAD_ADMIN_USER=${ETHERPAD_ADMIN_USER:-admin}
 ETHERPAD_ADMIN_PASS=${ETHERPAD_ADMIN_PASS-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)}
 ETHERPAD_APIKEY=${ETHERPAD_APIKEY:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)}
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-$DB_ENV_MYSQL_ROOT_PASSWORD}
-SILENTINSTALL=${SILENTINSTALL:-yes}
+SILENTINSTALL=${SILENTINSTALL:-no}
 
 if [ ! -d /config/etherpad ]; then
   mkdir -p /config/etherpad
@@ -70,10 +70,12 @@ EOF
 	}
 EOF
   fi
-  if [ ! -f ${ETHERPAD_PATH}/settings.json ]; then
-    s6-ln -s /config/etherpad/settings.json ${ETHERPAD_PATH}/settings.json
-  fi
   echo -e "\n\n[i] Set automatic configuration:\n  APIKEY: $(cat ${ETHERPAD_PATH}/APIKEY.txt)\n  ADMIN: $ETHERPAD_ADMIN_USER\n  PASS: $ETHERPAD_ADMIN_PASS\n---\n"
+fi
+
+if [ -f /config/etherpad/settings.json ]; then
+    mv ${ETHERPAD_PATH}/settings.json ${ETHERPAD_PATH}/orig.settings.json
+    s6-ln -s /config/etherpad/settings.json ${ETHERPAD_PATH}/settings.json
 fi
 
 export
