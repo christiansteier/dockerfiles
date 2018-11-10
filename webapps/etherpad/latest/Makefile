@@ -14,7 +14,7 @@ ifeq ($(UNAME), aarch64)
  ARCHTAG=arm64v8
 endif
 
-NAME=etherpad
+NAME=etherpad-lite
 NAMESPACE=cms0
 
 all: build
