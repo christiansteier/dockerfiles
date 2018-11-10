@@ -1,6 +1,7 @@
 # Alpine Docker image for Etherpad
 
-Build a small AlpineLinux Docker image based on [LinuxServer.io](https://github.com/linuxserver).
+Small Ehterpad-Lite image based on Alpine with [s6-overlay](https://github.com/just-containers/s6-overlay) for use with an external DB.
+.
 
 # Installed modules #
 
@@ -20,18 +21,18 @@ Build a small AlpineLinux Docker image based on [LinuxServer.io](https://github.
 
 ## Environment variables
 
-- **ETHERPAD_TITLE** : Name your instance *(default: "Etherpad")*
-- **ETHERPAD_ADMIN_USER** : *(default: "admin")*
-- **ETHERPAD_ADMIN_PASS** : *(default: "generate random password")*
-- **ETHERPAD_APIKEY** : Token for API-Authentication *(default: "generate random token at the first start")*
+- **ETHERPAD_TITLE** : Etherpad application name (appears in the Window title) *(default: "Etherpad")*
+- **ETHERPAD_ADMIN_USER** : Etherpad application username for admin *(default: "admin")*
+- **ETHERPAD_ADMIN_PASS** : Etherpad application password fpr admin *(default: "generate random password")*
+- **ETHERPAD_APIKEY** : Etherpad application token for API-Authentication *(default: "generate random token at the first start")*
 
 ###### Silent Install ######
 - **SILENTINSTALL** : yes/no *(default: "yes")*
-- **APPDB** : *(default: "etherpad")*
-- **DBHOST** : *(default: "db")*
-- **DBUSER** : *(default: "etherpad")*
-- **DBPASS** : *(default: "generate random password")*
-- **MYSQL_ROOT_PASSWORD** : *(Root pass from MySQL instanz)*
+- **APPDB** :  Database name that Etherpad will use to connect with the database *(default: "etherpad")*
+- **APPDBUSER** : Database user that Etherpad will use to connect with the database *(default: "etherpad")*
+- **APPDBPASS** : Database password that Etherpad will use to connect with the database *(default: "generate random password")*
+- **MYSQL_HOST** : Hostname for MariaDB server *(default: "mariadb")*
+- **MYSQL_ROOT_PASSWORD** : Database password for MYSQL_ROOT *(no defaults)*
 
 ## Build
 
@@ -39,4 +40,5 @@ Use make:
 
 ```
 git clone -b alpine https://github.com/christiansteier/dockerfiles.git
-cd dockerfiles/web/etherpad && make 
+cd dockerfiles/web/etherpad && make
+```

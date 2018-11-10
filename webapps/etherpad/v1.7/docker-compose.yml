@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  db:
+    restart: unless-stopped
+    container_name: etherpad-db
+    hostname: DOCKER-ep-db
+    image: linuxserver/mariadb
+    volumes:
+     - ep-db:/config
+    environment:
+     - MYSQL_ROOT_PASSWORD=rootpasswd
+  ep:
+    restart: unless-stopped
+    container_name: etherpad
+    hostname: DOCKER-ep
+    image: cms0/etherpad:1.7.0
+    environment:
+     - MYSQL_ROOT_PASSWORD=rootpasswd
+     - ETHERPAD_ADMIN_USER=epadmin
+     - ETHERPAD_ADMIN_PASS=epadminpass
+     - SILENTINSTALL=yes
+    volumes:
+     - ep-config:/opt/etherpad/config
+    links:
+     - db:mariadb
+    ports:
+     - 9001:9001
+volumes:
+  ep-db:
+  ep-config:

@@ -1,0 +1,30 @@
+#!/usr/bin/with-contenv sh
+set -eu
+ETHERPAD_APIKEY=${ETHERPAD_APIKEY:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)}
+
+
+if [ ! -d /opt/etherpad/config ]; then
+  mkdir -p /opt/etherpad/config
+fi
+
+if [ ! -f /opt/etherpad/config/APIKEY.txt ]; then
+ echo "$ETHERPAD_APIKEY" > /opt/etherpad/config/APIKEY.txt
+fi
+
+if [ ! -f /opt/etherpad/APIKEY.txt ]; then
+  s6-ln -s /opt/etherpad/config/APIKEY.txt /opt/etherpad/APIKEY.txt
+fi
+
+if [ -f /opt/etherpad/config/settings.json ] || [ -f /opt/etherpad/settings.json ]; then
+  mv /opt/etherpad/settings.json /opt/etherpad/config/orig.settings.json
+fi
+
+if [ -f /opt/etherpad/config/settings.json ] || [ ! -f /opt/etherpad/settings.json ]; then
+  s6-ln -s /opt/etherpad/config/settings.json /opt/etherpad/settings.json
+fi
+
+if [ ! -f /opt/etherpad/config/settings.json ] || [ -f /opt/etherpad/settings.json ]; then
+  mv /opt/etherpad/settings.json /opt/etherpad/config/orig.settings.json
+fi
+
+exit 0
