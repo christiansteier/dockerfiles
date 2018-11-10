@@ -11,10 +11,10 @@ ETHERPAD_SESSION_KEY=${ETHERPAD_SESSION_KEY:-$(
 ETHERPAD_ADMIN_USER=${ETHERPAD_ADMIN_USER:-admin}
 ETHERPAD_ADMIN_PASS=${ETHERPAD_ADMIN_PASS-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)}
 MYSQL_HOST=${MYSQL_HOST:-mariadb}
-MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-$DB_ENV_MYSQL_ROOT_PASSWORD}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-}
 SILENTINSTALL=${SILENTINSTALL:-no}
 
-if [ $SILENTINSTALL == "yes" ]; then
+if [ $SILENTINSTALL = "yes" ]; then
   echo -e "\n[i] Silentinstall! Be patient :) \n"
   apk add -U --no-cache netcat-openbsd mariadb-client
   sleep 2

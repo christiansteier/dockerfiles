@@ -83,6 +83,9 @@ RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteie
     apk del --purge build-dependencies && \
     /tmp/cleanup.sh
 
-# copy local files
-COPY root/ /
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/webapps/etherpad/v1.7/root/etc/cont-init.d/10-config /etc/cont-init.d/10-config
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/webapps/etherpad/v1.7/root/etc/cont-init.d/20-install /etc/cont-init.d/20-install
+ADD https://raw.githubusercontent.com/christiansteier/dockerfiles/alpine/webapps/etherpad/v1.7/root/etc/services.d/etherpad/run /etc/services.d/etherpad/run
+RUN chmod +x /etc/cont-init.d/* && \
+    chmod +x /etc/services.d/etherpad/run
 ENTRYPOINT ["/init"]

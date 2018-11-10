@@ -1,4 +1,0 @@
-#!/usr/bin/with-contenv sh
-
-export NODE_ENV=production
-exec /opt/etherpad/bin/safeRun.sh /dev/stdout --root
