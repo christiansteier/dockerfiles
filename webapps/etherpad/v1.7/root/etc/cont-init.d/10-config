@@ -15,7 +15,7 @@ if [ ! -f /opt/etherpad/APIKEY.txt ]; then
   s6-ln -s /opt/etherpad/config/APIKEY.txt /opt/etherpad/APIKEY.txt
 fi
 
-[ -f /opt/etherpad/settings.json ]; then
+if [ -f /opt/etherpad/settings.json ]; then
   rm /opt/etherpad/settings.json
 fi
 
