@@ -15,11 +15,11 @@ if [ ! -f /opt/etherpad/APIKEY.txt ]; then
   s6-ln -s /opt/etherpad/config/APIKEY.txt /opt/etherpad/APIKEY.txt
 fi
 
-if [ -f /opt/etherpad/config/settings.json ] || [ -f /opt/etherpad/settings.json ]; then
-  mv /opt/etherpad/settings.json /opt/etherpad/config/orig.settings.json
+[ -f /opt/etherpad/settings.json ]; then
+  rm /opt/etherpad/settings.json
 fi
 
-if [ -f /opt/etherpad/config/settings.json ] || [ ! -f /opt/etherpad/settings.json ]; then
+if [ -f /opt/etherpad/config/settings.json ]; then
   s6-ln -s /opt/etherpad/config/settings.json /opt/etherpad/settings.json
 fi
 

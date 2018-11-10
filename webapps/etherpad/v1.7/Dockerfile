@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:8-alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
 ARG ETHERPAD_VERSION=1.7.0
