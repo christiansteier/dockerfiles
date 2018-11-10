@@ -71,7 +71,6 @@ RUN bin/installDeps.sh && \
 	ep_stop_writing \
 	ep_timesliderdiff \
 	ep_offline_edit \
-	ep_delete_empty_pads \
 	ep_markdownify \
 	ep_markdown && \
     cd src && \
