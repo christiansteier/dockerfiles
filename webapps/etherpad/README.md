@@ -1,6 +1,6 @@
-# Alpine Docker image for Etherpad
+# Alpine Docker image for Etherpad  [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
-Small Ehterpad-Lite image based on Alpine with [s6-overlay](https://github.com/just-containers/s6-overlay) for use with an external DB.
+Small Etherpad-Lite image based on Alpine with [s6-overlay](https://github.com/just-containers/s6-overlay) for use with an external DB.
 .
 
 # Installed modules #
