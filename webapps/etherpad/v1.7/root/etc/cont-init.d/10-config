@@ -23,8 +23,4 @@ if [ -f /opt/etherpad/config/settings.json ] || [ ! -f /opt/etherpad/settings.js
   s6-ln -s /opt/etherpad/config/settings.json /opt/etherpad/settings.json
 fi
 
-if [ ! -f /opt/etherpad/config/settings.json ] || [ -f /opt/etherpad/settings.json ]; then
-  mv /opt/etherpad/settings.json /opt/etherpad/config/orig.settings.json
-fi
-
 exit 0
