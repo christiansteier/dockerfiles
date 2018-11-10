@@ -1,6 +1,6 @@
 # Alpine Docker image for LimeSurvey
 
-[LimeSurvey](https://www.limesurvey.org) based on Alpine with [s6-overlay](https://github.com/just-containers/s6-overlay) and [socklog-overlay](https://github.com/just-containers/socklog-overlay) for use with an external Webserver and DB.
+[LimeSurvey](https://www.limesurvey.org) based on Alpine phph-fpm with [s6-overlay](https://github.com/just-containers/s6-overlay) and [socklog-overlay](https://github.com/just-containers/socklog-overlay) for use with an external Webserver and DB.
 
 ## Environment variables
 
