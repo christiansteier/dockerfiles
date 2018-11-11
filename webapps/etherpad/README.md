@@ -6,18 +6,20 @@ Small Etherpad-Lite image based on Alpine with [s6-overlay](https://github.com/j
 
 # Installed modules #
 
-- ep_adminpads
+- ep_adminpads 
+- ep_font_color
+- ep_font_size
+- ep_fullscreen
 - ep_headings2
-- ep_page_view
-- ep_sociallinks
-- ep_spellcheck
 - ep_historicalsearch
 - ep_horizontal_line
-- ep_stop_writing
-- ep_timesliderdiff
-- ep_offline_edit
-- ep_markdownify
 - ep_markdown
+- ep_markdownify
+- ep_offline_edit
+- ep_page_view
+- ep_spellcheck
+- ep_tables2
+- ep_timesliderdiff
 
 ## Environment variables
 

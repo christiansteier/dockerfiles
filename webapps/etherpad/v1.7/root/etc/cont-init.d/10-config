@@ -16,7 +16,7 @@ if [ ! -f /opt/etherpad/APIKEY.txt ]; then
 fi
 
 if [ -f /opt/etherpad/settings.json ]; then
-  rm /opt/etherpad/settings.json
+  mv /opt/etherpad/settings.json /opt/etherpad/orig.settings.json
 fi
 
 if [ -f /opt/etherpad/config/settings.json ]; then

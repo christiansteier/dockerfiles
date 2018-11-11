@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
     container_name: etherpad
     hostname: DOCKER-ep
-    image: cms0/etherpad:1.7.0
+    image: cms0/etherpad-lite:1.7.0
     environment:
      - MYSQL_ROOT_PASSWORD=rootpasswd
      - ETHERPAD_ADMIN_USER=epadmin
