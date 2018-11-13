@@ -17,7 +17,7 @@ MYSQL_HOST=${MYSQL_HOST:-mariadb}
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-}
 SILENTINSTALL=${SILENTINSTALL:-no}
 
-if [ -f /opt/etherpad/config/settings.json ]; then
+if [ ! -f /opt/etherpad/config/settings.json ]; then
   cat <<- EOF > /opt/etherpad/config/settings.json
 	{
 	  "title": "$ETHERPAD_TITLE",
