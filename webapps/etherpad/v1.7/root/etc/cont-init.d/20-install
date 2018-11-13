@@ -6,11 +6,13 @@ APPDB=${APPDB:-etherpad}
 APPDBUSER=${DBUSER:-etherpad}
 APPDBPASS=${DBPASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 88 | head -n 1)}
 ETHERPAD_TITLE=${ETHERPAD_TITLE:-Etherpad}
+ETHERPAD_LANG=${ETHERPAD_LANG:-en-gb}
+ETHERPAD_SHOWCHAT=${ETHERPAD_SHOWPAD:-true}
 ETHERPAD_SESSION_KEY=${ETHERPAD_SESSION_KEY:-$(
                 node -p "require('crypto').randomBytes(32).toString('hex')")}
 ETHERPAD_ADMIN_USER=${ETHERPAD_ADMIN_USER:-admin}
 ETHERPAD_ADMIN_PASS=${ETHERPAD_ADMIN_PASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)}
-ETHERPAD_DEFAULT_PADTEST=${ETHERPAD_DEFAULT_PADTEXT:-$(Welcome to Etherpad!\n\nThis pad text is synchronized as you type, so that everyone viewing this page sees the same text. This allows you to collaborate seamlessly on documents!\n\nGet involved with Etherpad at http:\/\/etherpad.org\n)}
+ETHERPAD_DEFAULT_PADTEXT=${ETHERPAD_DEFAULT_PADTEXT:-$(Welcome to Etherpad!\n\nThis pad text is synchronized as you type, so that everyone viewing this page sees the same text. This allows you to collaborate seamlessly on documents!\n\nGet involved with Etherpad at http:\/\/etherpad.org\n)}
 MYSQL_HOST=${MYSQL_HOST:-mariadb}
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-}
 SILENTINSTALL=${SILENTINSTALL:-no}
@@ -57,6 +59,10 @@ EOF
 		    }
 	  },
 	  "defaultPadText" : "$ETHERPAD_DEFAULT_PADTEXT",
+	  "padOptions": {
+	    "lang": "$ETHERPAD_LANG",
+	    "showChat" : "$ETHERPAD_SHOWCHAT"
+	  },
 	}
 EOF
   s6-ln -s /opt/etherpad/config/settings.json /opt/etherpad/settings.json
