@@ -17,29 +17,7 @@ MYSQL_HOST=${MYSQL_HOST:-mariadb}
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-}
 SILENTINSTALL=${SILENTINSTALL:-no}
 
-if [ $SILENTINSTALL = "yes" ]; then
-  echo -e "\n[i] Silentinstall! Be patient :) \n"
-  apk add -U --no-cache netcat-openbsd mariadb-client
-  sleep 2
-  if [ -z 3306 ]; then
-    echo >&2 '[ERROR] missing MYSQL_PORT_3306_TCP environment variable'
-    echo >&2 '  Did you forget to --link some_mysql_container:db ?'
-    exit 1
-  fi
-  until nc -z ${MYSQL_HOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
-  # Check if database already exists
-  RESULT=`mysql -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} --skip-column-names \
-  -e "SHOW DATABASES LIKE '${APPDB}'"`
-
-  if [ "$RESULT" != $APPDB ]; then
-    # mysql database does not exist, create it
-    echo -e "[i] Creating database ${APPDB}"
-    mysql -uroot --password=${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} <<-EOF
-    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8mb4;
-    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '${APPDBUSER}'@'%' IDENTIFIED BY '${APPDBPASS}';
-    FLUSH PRIVILEGES;
-EOF
-  fi
+if [ -f /opt/etherpad/config/settings.json ]; then
   cat <<- EOF > /opt/etherpad/config/settings.json
 	{
 	  "title": "$ETHERPAD_TITLE",
@@ -66,6 +44,31 @@ EOF
 	}
 EOF
   s6-ln -s /opt/etherpad/config/settings.json /opt/etherpad/settings.json
+fi
+
+if [ $SILENTINSTALL = "yes" ]; then
+  echo -e "\n[i] Silentinstall! Be patient :) \n"
+  apk add -U --no-cache netcat-openbsd mariadb-client
+  sleep 2
+  if [ -z 3306 ]; then
+    echo >&2 '[ERROR] missing MYSQL_PORT_3306_TCP environment variable'
+    echo >&2 '  Did you forget to --link some_mysql_container:db ?'
+    exit 1
+  fi
+  until nc -z ${MYSQL_HOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+  # Check if database already exists
+  RESULT=`mysql -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} --skip-column-names \
+  -e "SHOW DATABASES LIKE '${APPDB}'"`
+
+  if [ "$RESULT" != $APPDB ]; then
+    # mysql database does not exist, create it
+    echo -e "[i] Creating database ${APPDB}"
+    mysql -uroot --password=${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} <<-EOF
+    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8mb4;
+    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '${APPDBUSER}'@'%' IDENTIFIED BY '${APPDBPASS}';
+    FLUSH PRIVILEGES;
+EOF
+  fi
   apk del --purge netcat-openbsd mariadb-client
   echo -e "\n\n[i] Set automatic configuration:\n  APIKEY: $(cat ${ETHERPAD_PATH}/APIKEY.txt)\n  ADMIN: $ETHERPAD_ADMIN_USER\n  PASS: $ETHERPAD_ADMIN_PASS\n---\n"
 fi
