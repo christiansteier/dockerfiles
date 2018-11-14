@@ -1,4 +1,4 @@
-.PHONY: all build run remove
+.PHONY: all build run quickstart remove
 
 UNAME := $(shell uname -m)
 ifeq ($(UNAME), x86_64)
@@ -24,11 +24,9 @@ build:
 	docker build --rm --no-cache=true -t ${NAMESPACE}/${NAME} .
 
 run:
-	docker run -d --hostname ${NAME} --name ${NAME} \
-	-p 80:80 \
-	${NAMESPACE}/${NAME}
+	docker-compose up -d
 
 quickstart: build run
 
 remove:
-	docker rm -f ${NAME}
+	docker-compose down --volume
