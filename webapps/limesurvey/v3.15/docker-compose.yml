@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
 
@@ -42,4 +42,6 @@ services:
 
 volumes:
   lime-db:
+    name: lime-db
   lime-www:
+    name: lime-www
