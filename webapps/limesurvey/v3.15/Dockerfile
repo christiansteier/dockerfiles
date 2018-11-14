@@ -41,7 +41,7 @@ RUN echo -e "\n[i] Install socklog-overlay\n" && \
 
 # PHP
 RUN echo -e "\n[i] Install PHP-Extensions\n" && \
-    apk add -U --no-cache freetype c-client icu-libs libpng libjpeg-turbo libmemcached libmcrypt postgresql-libs libzip && \
+    apk add -U --no-cache freetype c-client icu-libs libldap libpng libjpeg-turbo libmemcached libmcrypt postgresql-libs libzip && \
     apk add --no-cache --virtual build-dependencies \
 	autoconf \
 	build-base \
@@ -53,6 +53,7 @@ RUN echo -e "\n[i] Install PHP-Extensions\n" && \
 	libmcrypt-dev \
 	libmemcached-dev \
 	libzip-dev \
+	openldap-dev \
 	postgresql-dev \
 	zlib-dev && \
     mv $PHP_ROOT_DIR/php/php.ini-production $PHP_ROOT_DIR/php/php.ini && \
@@ -65,9 +66,11 @@ RUN echo -e "\n[i] Install PHP-Extensions\n" && \
 	--with-jpeg-dir=/usr/include/ && \
     NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
     docker-php-ext-install -j${NPROC} \
+	gd \
 	hash \
 	imap \
 	intl \
+	ldap \
 	mbstring \
 	mcrypt \
 	mysqli \

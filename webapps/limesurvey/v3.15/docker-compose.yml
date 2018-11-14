@@ -7,7 +7,7 @@ services:
     container_name: lime-db
     hostname: DOCKER-lime-db
     image: linuxserver/mariadb
-    volumes:
+    volumes: 
      - lime-db:/config
     environment:
      - MYSQL_ROOT_PASSWORD=mysqlrootpasswd
@@ -18,10 +18,10 @@ services:
     hostname: DOCKER-lime-www
     image: cms0/httpd
     ports:
-     - "10082:80"
-    volumes:
+     - "80:80"
+    volumes: 
      - lime-www:/usr/local/apache2/htdocs
-    links:
+    links: 
      - lime:php-fpm
 
   lime:
@@ -29,15 +29,16 @@ services:
     image: cms0/limesurvey:3.15-php-fpm
     container_name: lime
     hostname: DOCKER-lime
-    volumes:
+    volumes: 
      - lime-www:/usr/local/apache2/htdocs
+    working_dir: /usr/local/apache2/htdocs
     environment:
      - MYSQL_ROOT_PASSWORD=mysqlrootpasswd
      - SILENTINSTALL=yes
      - APPDIR=/usr/local/apache2/htdocs
-    links:
+    links: 
      - mariadb:mariadb
-    depends_on:
+    depends_on: 
      - mariadb
 
 volumes:
