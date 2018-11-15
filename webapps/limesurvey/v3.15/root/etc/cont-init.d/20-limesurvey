@@ -64,6 +64,8 @@ fi
 
 if [ ! -f ${LIMEDIR}/application/config/config.php ]; then
   echo -e "\n\n[Error] Can't start LimeSurvey because no ${LIMEDIR}/application/config/config.php where found. If LimeSurvey has not been installed before, use environment 'SILENTINSTALL=yes'.\n\n"
+else
+  s6-ln -s ${LIMEDIR}/application/config/config.php ${LIMEDIR}/config.php
 fi
 
 # Cron
