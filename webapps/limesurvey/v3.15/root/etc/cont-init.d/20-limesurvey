@@ -56,6 +56,7 @@ if version_gt $APPVERSION $INSTALLED_VERSION; then
       sed -i "s*Update default LimeSurvey config here*Update default LimeSurvey config here\n        'defaulttheme'              => '$DEFAULT_THEME', \n        'sitename'           => '$SITENAME', \n        'defaultuser'        => '$APPADMIN',\n        'defaultpass'        => '$APPADMINPASS',\n        'siteadminemail'        => '$APPADMINEMAIL',*g" ${LIMEDIR}/application/config/config.php
     fi
     s6-setuidgid www-data php ${LIMEDIR}/application/commands/console.php installfromconfig  ${LIMEDIR}/application/config/config.php
+    s6-setuidgid www-data php ${LIMEDIR}/application/commands/console.php resetpassword $APPADMIN $APPADMINPASS
     apk del --purge netcat-openbsd mariadb-client
     echo -e "\n[i] Set automatic configuration:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n --- \n"
   fi
