@@ -1,4 +1,4 @@
-FROM arm32v7/alpine
+FROM alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
 RUN apk -U --no-cache --no-progress add \
