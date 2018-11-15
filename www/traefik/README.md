@@ -1,11 +1,6 @@
 # Alpine Docker image for traefik
 Treafik based on Alpine. Designed for quick tests with self-signed TLS Certificate.
 
-With Makefile:
-```
-make run
-```
-
 ## Build
 
 Use make:
