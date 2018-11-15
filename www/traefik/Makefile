@@ -1,17 +1,21 @@
-.PHONY: all build run push
+.PHONY: all build run quickstart remove
 
 UNAME := $(shell uname -m)
 ifeq ($(UNAME), x86_64)
- ARCHTAG=.x86_64
+ ARCHTAG=
+ BUILDNAME=${NAME}
 endif
 ifeq ($(UNAME), armv6l)
- ARCHTAG=.armhf
+ ARCHTAG=arm32v6
+ BUILDNAME=${NAME}.${ARCHTAG}
 endif
 ifeq ($(UNAME), armv7l)
- ARCHTAG=.armhf
+ ARCHTAG=arm32v7
+ BUILDNAME=${NAME}.${ARCHTAG}
 endif
 ifeq ($(UNAME), aarch64)
- ARCHTAG=.arm64
+ ARCHTAG=aarch64
+ BUILDNAME=${NAME}.${ARCHTAG}
 endif
 
 NAME=traefik
@@ -20,18 +24,13 @@ NAMESPACE=cms0
 all: build
 
 build:
-	sed -i "s*FROM lsiobase/alpine*FROM lsiobase/alpine${ARCHTAG}*g;s*FROM lsiobase/alpine.x86_64*FROM lsiobase/alpine*g" Dockerfile
-	sed -i "s*ARCH=.x86_64*ARCH=${ARCHTAG}*g" Dockerfile
-	docker build --rm --no-cache=true -t ${NAMESPACE}/${NAME}${ARCHTAG} .
+	sed -i "s*FROM alpine*FROM ${ARCHTAG}/alpine*g;s*FROM /alpine*FROM alpine*g" Dockerfile
+	docker build --rm --no-cache=true -t ${NAMESPACE}/${BUILDNAME} .
 
 run:
-	docker run -d --hostname ${NAME} --name ${NAME} \
-	-p 80:80 -p 443:443 -p 8080:8080 \
-	-v /srv/docker/${NAME}:/config/traefik \
-	-v /var/run/docker.sock:/var/run/docker.sock \
-	${NAMESPACE}/${NAME}${ARCHTAG}
+	docker-compose up -d
 
 quickstart: build run
 
 remove:
-	docker rm -f ${NAME}
+	docker-compose down --volume

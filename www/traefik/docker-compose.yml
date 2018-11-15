@@ -1,10 +1,10 @@
-version: '3'
+version: '3.5'
 
 services:
   traefik:
     restart: always
     container_name: traefik
-    hostname: DOCKER - traefik
+    hostname: DOCKER-traefik
     image: cms0/traefik
     ports:
     - "80:80"
@@ -16,3 +16,4 @@ services:
  
 volumes:
   traefik-config:
+    name: traefik-config

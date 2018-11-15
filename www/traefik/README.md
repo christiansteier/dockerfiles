@@ -1,6 +1,5 @@
 # Alpine Docker image for traefik
-
-Build a small AlpineLinux Docker image based on [LinuxServer.io](https://github.com/linuxserver). 
+Treafik based on Alpine. Designed for quick tests with TLS.
 
 ## Usage
 

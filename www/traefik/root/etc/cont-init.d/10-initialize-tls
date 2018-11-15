@@ -1,0 +1,16 @@
+#!/usr/bin/with-contenv sh
+
+if [ ! -d /config/traefik/tls ]; then
+  s6-echo "[i] Create tls folder"
+  s6-mkdir -p /config/traefik/tls
+fi
+
+if [ ! -f /config/traefik/tls/traefik.key ]; then
+  s6-echo "[i] Create a server certificate"
+  apk -U add --no-cache libressl
+  echo -e "[dn]\nCN=*.localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName = DNS:localhost,IP:0.0.0.0,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth" > extfile.cnf
+  openssl req -x509 -out tls/traefik.crt -keyout tls/traefik.key -newkey rsa:4096 -nodes -sha256 -subj '/CN=*.localhost' -extensions EXT -config extfile.cnf
+  s6-rmrf extfile.cnf
+  apk del --purge libressl
+  s6-rmrf /var/cache/apk/*  /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /var/tmp
+fi

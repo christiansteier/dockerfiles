@@ -1,4 +1,4 @@
 #!/bin/execlineb -P
 fdmove -c 2 1
 exec -c
-/usr/sbin/traefik -c /config/traefik/config/traefik.toml
+/traefik -c /config/traefik/traefik.toml
