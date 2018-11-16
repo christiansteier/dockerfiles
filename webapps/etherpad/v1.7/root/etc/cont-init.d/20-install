@@ -30,16 +30,18 @@ if [ ! -f /opt/etherpad/config/settings.json ]; then
 			    "password": "${APPDBPASS}",
 			    "database": "${APPDB}"
 			  },
+
+	  "defaultPadText" : "$ETHERPAD_DEFAULT_PADTEXT",
+	  "padOptions": {
+	  "lang": "$ETHERPAD_LANG",
+	  "showChat" : "$ETHERPAD_SHOWCHAT"
+	  },
+	  
 	  "users": {
 		    "$ETHERPAD_ADMIN_USER": {
 		      "password": "${ETHERPAD_ADMIN_PASS}",
 		      "is_admin": true
 		    }
-	  },
-	  "defaultPadText" : "$ETHERPAD_DEFAULT_PADTEXT",
-	  "padOptions": {
-	    "lang": "$ETHERPAD_LANG",
-	    "showChat" : "$ETHERPAD_SHOWCHAT"
 	  },
 	}
 EOF
