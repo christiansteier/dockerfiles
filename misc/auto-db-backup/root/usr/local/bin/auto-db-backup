@@ -1,0 +1,36 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+DIR=$(pwd)
+MYSQL_HOST=${MYSQL_HOST:-mariadb}
+MYSQL_PORT=${MYSQL_PORT:-3306}
+MYSQL_ROOT=${MYSQL_ROOT:-root}
+MYSQL_ROOT_PASSWORD_FILE=${MYSQL_ROOT_PASSWORD_FILE:-/run/secrets/mysql_root_password}
+if [ -f MYSQL_ROOT_PASSWORD_FILE ]; then
+  MYSQL_ROOT_PASSWORD=$(cat $MYSQL_ROOT_PASSWORD_FILE}
+else
+  MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$MARIADB_ENV_MYSQL_ROOT_PASSWORD}
+fi
+if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
+  echo -e "\n[STOP] MYSQL_ROOT_PASSWORD not set\n"
+  exit 1
+fi
+KEEPDAILY=${KEEPDAILY:-6}
+KEEPWEEKLY=${KEEPWEEKLY:-21}
+KEEPMONTHLY=${KEEPMONTHLY:-90}
+
+if [ -d "/backup/daily" ]; then
+  find /backup/daily -type f -mtime +$KEEPDAILY -exec rm {} \;
+fi
+if [ -d "/backup/weekly" ]; then
+  find /backup/weekly -type f -mtime +$KEEPWEEKLY -exec rm {} \;
+fi
+if [ -d "/backup/monthly" ]; then
+  find /backup/monthly -type f -mtime +$KEEPMONTHLY -exec rm {} \;
+fi
+
+mysqldump  -u $MYSQL_ROOT --password=$MYSQL_ROOT_PASSWORD --protocol=tcp -h $MYSQL_HOST --port=$MYSQL_PORT --single-transaction --flush-logs --master-data=2 --all-databases | gzip > $DIR/all_databases_$(date +%Y-%m-%d-%H.%M.%S).sql.gz
+echo 'purge master logs before date_sub(now(), interval 7 day);' | mysql -u $MYSQL_ROOT --password=$MYSQL_ROOT_PASSWORD --protocol=tcp -h $MYSQL_HOST --port=$MYSQL_PORT
+
+exit 0
