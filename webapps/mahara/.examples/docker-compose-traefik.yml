@@ -43,7 +43,7 @@ services:
     restart: always
     container_name: mahara
     hostname: mahara
-    image: maxder/alpine-mahara.x86_64
+    image: cms0/mahara:18.10-nginx
     volumes:
      - /srv/docker/mahara/config:/config
      - /srv/docker/mahara/data:/data
