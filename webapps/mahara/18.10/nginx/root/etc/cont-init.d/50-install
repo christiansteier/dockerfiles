@@ -1,0 +1,82 @@
+#!/usr/bin/with-contenv sh
+
+set -e
+
+APPFOLDER=${APPFOLDER:-mahara}
+MAHARA_PATH=/usr/share/webapps/${APPFOLDER}
+APPDB=${APPDB:-mahara}
+DBHOST=${DBHOST:-db}
+DBUSER=${DBUSER:-mahara}
+DBPASS=${DBPASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 88 | head -n 1)}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-$DB_ENV_MYSQL_ROOT_PASSWORD}
+APPADMIN=${APPADMIN:-admin}
+APPADMINPASS=${APPADMINPASS:-admin}
+APPADMINEMAIL=${APPADMINEMAIL:-admin@mydomain.org}
+APPSALD=${APPSALD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)}
+ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-127.0.0.1}
+SILENTINSTALL=${SILENTINSTALL:-no}
+SERVERNAME=${SERVERNAME:-localhost}
+TLS=${TLS:-no}
+POSTMAXSIZE=${POSTMAXSIZE:-50M}
+
+if [ ${APPFOLDER} != "mahara" ]; then
+  rsync -au --progress /usr/share/webapps/mahara/ /usr/share/webapps/${APPFOLDER}/
+  sed -i "s*mahara*${APPFOLDER}*g" /defaults/default /config/nginx/site-confs/default /defaults/cron
+fi
+
+if [ ! -d /config/mahara ]; then
+  mkdir -p /config/mahara
+  chown abc:abc /config/mahara
+fi
+
+if [ ! -f /config/mahara/config.php ]; then
+  echo "Copy config-dist.php to /config/mahara/config.php and link to it"
+  cp -a $MAHARA_PATH/config-dist.php /config/mahara/config.php
+  sed -i "s|dbtype   = 'postgres'|dbtype = 'mysql'|g" /config/mahara/config.php
+  sed -i "s|dbname   = ''|dbname = '$APPDB'|g" /config/mahara/config.php
+  sed -i "s|dbuser   = ''|dbuser = '$DBUSER'|g" /config/mahara/config.php
+  sed -i "s|dbpass   = ''|dbpass = '$DBPASS'|g" /config/mahara/config.php
+  sed -i "s|dbhost   = 'localhost'|dbhost = '$DBHOST'|g" /config/mahara/config.php
+  sed -i 's|\/\/ \$cfg->wwwroot|\$cfg->wwwroot|g' /config/mahara/config.php
+  sed -i "s|wwwroot = 'https:\/\/myhost.com\/mahara\/'|wwwroot = 'http:\/\/$SERVERNAME\/'|g" /config/mahara/config.php
+  sed -i "s|dataroot = '\/path\/to\/uploaddir'|dataroot = '\/data'|g" /config/mahara/config.php
+  sed -i 's|\/\/ \$cfg->passwordsaltmain|\$cfg->passwordsaltmain|g' /config/mahara/config.php
+  sed -i "s|passwordsaltmain = 'some long random string here with lots of characters'|passwordsaltmain = '$APPSALD'|g" /config/mahara/config.php
+  sed -i "s|emailcontact = ''|emailcontact = '$APPADMINEMAIL'|g" /config/mahara/config.php
+  sed -i "s#\/\/ closing php tag intentionally omitted to prevent whitespace issues#\$cfg->cleanurls = true;\n\$cfg->cleanurlinvalidcharacters = '/[^a-zA-Z0-9]+/';\n\$cfg->cleanurlvalidate = '/^[a-z0-9-]*\$/';\n\$cfg->cleanurlusereditable = true;\n\n\$cfg->log_dbg_targets = LOG_TARGET_SCREEN | LOG_TARGET_ERRORLOG;\n\$cfg->log_info_targets = LOG_TARGET_SCREEN | LOG_TARGET_ERRORLOG;\n\$cfg->log_warn_targets = LOG_TARGET_SCREEN | LOG_TARGET_ERRORLOG;\n\$cfg->log_environ_targets = LOG_TARGET_SCREEN | LOG_TARGET_ERRORLOG;\n\n\$cfg->plugin_search_elasticsearch_host = '$ELASTICSEARCH_HOST';\n\n\/\/ closing php tag intentionally omitted to prevent whitespace issues#g" /config/mahara/config.php
+fi
+
+s6-ln -s /config/mahara/config.php $MAHARA_PATH/config.php
+
+if [ $SILENTINSTALL = "yes" ]; then
+  until nc -z ${DBHOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+  if ! mysql -u root --password=$MYSQL_ROOT_PASSWORD -h $DBHOST -e "use ${APPDB}"; then
+    echo -e "No database ${APPDB} found. Creating database now .."
+    mysql -u root --password=$MYSQL_ROOT_PASSWORD -h $DBHOST <<-EOF
+    SET GLOBAL log_bin_trust_function_creators=1;
+    CREATE DATABASE IF NOT EXISTS ${APPDB} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    GRANT ALL PRIVILEGES ON ${APPDB}.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS';
+    FLUSH PRIVILEGES;
+EOF
+  fi
+  chown abc:abc $MAHARA_PATH/config.php
+  echo -e "\n---\n[i] Installing Mahara via command line. Stay tuned!\n"
+  s6-setuidgid abc php7 $MAHARA_PATH/admin/cli/install.php \
+  --adminpassword="$APPADMINPASS" \
+  --adminemail=$APPADMINEMAIL
+  sed -i "s*localhost*$SERVERNAME*g" $MAHARA_PATH/config.php
+  if [ $TLS == "yes" ]; then
+    sed -i 's*http://*https://*g' $MAHARA_PATH/config.php
+  fi
+  echo -e "\n[i] Login:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n---\n"
+fi
+
+# set post_max_size and upload_max_filesize
+sed -i 's/^post_max_size.*$/post_max_size=$POSTMAXSIZE/g' /etc/php7/php.ini
+sed -i 's/^upload_max_filesize.*$/upload_max_filesize=$POSTMAXSIZE/g' /etc/php7/php.ini
+
+# set cronjob
+crontab /defaults/cron
+
+rm /etc/cont-init.d/50-install
+exit 0
