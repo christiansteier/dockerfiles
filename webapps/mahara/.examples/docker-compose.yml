@@ -22,7 +22,7 @@ services:
     restart: always
     container_name: mahara
     hostname: mahara
-    image: cms0/mahara:18.03-nginx
+    image: cms0/mahara:18.10-nginx
     ports:
     - 80:80
     - 443:443
