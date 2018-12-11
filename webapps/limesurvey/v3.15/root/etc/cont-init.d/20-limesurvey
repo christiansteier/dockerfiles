@@ -49,6 +49,9 @@ if version_gt $APPVERSION $INSTALLED_VERSION; then
     apk add -U --no-cache netcat-openbsd mariadb-client
     sleep 3
     until nc -z ${MYSQL_HOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
+    if [ ! -d /etc/lime ]; then
+      mkdir /etc/lime
+    fi
     if [ ! -f ${LIMEDIR}/config.php ]; then
       cp -a ${LIMEDIR}/application/config/config-sample-mysql.php /etc/lime/config.php
       s6-envuidgid www-data s6-chown -U -- /etc/lime/config.php
