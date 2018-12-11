@@ -68,7 +68,7 @@ fi
 if [ ! -f /etc/lime/config.php ]; then
   echo -e "\n\n[Error] Can't start LimeSurvey because no /etc/lime/config.php where found. If LimeSurvey has not been installed before, use environment 'SILENTINSTALL=yes'.\n\n"
 else
-  s6-ln -s /etc/lime/config.php ${LIMEDIR}/config.php
+  s6-ln -s /etc/lime/config.php ${LIMEDIR}/application/config/config.php
 fi
 
 # Cron
