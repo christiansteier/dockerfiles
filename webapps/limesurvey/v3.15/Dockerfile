@@ -2,7 +2,7 @@ FROM php:7.1-fpm-alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
 ENV VERSION="3.15"
-ARG RELEASE=".3+181108"
+ARG RELEASE=".3+181115"
 
 ARG WEB_USER=www-data
 ARG WEB_GROUP=www-data
