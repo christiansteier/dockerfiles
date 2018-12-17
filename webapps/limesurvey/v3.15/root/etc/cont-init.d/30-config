@@ -1,0 +1,25 @@
+
+#!/usr/bin/with-contenv bash
+set -eu
+
+APPDIR=${APPDIR:-/var/www/html}
+SUBDIR=${SUBDIR:-}
+if [ ! $SUBDIR = "" ]; then
+ LIMEDIR=$APPDIR/${SUBDIR}
+else
+ LIMEDIR=$APPDIR
+fi
+
+if [ ! -d /config/lime ]; then
+  mkdir -p /config/lime
+fi
+
+if [ ! -f /config/lime/config.php ] || [ -f ${LIMEDIR}/application/config/config.php ]; then
+  mv ${LIMEDIR}/application/config/config.php /config/lime/config.php
+fi
+
+if [ ! -f ${LIMEDIR}/application/config/config.php ] || [ -f /config/lime/config.php ]; then
+  ln -s /config/moodle/config.php ${LIMEDIR}/application/config/config.php
+fi
+
+exit 0
