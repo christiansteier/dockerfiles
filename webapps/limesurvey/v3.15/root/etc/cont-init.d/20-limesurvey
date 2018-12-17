@@ -49,26 +49,18 @@ if version_gt $APPVERSION $INSTALLED_VERSION; then
     apk add -U --no-cache netcat-openbsd mariadb-client
     sleep 3
     until nc -z ${MYSQL_HOST} 3306; do sleep 1; echo "Waiting for DB to come up..."; done
-    if [ ! -d /etc/lime ]; then
-      mkdir /etc/lime
+
+    if [ ! -f ${LIMEDIR}/application/config/config.php ]; then
+      cp -a ${LIMEDIR}/application/config/config-sample-mysql.php ${LIMEDIR}/application/config/config.php
+      s6-envuidgid www-data s6-chown -U -- ${LIMEDIR}/application/config/config.php
+      sed -i "s*localhost*${MYSQL_HOST}*g;s*root*${MYSQL_ROOT}*g;s*''*'${MYSQL_ROOT_PASSWORD}'*g;s*limesurvey*${APPDB}*g" ${LIMEDIR}/application/config/config.php
+      sed -i "s*Update default LimeSurvey config here*Update default LimeSurvey config here\n        'defaulttheme'              => '$DEFAULT_THEME', \n        'sitename'           => '$SITENAME', \n        'defaultuser'        => '$APPADMIN',\n        'defaultpass'        => '$APPADMINPASS',\n        'siteadminemail'        => '$APPADMINEMAIL',*g" ${LIMEDIR}/application/config/config.php
     fi
-    if [ ! -f ${LIMEDIR}/config.php ]; then
-      cp -a ${LIMEDIR}/application/config/config-sample-mysql.php /etc/lime/config.php
-      s6-envuidgid www-data s6-chown -U -- /etc/lime/config.php
-      sed -i "s*localhost*${MYSQL_HOST}*g;s*root*${MYSQL_ROOT}*g;s*''*'${MYSQL_ROOT_PASSWORD}'*g;s*limesurvey*${APPDB}*g" /etc/lime/config.php
-      sed -i "s*Update default LimeSurvey config here*Update default LimeSurvey config here\n        'defaulttheme'              => '$DEFAULT_THEME', \n        'sitename'           => '$SITENAME', \n        'defaultuser'        => '$APPADMIN',\n        'defaultpass'        => '$APPADMINPASS',\n        'siteadminemail'        => '$APPADMINEMAIL',*g" /etc/lime/config.php
-    fi
-    s6-setuidgid www-data php ${LIMEDIR}/application/commands/console.php installfromconfig  /etc/lime/config.php
+    s6-setuidgid www-data php ${LIMEDIR}/application/commands/console.php installfromconfig  ${LIMEDIR}/application/config/config.php
     s6-setuidgid www-data php ${LIMEDIR}/application/commands/console.php resetpassword $APPADMIN $APPADMINPASS
     apk del --purge netcat-openbsd mariadb-client
     echo -e "\n[i] Set automatic configuration:\n Admin: $APPADMIN\n Pass: $APPADMINPASS\n --- \n"
   fi
-fi
-
-if [ ! -f /etc/lime/config.php ]; then
-  echo -e "\n\n[Error] Can't start LimeSurvey because no /etc/lime/config.php where found. If LimeSurvey has not been installed before, use environment 'SILENTINSTALL=yes'.\n\n"
-else
-  s6-ln -s /etc/lime/config.php ${LIMEDIR}/application/config/config.php
 fi
 
 # Cron
