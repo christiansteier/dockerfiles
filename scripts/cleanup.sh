@@ -31,7 +31,7 @@ for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobod
 for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nogroup -ve daemon -ve www-data -ve crontab ); do delgroup "$group"; done
 echo "[i] Remove interactive login shell"
 sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
-rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/* /etc/fstab
+rm -rf rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/* /etc/fstab
 echo "[i] Remove init scripts"
 rm -fr /etc/init.d /lib/rc /etc/conf.d /etc/inittab /etc/runlevels /etc/rc.conf
 echo "[i] Remove kernel tunables"
