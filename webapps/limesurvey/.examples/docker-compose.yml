@@ -1,0 +1,48 @@
+version: '3.5'
+
+services:
+
+  mariadb:
+    restart: unless-stopped
+    container_name: lime-db
+    hostname: DOCKER-lime-db
+    image: linuxserver/mariadb
+    volumes: 
+     - lime-db:/config
+    environment:
+     - MYSQL_ROOT_PASSWORD=mysqlrootpasswd
+
+  www:
+    restart: unless-stopped
+    container_name: lime-www
+    hostname: DOCKER-lime-www
+    image: cms0/httpd
+    ports:
+     - "80:80"
+    volumes: 
+     - lime-www:/usr/local/apache2/htdocs
+    links: 
+     - lime:php-fpm
+
+  lime:
+    restart: unless-stopped
+    image: cms0/limesurvey:3.15-php-fpm
+    container_name: lime
+    hostname: DOCKER-lime
+    volumes: 
+     - lime-www:/usr/local/apache2/htdocs
+    working_dir: /usr/local/apache2/htdocs
+    environment:
+     - MYSQL_ROOT_PASSWORD=mysqlrootpasswd
+     - SILENTINSTALL=yes
+     - APPDIR=/usr/local/apache2/htdocs
+    links: 
+     - mariadb:mariadb
+    depends_on: 
+     - mariadb
+
+volumes:
+  lime-db:
+    name: lime-db
+  lime-www:
+    name: lime-www
