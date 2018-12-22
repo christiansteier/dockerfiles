@@ -48,6 +48,7 @@ RUN echo -e "\n[i] Install PHP-Extensions\n" && \
 	freetype-dev \
 	icu-dev \
 	imap-dev \
+	libevent-dev \
 	libpng-dev \
 	libjpeg-turbo-dev \
 	libmcrypt-dev \
