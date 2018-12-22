@@ -41,7 +41,7 @@ RUN echo -e "\n[i] Install socklog-overlay\n" && \
 
 # PHP
 RUN echo -e "\n[i] Install PHP-Extensions\n" && \
-    apk add -U --no-cache freetype c-client icu-libs libldap libpng libjpeg-turbo libmemcached libmcrypt postgresql-libs libzip && \
+    apk add -U --no-cache freetype c-client icu-libs libevent libldap libpng libjpeg-turbo libmemcached libmcrypt postgresql-libs libzip && \
     apk add --no-cache --virtual build-dependencies \
 	autoconf \
 	build-base \
