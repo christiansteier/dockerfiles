@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/usr/bin/with-contenv sh
 set -eu
 
 APPDIR=${APPDIR:-/var/www/html}
