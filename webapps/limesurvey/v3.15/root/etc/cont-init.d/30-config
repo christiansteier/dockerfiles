@@ -18,7 +18,7 @@ if [ ! -f /config/lime/config.php ] || [ -f ${LIMEDIR}/application/config/config
 fi
 
 if [ ! -f ${LIMEDIR}/application/config/config.php ] || [ -f /config/lime/config.php ]; then
-  ln -s /config/moodle/config.php ${LIMEDIR}/application/config/config.php
+  ln -s /config/lime/config.php ${LIMEDIR}/application/config/config.php
 fi
 
 exit 0
