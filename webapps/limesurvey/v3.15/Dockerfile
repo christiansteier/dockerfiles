@@ -104,7 +104,7 @@ RUN cd /tmp && \
 COPY root/ /
 
 # Cleanup and security fixes
-RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteier/dd8c5544c69504d29bd938726691255b/raw/7563016ab0689a10473557c2f90e919837a385d5/docker-alpine-cleanup.sh && \
+RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteier/dd8c5544c69504d29bd938726691255b/raw/5317638ec64c0e8c3d22cd9965237a452bf82895/docker-alpine-cleanup.sh && \
     chmod +x /tmp/cleanup.sh && \
     apk del --purge build-dependencies grep curl shadow && \
     /tmp/cleanup.sh
