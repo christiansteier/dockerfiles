@@ -15,7 +15,8 @@ RUN apk --no-cache add shadow curl gnupg grep tzdata coreutils rsync && \
     sed -i 's*;catch_workers_output = yes*catch_workers_output = yes*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \ 
     sed -i 's*;php_flag[display_errors] = off*php_flag[display_errors] = off*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
     sed -i 's*;php_admin_flag[log_errors] = on*php_admin_flag[log_errors] = on*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
-    sed -i 's*;php_admin_value[error_log] = /var/log/fpm-php.www.log*php_admin_value[error_log] = ${PHP_ROOT_DIR}/logs/error.log*g' $PHP_ROOT_DIR/php-fpm.d/www.conf
+    sed -i 's*;php_admin_value[error_log] = /var/log/fpm-php.www.log*php_admin_value[error_log] = ${PHP_ROOT_DIR}/logs/error.log*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
+    sed -i 's*listen = 9000*listen = 0.0.0.0:9000*g' $PHP_ROOT_DIR/php-fpm.d/zz-docker.conf
 
 # s6-overlay
 RUN echo -e "\n[i] Install s6-overlay\n" && \
