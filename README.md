@@ -1,5 +1,5 @@
 # dockerfiles
-Collection of Dockerfiles like Moodle, ownCloud, Mahara, ... (x86_64 and armhf)
+Collection of Dockerfiles like Etherpad, Limesurvey, ...
 
 ## Alpine Linux based 
 In bransh [alpine](https://github.com/christiansteier/dockerfiles/tree/alpine)
