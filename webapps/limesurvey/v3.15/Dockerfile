@@ -8,18 +8,34 @@ ARG WEB_USER=www-data
 ARG WEB_GROUP=www-data
 ARG PHP_ROOT_DIR=/usr/local/etc
 
-RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteier/dd8c5544c69504d29bd938726691255b/raw/5317638ec64c0e8c3d22cd9965237a452bf82895/docker-alpine-cleanup.sh && \
-    chmod +x /tmp/cleanup.sh && \
-    /tmp/cleanup.sh && \
+RUN \
+    # Cleanup Based on https://gist.github.com/jumanjiman/f9d3db977846c163df12 \
+    export sysdirs="/bin /etc /lib /sbin /usr" && \
+    echo -e "[i] Remove crufty...\n   /etc/shadow-\n   /etc/passwd-\n   /etc/group-" && \
+    find $sysdirs -xdev -type f -regex '.*-$' -exec rm -f {} + && \
+    echo "[i] Ensure system dirs are owned by root and not writable by anybody else." && \
+    find $sysdirs -xdev -type d -exec chown root:root {} \; -exec chmod 0755 {} \; && \
+    echo "[i] Set wright permissions for /tmp and /var/tmp." && \
+    chmod a=rwx,o+t /tmp /var/tmp && \
+    echo "[i] Remove all suid files." && \
+    find $sysdirs -xdev -type f -a -perm +4000 -delete && \
+    echo "[i] Remove other programs that could be dangerous." && \
+    find $sysdirs -xdev \( -name hexdump -o -name chgrp -o -name ln -o -name od -o -name strings -o -name su \) -delete && \
+    echo "[i] Remove unnecessary user accounts." && \
+    for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobody -ve daemon -ve www-data -ve nologin -ve abc); do deluser "$user"; done && \
+    for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nobody -ve nogroup -ve www-data -ve node -ve abc); do delgroup "$group"; done && \
+    echo "[i] Remove interactive login shell" && \
+    sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd && \
+    echo "[i] Remove init scripts" && \
+    rm -fr /etc/init.d /lib/rc /etc/conf.d /etc/inittab /etc/runlevels /etc/rc.conf && \
+    echo "[i] Remove kernel tunables" && \
+    rm -fr /etc/sysctl* /etc/modprobe.d /etc/modules /etc/mdev.conf /etc/acpi && \
+    echo "[i] Remove broken symlinks." && \
+    find $sysdirs -xdev -type l -exec test ! -e {} \; -delete && \
+    \
+    # System tools \
     apk --no-cache add shadow curl gnupg grep tzdata coreutils rsync && \
-    usermod -u 1000 ${WEB_USER} && \
-    groupmod -g 1000 ${WEB_GROUP} && \
-    sed -i 's*; display_errors*display_errors = off*g' $PHP_ROOT_DIR/php/php.ini-production && \
-    sed -i 's*;catch_workers_output = yes*catch_workers_output = yes*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \ 
-    sed -i 's*;php_flag[display_errors] = off*php_flag[display_errors] = off*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
-    sed -i 's*;php_admin_flag[log_errors] = on*php_admin_flag[log_errors] = on*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
-    sed -i 's*;php_admin_value[error_log] = /var/log/fpm-php.www.log*php_admin_value[error_log] = ${PHP_ROOT_DIR}/logs/error.log*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
-    sed -i 's*listen = 9000*listen = 0.0.0.0:9000*g' $PHP_ROOT_DIR/php-fpm.d/zz-docker.conf && \
+    \
     # s6-overlay \
     echo -e "\n[i] Install s6-overlay\n" && \
     GPG="DB30 1BA3 F6F8 07E0 D0E6  CCB8 6101 B278 3B2F D161" && \
@@ -34,13 +50,23 @@ RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteie
     if [ "${FINGERPRINT}" != "${GPG}" ]; then echo "[!!] Wrong GPG fingerprint!" && exit 1; fi && \
     echo "[i] All seems good, now unpacking s6-overlay.tar.gz" && \
     tar xzf /tmp/s6-overlay.tar.gz -C / && \
+    \
     # socklog-overlay \
     echo -e "\n[i] Install socklog-overlay\n" && \
     SOCKLOG=$(curl -s https://api.github.com/repos/just-containers/socklog-overlay/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') && \
     if [ $(uname -m) == "armv6l" ] || [ $(uname -m) == "armv7l" ]; then ARCHTAG=armhf ; elif [ $(uname -m) == "aarch64" ]; then ARCHTAG=aarch64 ; elif [ $(uname -m) == "x86_64" ]; then ARCHTAG=amd64 ; fi && \
     curl -o /tmp/socklog-overlay-${ARCHTAG}.tar.gz -L https://github.com/just-containers/socklog-overlay/releases/download/${SOCKLOG}/socklog-overlay-${ARCHTAG}.tar.gz && \
     tar xzf /tmp/socklog-overlay-${ARCHTAG}.tar.gz -C / && \
+    \
     # PHP \
+    usermod -u 1000 ${WEB_USER} && \
+    groupmod -g 1000 ${WEB_GROUP} && \
+    sed -i 's*; display_errors*display_errors = off*g' $PHP_ROOT_DIR/php/php.ini-production && \
+    sed -i 's*;catch_workers_output = yes*catch_workers_output = yes*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \ 
+    sed -i 's*;php_flag[display_errors] = off*php_flag[display_errors] = off*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
+    sed -i 's*;php_admin_flag[log_errors] = on*php_admin_flag[log_errors] = on*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
+    sed -i 's*;php_admin_value[error_log] = /var/log/fpm-php.www.log*php_admin_value[error_log] = ${PHP_ROOT_DIR}/logs/error.log*g' $PHP_ROOT_DIR/php-fpm.d/www.conf && \
+    sed -i 's*listen = 9000*listen = 0.0.0.0:9000*g' $PHP_ROOT_DIR/php-fpm.d/zz-docker.conf && \
     echo -e "\n[i] Install PHP-Extensions\n" && \
     apk add -U --no-cache freetype c-client icu-libs libevent libldap libpng libjpeg-turbo libmemcached libmcrypt postgresql-libs libzip && \
     apk add --no-cache --virtual build-dependencies \
@@ -94,13 +120,16 @@ RUN curl -o /tmp/cleanup.sh -L https://gist.githubusercontent.com/christiansteie
     echo 'apc.enable_cli=1' >> $PHP_ROOT_DIR/php/conf.d/docker-php-ext-apcu.ini && \
     echo 'memory_limit=512M' > $PHP_ROOT_DIR/php/conf.d/memory-limit.ini && \
     sed -i 's*; display_errors*display_errors = off*g' $PHP_ROOT_DIR/php/php.ini && \
-    apk del --purge build-dependencies grep curl shadow
-    
-# LimeSurvey
-ADD https://download.limesurvey.org/latest-stable-release/limesurvey${VERSION}${RELEASE}.tar.gz /tmp/limesurvey${VERSION}${RELEASE}.tar.gz
-RUN cd /tmp && \
+    apk del --purge build-dependencies grep curl shadow && \
+    \
+    # LimeSurvey \
+    curl -o /tmp/limesurvey${VERSION}${RELEASE}.tar.gz -L https://download.limesurvey.org/latest-stable-release/limesurvey${VERSION}${RELEASE}.tar.gz && \
+    cd /tmp && \
     tar zxvf  limesurvey${VERSION}${RELEASE}.tar.gz -C /usr/src && \
-    rm *.tar.gz
+    rm *.tar.gz && \
+    \
+    # Cleanup
+    rm -rf /var/cache/apk/* /usr/share/doc /usr/share/man/ /usr/share/info/* /var/cache/man/* /tmp/* /etc/fstab
 
 # copy local files
 COPY root/ /
