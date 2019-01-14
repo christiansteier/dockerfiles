@@ -22,9 +22,6 @@ RUN \
     find $sysdirs -xdev \( -name hexdump -o -name chgrp -o -name ln -o -name od -o -name strings -o -name su \) -delete && \
     echo "[i] Remove unnecessary user accounts." && \
     for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobody -ve daemon -ve www-data -ve nologin); do deluser "$user"; done && \
-    for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nogroup -ve www-data -ve node); do delgroup "$group"; done && \
-    echo "[i] Remove interactive login shell" && \
-    sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd && \
     echo "[i] Remove init scripts" && \
     rm -fr /etc/init.d /lib/rc /etc/conf.d /etc/inittab /etc/runlevels /etc/rc.conf && \
     echo "[i] Remove kernel tunables" && \
