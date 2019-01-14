@@ -2,8 +2,7 @@ FROM php:7.1-fpm-alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
 ENV VERSION="3.15"
-ARG RELEASE=".5+181115"
-
+ARG RELEASE=".6+190108"
 ARG WEB_USER=www-data
 ARG WEB_GROUP=www-data
 ARG PHP_ROOT_DIR=/usr/local/etc
