@@ -30,8 +30,6 @@ RUN \
     rm -fr /etc/init.d /lib/rc /etc/conf.d /etc/inittab /etc/runlevels /etc/rc.conf && \
     echo "[i] Remove kernel tunables" && \
     rm -fr /etc/sysctl* /etc/modprobe.d /etc/modules /etc/mdev.conf /etc/acpi && \
-    echo "[i] Remove broken symlinks." && \
-    find $sysdirs -xdev -type l -exec test ! -e {} \; -delete && \
     \
     # System tools \
     apk --no-cache add shadow curl gnupg grep tzdata coreutils rsync && \
