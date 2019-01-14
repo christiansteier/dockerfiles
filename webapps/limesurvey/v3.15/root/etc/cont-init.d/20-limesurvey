@@ -67,6 +67,14 @@ fi
 echo -e "*/1 * * * * /usr/local/bin/php $LIMEDIR/application/commands/console.php plugin cron --interval=1 \n" > /limesurvey
 crontab /limesurvey && rm /limesurvey
 
+# Additional scripts
+EXTRA=/extra-scripts
+if [ -d "$EXTRA" ]; then
+  for file in $EXTRA/*; do
+      [ -f "$file" ] && [ -x "$file" ] && "$file"
+  done
+fi
+
 # self-destruction
 rm /etc/cont-init.d/20-limesurvey
 exit 0
