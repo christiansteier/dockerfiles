@@ -38,9 +38,11 @@ if version_gt $INSTALLED_VERSION $APPVERSION; then
 fi
 
 if version_gt $APPVERSION $INSTALLED_VERSION; then
-  if [ ! $SUBDIR = "" ]; then
+  if [ ! -d $LIMEDIR ]; then
     mkdir $LIMEDIR
-    rsync -rlDog --chown www-data:www-data --delete /usr/src/limesurvey/ $LIMEDIR/
+  fi
+  if [ -d $LIMEDIR/upload ]; then
+    rsync -rlDog --chown www-data:www-data --exclude 'upload' --delete /usr/src/limesurvey/ $LIMEDIR/
   else
     rsync -rlDog --chown www-data:www-data --delete /usr/src/limesurvey/ $LIMEDIR/
   fi
