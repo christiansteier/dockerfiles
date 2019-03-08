@@ -73,6 +73,14 @@ EOF
   echo -e "\n\n[i] Set automatic configuration:\n  APIKEY: $(cat ${ETHERPAD_PATH}/APIKEY.txt)\n  ADMIN: $ETHERPAD_ADMIN_USER\n  PASS: $ETHERPAD_ADMIN_PASS\n---\n"
 fi
 
+# Additional scripts
+EXTRA=/extra-scripts
+if [ -d "$EXTRA" ]; then
+  for file in $EXTRA/*; do
+      [ -f "$file" ] && [ -x "$file" ] && "$file"
+  done
+fi
+
 # self-destruction
 rm /etc/cont-init.d/20-install
 exit 0
