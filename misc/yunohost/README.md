@@ -10,7 +10,7 @@ Run Yunohost in Docker on (AMD64) server. This image is inspired by [https://git
 
 - **POSTINTALL** : Set "yes" to create a simple script to run postinstall with HTTPS certificate *(default: "no")*
 - **DOMAIN** : Domain for postinstall  *(default: "yunohost.local")*
-- **PASSWORD** : Admin passwort for postinstall *(default: "yunohost")*
+- **PASSWORD** : Admin password for postinstall *(default: "yunohost")*
 - **DUMMYNIC** : Create dummy interface with external static ip *(default: "no")*
 
 ### Post-installation
