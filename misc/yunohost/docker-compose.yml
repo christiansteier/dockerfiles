@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  yunohost:
+    image: cms0/yunohost:3
+    privileged: true
+    restart: always
+    container_name: yunohost
+    ports:
+      - "22:22"
+      - "25:25"
+      - "80:80"
+      - "137:137"
+      - "138:138"
+      - "139:139"
+      - "443:443"
+      - "445:445"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+      - "1900:1900"
+      - "5222:5222"
+      - "5269:5269"
+      - "5290:5290"
+      - "49200:49200"
+    dns:
+      - 9.9.9.10
+    volumes:
+      - yunohost-backup:/home/yunohost.backup
+      - yunohost-media:/media
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    #environment:
+    #  - POSTINSTALL=yes # Creates a script for postinstall with HTTPS certificate
+    #  - DOMAIN=yunohost.local # For postinstall
+    #  - PASSWORD=yunohost # For postinstall
+    #  - DUMMYNIC=yes # Usefull if your server has a static external IP
+      
+volumes:
+  yunohost-backup:
+    name: yunohost-backup
+  yunohost-media:
+    name: yunohost-media
