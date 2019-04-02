@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   yunohost:
-    image: cms0/yunohost:3
+    image: cms0/yunohost:stable
     privileged: true
     restart: always
     container_name: yunohost
