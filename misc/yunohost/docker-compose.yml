@@ -20,7 +20,7 @@ services:
       - "993:993"
       - "1900:1900"
       - "5222:5222"
-      - "5269:5269"
+      #- "5269:5269"
       - "5290:5290"
       - "49200:49200"
     dns:
@@ -33,7 +33,7 @@ services:
     #environment:
     #  - POSTINSTALL=yes # Creates a script for postinstall with HTTPS certificate
     #  - DOMAIN=yunohost.local # For postinstall
-    #  - PASSWORD=yunohost # For postinstall
+    #  - PASSWORD=8y1om7L2 # For postinstall
     #  - DUMMYNIC=yes # Usefull if your server has a static external IP
       
 volumes:
