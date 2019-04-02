@@ -4,7 +4,7 @@ set -eu
 TAG="#HACKED"
 POSTINSTALL=${POSTINSTALL:-no}
 DOMAIN=${DOMAIN:-yunohost.local}
-PASSWORD=${PASSWORD:-yunohost}
+PASSWORD=${PASSWORD:-}
 WANIP4=$(dig @resolver1.opendns.com A myip.opendns.com +short -4)
 DUMMYNIC=${DUMMYNIC:-no}
 
@@ -62,21 +62,14 @@ if [ $POSTINSTALL = "yes" ]; then
 cat <<EOF > /usr/local/bin/yunohost-postinstall.sh
 #!/usr/bin/env bash
 
-sleep 2
+echo -e "\n[i] Perform now postinstallation for $DOMAIN!\n"
+
 mkdir -p /run/php /var/run/fail2ban /run/sshd
-
 systemctl restart sshd
-
-sleep 2
 systemctl restart slapd
-
-sleep 2
 systemctl restart fail2ban
-
-sleep 2
 systemctl restart php7.0-fpm
 
-echo -e "\n[i] Perform now postinstallation!\n"
 echo $DOMAIN > /etc/mailname
 yunohost tools postinstall -d $DOMAIN -p $PASSWORD
 echo -e "\n[i] Install a Let's Encrypt certificate\n"
