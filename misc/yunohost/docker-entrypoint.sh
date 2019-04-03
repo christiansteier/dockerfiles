@@ -71,8 +71,6 @@ cat <<EOF > /usr/local/bin/postinstall
 
 echo -e "\n[i] Perform now postinstallation for $DOMAIN!\n"
 
-mkdir -p /run/php
-
 if [ ! -d /var/run/fail2ban ]; then
  mkdir -p  /var/run/fail2ban
 fi
