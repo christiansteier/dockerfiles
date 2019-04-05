@@ -7,9 +7,6 @@ WANIP4=$(dig @resolver1.opendns.com A myip.opendns.com +short -4)
 DUMMYNIC=${DUMMYNIC:-no}
 SMTPRELAY=${SMTPRELAY:-no}
 
-export LANG=de_DE.UTF-8
-echo "export LANG=de_DE.UTF-8" >> ~/.bash_login
-
 if [ ! -f /var/log/auth.log ]; then
   touch /var/log/auth.log
 fi
