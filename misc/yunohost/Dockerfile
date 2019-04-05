@@ -19,7 +19,6 @@ RUN \
     install_packages locales locales-all && \
     dpkg-reconfigure locales && \
     locale-gen "en_US.UTF-8" && \
-    echo -n en_US.UTF-8 > /etc/container_environment/LANG && \
     # Systemd
     install_packages systemd && \
     rm -f \
