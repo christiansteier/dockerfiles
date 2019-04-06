@@ -17,7 +17,7 @@ RUN \
     echo "[i] Remove all suid files." && \
     find $sysdirs -xdev -type f -a -perm -4000 -delete && \
     echo "[i] Remove other programs that could be dangerous." && \
-    find $sysdirs -xdev \( -name hexdump -o -name chgrp -o -name od -o -name strings -o -name su \) -delete && \
+    find $sysdirs -xdev \( -name hexdump -o -name od -o -name strings -o -name su \) -delete && \
     echo "[i] Remove unnecessary user accounts." && \
     for user in $(cat /etc/passwd | awk -F':' '{print $1}' | grep -ve root -ve nobody -ve daemon -ve www-data -ve nologin -ve _apt); do deluser "$user"; done && \
     for group in $(cat /etc/group | awk -F':' '{print $1}' | grep -ve root -ve nogroup -ve www-data -ve node -ve staff); do delgroup "$group"; done && \
