@@ -31,7 +31,7 @@ RUN \
       /lib/systemd/system/systemd-update-utmp* && \
     \
     # Yunohost
-    install_packages wget curl apt-utils ssh openssl openssh-server neovim cron git && \
+    install_packages wget curl apt-utils ssh openssl openssh-server cron git && \
     # debug docker context for resolvconf
     echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections && \
     install_packages resolvconf && \
