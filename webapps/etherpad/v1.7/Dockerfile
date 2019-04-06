@@ -1,7 +1,7 @@
 FROM node:8-alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
-ARG ETHERPAD_VERSION=1.7.0
+ARG ETHERPAD_VERSION=1.7.5
 
 RUN echo -e "\n[i] Install build packages \n" \
  && apk add --no-cache --virtual=build-dependencies \
