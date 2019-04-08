@@ -132,12 +132,13 @@ chmod 664 /etc/systemd/system/external_smtp.service
 systemctl enable external_smtp
 fi
 
-cat <<EOF > /etc/mysql/conf.d/mysql.cnf
+cat <<EOF > /etc/mysql/my.cnf
 [client]
 default-character-set 		= utf8mb4
 
 [mysql]
 default-character-set 		= utf8mb4
+no-auto-rehash
 
 [mysqld]
 collation-server		= utf8mb4_unicode_ci
@@ -147,6 +148,7 @@ max_connections			= 100
 connect_timeout			= 5
 wait_timeout			= 600
 max_allowed_packet		= 500M
+thread_stack 			= 128
 thread_cache_size		= 128
 sort_buffer_size		= 4M
 bulk_insert_buffer_size 	= 16M
@@ -159,8 +161,10 @@ key_buffer_size         	= 128M
 table_open_cache        	= 400
 myisam_sort_buffer_size 	= 512M
 concurrent_insert       	= 2
+sort_buffer_size 		= 64K
 read_buffer_size        	= 2M
 read_rnd_buffer_size    	= 1M
+net_buffer_length 		= 2K
 innodb_flush_method             = O_DIRECT
 innodb_file_per_table           = 1
 innodb_autoinc_lock_mode        = 2
@@ -177,9 +181,19 @@ query_cache_limit               = 128K
 query_cache_size                = 64M
 tmp_table_size                  = 128M
 max_heap_table_size             = 128M
+server-id       		= 1
+skip-external-locking
 
 [mysqld_safe]
 nice            		= 0
+
+[myisamchk]
+key_buffer_size 		= 8M
+sort_buffer_size 		= 8M
+
+[mysqldump]
+quick
+max_allowed_packet 		= 16M
 EOF
 
 exec "$@"
