@@ -132,47 +132,35 @@ chmod 664 /etc/systemd/system/external_smtp.service
 systemctl enable external_smtp
 fi
 
-cat <<EOF > /etc/mysql/conf.d/20-charset.cnf
+cat <<EOF > /etc/mysql/conf.d/mysql.cnf
 [client]
-default-character-set = utf8mb4
+default-character-set 		= utf8mb4
 
 [mysql]
-default-character-set = utf8mb4
+default-character-set 		= utf8mb4
 
 [mysqld]
-collation-server = utf8mb4_unicode_ci
-init-connect = 'SET NAMES utf8mb4'
-character-set-server = utf8mb4
-EOF
-
-cat <<EOF > /etc/mysql/conf.d/21-mysqld.cnf
-[mysqld]
-max_connections         = 100
-connect_timeout         = 5
-wait_timeout            = 600
-max_allowed_packet      = 500M
-thread_cache_size       = 128
-sort_buffer_size        = 4M
-bulk_insert_buffer_size = 16M
-tmp_table_size          = 32M
-max_heap_table_size     = 32M
-binlog_format           = mixed
-EOF
-
-cat <<EOF > /etc/mysql/conf.d/22-myisam.cnf
-[mysqld]
-myisam_recover_options  = BACKUP
-key_buffer_size         = 128M
-#open-files-limit       = 2000
-table_open_cache        = 400
-myisam_sort_buffer_size = 512M
-concurrent_insert       = 2
-read_buffer_size        = 2M
-read_rnd_buffer_size    = 1M
-EOF
-
-cat <<EOF > /etc/mysql/conf.d/23-innodb.cnf
-[mysqld]
+collation-server		= utf8mb4_unicode_ci
+init-connect			= 'SET NAMES utf8mb4'
+character-set-server		= utf8mb4
+max_connections			= 100
+connect_timeout			= 5
+wait_timeout			= 600
+max_allowed_packet		= 500M
+thread_cache_size		= 128
+sort_buffer_size		= 4M
+bulk_insert_buffer_size 	= 16M
+tmp_table_size          	= 32M
+max_heap_table_size     	= 32M
+binlog_format           	= mixed
+myisam_recover_options  	= BACKUP
+key_buffer_size         	= 128M
+#open-files-limit       	= 2000
+table_open_cache        	= 400
+myisam_sort_buffer_size 	= 512M
+concurrent_insert       	= 2
+read_buffer_size        	= 2M
+read_rnd_buffer_size    	= 1M
 innodb_flush_method             = O_DIRECT
 innodb_file_per_table           = 1
 innodb_autoinc_lock_mode        = 2
@@ -182,10 +170,8 @@ innodb_buffer_pool_size         = 256M
 innodb_log_buffer_size          = 8M
 innodb_open_files               = 400
 innodb_io_capacity              = 400
-EOF
-
-cat <<EOF > /etc/mysql/conf.d/24-tuning.cnf
-[mysqld]
+innodb_large_prefix		= true
+innodb_file_format		= Barracuda
 query_cache_type                = 0  # for OFF
 query_cache_limit               = 128K
 query_cache_size                = 64M
@@ -193,13 +179,7 @@ tmp_table_size                  = 128M
 max_heap_table_size             = 128M
 
 [mysqld_safe]
-nice            = 0
-EOF
-
-cat <<EOF > /etc/mysql/conf.d/25-barracuda.cnf
-[mysqld]
-innodb_large_prefix=true
-innodb_file_format=barracuda
+nice            		= 0
 EOF
 
 exec "$@"
