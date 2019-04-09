@@ -132,7 +132,7 @@ chmod 664 /etc/systemd/system/external_smtp.service
 systemctl enable external_smtp
 fi
 
-cat <<EOF > /etc/mysql/my.cnf
+cat <<EOF > /etc/my.cnf
 [client]
 default-character-set 		= utf8mb4
 
