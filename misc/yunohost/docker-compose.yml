@@ -6,6 +6,7 @@ services:
     privileged: true
     restart: always
     container_name: yunohost
+    hostname: yunohost
     ports:
       - "22:22"
       - "25:25"
