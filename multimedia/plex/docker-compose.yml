@@ -1,0 +1,25 @@
+version: '3'
+services:
+  plex:
+    container_name: plex
+    image: cms0/plex-s3fs
+    privileged: true
+    restart: unless-stopped
+    ports:
+      - 32400:32400/tcp
+    hostname: plex
+    environment:
+      PLEX_UID: 1000
+      PLEX_GID: 1000
+      BUCKET_NAME: ...
+      MOUNT: /data
+      S3_AUTHFILE: /passwd-s3fs
+      S3_URL: https:// ...
+      S3_ARGS: -o allow_other -o umask=0002
+    volumes:
+      - config:/config
+      - transcode:/transcode
+      - /root/.passwd-s3fs:/passwd-s3fs:ro
+volumes:
+  config:
+  transcode:
