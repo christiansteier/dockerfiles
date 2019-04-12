@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv sh
 set -eu
 
-s3fs $BUCKET_NAME $MOUNT -o passwd_file=$S3_AUTHFILE -o url=$S3_URL -o uid=$$PLEX_UID -o gid=$$PLEX_GID $S3_ARGS
+s3fs $BUCKET_NAME $MOUNT -o passwd_file=$S3_AUTHFILE -o url=$S3_URL -o uid=$PLEX_UID -o gid=$PLEX_GID $S3_ARGS
 
 exit 0
