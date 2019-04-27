@@ -49,7 +49,7 @@ RUN \
     # Locales
     apk --no-cache add gettext && \
     #msgfmt -c shared-data/locale/de/LC_MESSAGES/mailpile.po -o shared-data/locale/de/LC_MESSAGES/mailpile.mo && \
-    #msgfmt -c shared-data/locale/es_ES/LC_MESSAGES/mailpile.po -o shared-data/locale/es_ES/LC_MESSAGES/mailpile.mo && \
+    msgfmt -c shared-data/locale/es_ES/LC_MESSAGES/mailpile.po -o shared-data/locale/es_ES/LC_MESSAGES/mailpile.mo && \
     apk del --purge git gettext libressl-dev python-dev musl-dev libffi-dev && \
     rm -rf \
 	/var/cache/apk/* \
