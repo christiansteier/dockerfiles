@@ -1,0 +1,111 @@
+#!/usr/bin/with-contenv sh
+set -eu
+
+PHPMAXUPLOAD=${PHPMAXUPLOAD:-25M}
+echo -e "\n[i] PHP: Set max upload to $PHPMAXUPLOAD\n"
+sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = $PHPMAXUPLOAD/g" /usr/local/etc/php/php.ini
+sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = $PHPMAXUPLOAD/g" /usr/local/etc/php/php.ini
+
+function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
+
+APPDIR=${APPDIR:-/var/www/html}
+SUBDIR=${SUBDIR:-}
+if [ ! $SUBDIR = "" ]; then
+ DIR=$APPDIR/${SUBDIR}
+else
+ DIR=$APPDIR
+fi
+
+APPVERSION=$(cat /usr/src/appversion)
+SILENTINSTALL=${SILENTINSTALL:-no}
+
+if [ -f $DIR/version ]; then
+  VERSION=$(cat $DIR/version)
+else
+  VERSION="0.0.0.0"
+fi
+
+if version_gt $VERSION $APPVERSION; then
+  echo -e "\n[Error] Can't start RainLoop because the version of the data ($INSTALLED_VERSION) is higher than the docker image version ($APPVERSION) and downgrading is not supported. Are you sure you have pulled the newest image version?"
+  exit 1
+fi
+
+if version_gt $APPVERSION $VERSION; then
+  if [ ! $SUBDIR = "" ]; then
+    if [ ! $DIR = "" ]; then
+      mkdir -p $DIR
+    fi
+  fi
+  
+  HOSTTOINSTALL=${HOSTTOINSTALL:-}
+  #wait for rsync in docker swarm with shared folder
+  if [ ! $HOSTTOINSTALL = "" ]; then
+     if [ ! $HOSTTOINSTALL = $HOSTNAME ]; then
+       echo -e "[i] Installation process is performed by another instance \n... finish installationscript here, so that the other process can work without errors"
+       exit 0
+     fi
+     echo -e "\n[i] Copy RainLoop $APPVERSION to the working folder $DIR\n"
+     unzip /usr/src/*.zip -d $DIR/
+     echo $APPVERSION > $DIR/version
+     rm /usr/src/*.zip
+  else
+     echo -e "\n[i] Copy RainLoop $APPVERSION to the working folder $DIR\n"
+     unzip /usr/src/*.zip -d $DIR/
+     echo $APPVERSION > $DIR/version
+     rm /usr/src/*.zip
+  fi
+  chown -R www-data:www-data $DIR
+  find $DIR -type d -exec chmod 755 {} \;
+  find $DIR -type f -exec chmod 644 {} \;
+
+  if [ $CREATEAPPDB = "yes" ]; then
+    echo -e "\n[i] First install MariaDB client to create DB\n"
+    apk add -U --no-cache netcat-openbsd mariadb-client
+
+    APPDB=${APPDB:-rainloop}
+    APPDBUSER=${APPDBUSER:-rainloop}
+    APPDBPASS_FILE=${APPDBPASS_FILE:-/run/secrets/mysql_password}
+    if [ -f $APPDBPASS_FILE ]; then
+      APPDBPASS=$(cat $APPDBPASS_FILE)
+    else
+      APPDBPASS=${APPDBPASS:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)}
+    fi
+
+    CREATEAPPDB=${CREATEAPPDB:-yes}
+    MYSQL_HOST=${MYSQL_HOST:-mariadb}
+    MYSQL_PORT=${MYSQL_PORT:-3306}
+
+    MYSQL_ROOT_PASSWORD_FILE=${MYSQL_ROOT_PASSWORD_FILE:-/run/secrets/mysql_root_password}
+    if [ -f $MYSQL_ROOT_PASSWORD_FILE ]; then
+      MYSQL_ROOT_PASSWORD=$(cat $MYSQL_ROOT_PASSWORD_FILE)
+    else
+      MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-}
+    fi
+    if [ -z $MYSQL_ROOT_PASSWORD ]; then
+      echo -e "\n[STOP] MYSQL_ROOT_PASSWORD not set\n"
+      exit 1
+    fi
+    MYSQL_ROOT=${MYSQL_ROOT:-root}      
+      
+    echo -e "\n[i] Create database user $APPDBUSER and database $APPDB\n"
+    until nc -z ${MYSQL_HOST} ${MYSQL_PORT}; do sleep 1; echo "Waiting for DB to come up..."; done
+    mysql -u ${MYSQL_ROOT} --password=${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} --port=${MYSQL_PORT} <<-EOF
+    CREATE DATABASE IF NOT EXISTS $APPDB CHARACTER SET utf8mb4;
+    GRANT ALL PRIVILEGES ON $APPDB.* TO $APPDBUSER IDENTIFIED BY '$APPDBPASS';
+    FLUSH PRIVILEGES;
+EOF
+      apk del --purge netcat-openbsd mariadb-client
+  fi
+fi
+
+# Additional scripts
+EXTRA=/extra-scripts
+if [ -d "$EXTRA" ]; then
+  for file in $EXTRA/*; do
+      [ -f "$file" ] && [ -x "$file" ] && "$file"
+  done
+fi
+
+rm /etc/cont-init.d/20-rainloop
+exit 0
+

@@ -1,0 +1,54 @@
+version: '3.5'
+
+services:
+
+  mariadb:
+    restart: unless-stopped
+    container_name: rainloop-db
+    hostname: DOCKER-rainloop-db
+    image: linuxserver/mariadb
+    volumes: 
+     - rainloop-db:/config
+    environment:
+     - MYSQL_ROOT_PASSWORD=mysqlrootpasswd
+
+  www:
+    restart: unless-stopped
+    container_name: rainloop-www
+    hostname: DOCKER-rainloop-www
+    image: cms0/httpd
+    ports:
+     - "89:80"
+    volumes: 
+     - rainloop-www:/usr/local/apache2/htdocs
+    links: 
+     - rainloop:php-fpm
+
+  rainloop:
+    restart: unless-stopped
+    build: .
+    image: cms0/rainloopsurvey:php-fpm
+    container_name: rainloop
+    hostname: DOCKER-rainloop
+    volumes: 
+     - rainloop-www:/usr/local/apache2/htdocs
+    working_dir: /usr/local/apache2/htdocs
+    environment:
+     - MYSQL_ROOT_PASSWORD=mysqlrootpasswd
+     - PHPMAXUPLOAD=50M
+     - CREATEAPPDB=yes
+     - APPDB=rainloop
+     - APPDBPUSER=rainloop
+     - APPDBPASS=dbpassword
+     - APPDIR=/usr/local/apache2/htdocs
+    links: 
+     - mariadb:mariadb
+    depends_on: 
+     - mariadb
+
+volumes:
+  rainloop-db:
+    name: rainloop-db
+  rainloop-www:
+    name: rainloop-www
+
