@@ -1,0 +1,13 @@
+version: '3'
+services:
+  shairportSync:
+    restart: always
+    container_name: shairport
+    build: .
+    image: cms0/shairport-sync
+    network_mode: host
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./config:/config/shairport"
+    devices:
+      - "/dev/snd:/dev/snd"

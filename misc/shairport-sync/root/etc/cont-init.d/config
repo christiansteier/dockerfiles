@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv sh
+set -eu
+
+if [ ! -d /config/shairport ]; then
+  mkdir -p /config/shairport
+fi
+
+if [ ! -f /config/shairport/shairport-sync.conf  ] || [ -f /etc/shairport-sync.conf  ]; then
+  mv /etc/shairport-sync.conf /config/shairport/shairport-sync.conf 
+  ln -s /config/shairport/shairport-sync.conf /etc/shairport-sync.conf
+fi
+
+if [ -f /etc/shairport-sync.conf ] || [ -f /config/shairport/shairport-sync.conf  ]; then
+  rm /etc/shairport-sync.conf
+  ln -s /config/shairport/shairport-sync.conf /etc/shairport-sync.conf
+fi
+
+exit 0
