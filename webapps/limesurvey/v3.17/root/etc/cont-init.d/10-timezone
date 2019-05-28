@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv sh
+
+if [ ! -f "/etc/timezone" ]; then
+  echo "Etc/UTC" > /etc/timezone
+fi
+
+if [ "$(cat /etc/timezone)" != "${TZ}" ]; then
+	if [ -d "/usr/share/zoneinfo/${TZ}" ] || \
+	[ ! -e "/usr/share/zoneinfo/${TZ}" ] || \
+	[ -z "${TZ}" ]
+	then TZ="Etc/UTC"
+	fi
+  s6-ln -fs "/usr/share/zoneinfo/${TZ}" /etc/localtime
+  echo "${TZ}" > /etc/timezone
+  sed -i -e "s#;date.timezone.*#date.timezone = ${TZ}#g" /usr/local/etc/php/php.ini
+fi
+
+exit 0
