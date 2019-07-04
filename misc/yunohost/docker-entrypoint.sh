@@ -23,6 +23,10 @@ if [ ! -d /usr/share/man/man7 ]; then
   mkdir -p /usr/share/man/man7
 fi
 
+if [ $SENDFROMDIFFERENTSENDER = "yes" ]; then
+  sed -i "s*reject_sender_login_mismatch*#reject_sender_login_mismatch*g" /etc/postfix/main.cf
+fi
+
 ## hack /etc/hosts
 cat <<EOF > /usr/local/bin/hostfiles-hack.sh
 #!/bin/bash
