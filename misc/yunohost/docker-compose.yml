@@ -36,6 +36,8 @@ services:
     #  - DOMAIN=yunohost.local # For postinstall
     #  - PASSWORD=8y1om7L2 # For postinstall
     #  - DUMMYNIC=yes # Usefull if your server has a static external IP
+    #  - SENDFROMDIFFERENTSENDER=yes # Allow user to send email from different address
+    #  - SMTPRELAY=yes
       
 volumes:
   yunohost-backup:
