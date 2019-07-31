@@ -57,7 +57,7 @@ services:
       S3_AUTHFILE: /passwd-s3fs
       S3_URL: https://URL
       S3_ARGS: -o allow_other -o umask=0002
-      ports:
+    ports:
       - "80:8000"
     volumes:
       - app:/var/lib/mayan
