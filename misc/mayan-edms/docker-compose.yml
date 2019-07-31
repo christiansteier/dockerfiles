@@ -36,6 +36,7 @@ services:
       - db:/var/lib/postgresql/data
   mayan-edms:
     container_name: mayan-edms-app
+    build: .
     image: cms0/mayan-edms-s3fs
     depends_on:
       broker:
