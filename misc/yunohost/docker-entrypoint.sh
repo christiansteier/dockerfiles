@@ -6,6 +6,7 @@ POSTINSTALL=${POSTINSTALL:-no}
 WANIP4=$(dig @resolver1.opendns.com A myip.opendns.com +short -4)
 DUMMYNIC=${DUMMYNIC:-no}
 SMTPRELAY=${SMTPRELAY:-no}
+SENDFROMDIFFERENTSENDER=${SENDFROMDIFFERENTSENDER:-no}
 
 if [ ! -f /var/log/auth.log ]; then
   touch /var/log/auth.log
