@@ -4,7 +4,7 @@ LABEL maintainer="Christian-Maximilian Steier"
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh && \
     apt update && \
-    apt install -y s3fs tesseract-ocr-deu && \
+    apt install -y s3fs ca-certificates tesseract-ocr-deu && \
     apt clean && \
     rm -rf \
 	/etc/machine-id \
