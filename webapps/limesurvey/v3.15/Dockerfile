@@ -2,7 +2,7 @@ FROM php:7.1-fpm-alpine
 LABEL maintainer="Christian-Maximilian Steier"
 
 ENV VERSION="3.15"
-ARG RELEASE=".8+190130"
+ARG RELEASE=".9+190214"
 ARG WEB_USER=www-data
 ARG WEB_GROUP=www-data
 ARG PHP_ROOT_DIR=/usr/local/etc
@@ -117,7 +117,7 @@ RUN \
     apk del --purge build-dependencies grep curl shadow && \
     \
     # LimeSurvey \
-    curl -o /tmp/limesurvey${VERSION}${RELEASE}.tar.gz -L https://download.limesurvey.org/latest-stable-release/limesurvey${VERSION}${RELEASE}.tar.gz && \
+    curl -o /tmp/limesurvey${VERSION}${RELEASE}.tar.gz -L https://github.com/LimeSurvey/LimeSurvey/archive/${VERSION}${RELEASE}.tar.gz && \
     cd /tmp && \
     tar zxvf  limesurvey${VERSION}${RELEASE}.tar.gz -C /usr/src && \
     rm *.tar.gz && \
