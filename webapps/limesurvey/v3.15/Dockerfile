@@ -45,13 +45,6 @@ RUN \
     echo "[i] All seems good, now unpacking s6-overlay.tar.gz" && \
     tar xzf /tmp/s6-overlay.tar.gz -C / && \
     \
-    # socklog-overlay \
-    echo -e "\n[i] Install socklog-overlay\n" && \
-    SOCKLOG=$(curl -s https://api.github.com/repos/just-containers/socklog-overlay/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') && \
-    if [ $(uname -m) == "armv6l" ] || [ $(uname -m) == "armv7l" ]; then ARCHTAG=armhf ; elif [ $(uname -m) == "aarch64" ]; then ARCHTAG=aarch64 ; elif [ $(uname -m) == "x86_64" ]; then ARCHTAG=amd64 ; fi && \
-    curl -o /tmp/socklog-overlay-${ARCHTAG}.tar.gz -L https://github.com/just-containers/socklog-overlay/releases/download/${SOCKLOG}/socklog-overlay-${ARCHTAG}.tar.gz && \
-    tar xzf /tmp/socklog-overlay-${ARCHTAG}.tar.gz -C / && \
-    \
     # PHP \
     usermod -u 1000 ${WEB_USER} && \
     groupmod -g 1000 ${WEB_GROUP} && \
