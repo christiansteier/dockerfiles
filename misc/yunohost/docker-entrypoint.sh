@@ -201,4 +201,16 @@ quick
 max_allowed_packet 		= 16M
 EOF
 
+if [ ! -d /var/run/fail2ban ]; then
+ mkdir -p  /var/run/fail2ban
+fi
+
+if [ ! -d /run/sshd ]; then
+ mkdir -p  /run/sshd
+fi
+
+if [ ! -d /run/php ]; then
+ mkdir -p  /run/php
+fi
+
 exec "$@"
