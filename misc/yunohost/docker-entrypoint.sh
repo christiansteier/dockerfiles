@@ -91,6 +91,14 @@ echo $DOMAIN > /etc/mailname
 yunohost tools postinstall -d $DOMAIN -p $PASSWORD
 echo -e "\n[i] Install a Let's Encrypt certificate\n"
 yunohost domain cert-install
+
+# Additional scripts
+if [ -d "$EXTRA" ]; then
+  for file in $EXTRA/*; do
+      [ -f "$file" ] && [ -x "$file" ] && "$file"
+  done
+fi
+
 systemctl stop postinstall
 systemctl disable postinstall
 EOF
