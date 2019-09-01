@@ -7,6 +7,7 @@ WANIP4=$(dig @resolver1.opendns.com A myip.opendns.com +short -4)
 DUMMYNIC=${DUMMYNIC:-no}
 SMTPRELAY=${SMTPRELAY:-no}
 SENDFROMDIFFERENTSENDER=${SENDFROMDIFFERENTSENDER:-no}
+EXTRA=${EXTRA:-/extra-scripts}
 
 if [ ! -f /var/log/auth.log ]; then
   touch /var/log/auth.log
@@ -93,7 +94,6 @@ echo -e "\n[i] Install a Let's Encrypt certificate\n"
 yunohost domain cert-install
 
 # Additional scripts
-EXTRA=/extra-scripts
 if [ -d "$EXTRA" ]; then
   for file in $EXTRA/*; do
       [ -f "$file" ] && [ -x "$file" ] && "$file"
