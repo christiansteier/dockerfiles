@@ -93,6 +93,7 @@ echo -e "\n[i] Install a Let's Encrypt certificate\n"
 yunohost domain cert-install
 
 # Additional scripts
+EXTRA=/extra-scripts
 if [ -d "$EXTRA" ]; then
   for file in $EXTRA/*; do
       [ -f "$file" ] && [ -x "$file" ] && "$file"
