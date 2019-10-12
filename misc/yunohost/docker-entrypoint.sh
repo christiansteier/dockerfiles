@@ -7,7 +7,7 @@ WANIP4=$(dig @resolver1.opendns.com A myip.opendns.com +short -4)
 DUMMYNIC=${DUMMYNIC:-no}
 SMTPRELAY=${SMTPRELAY:-no}
 SENDFROMDIFFERENTSENDER=${SENDFROMDIFFERENTSENDER:-no}
-EXTRA=${EXTRA:-/extra-scripts}
+EXTRASCRIPTS=${EXTRASCRIPTS:-no}
 
 if [ ! -f /var/log/auth.log ]; then
   touch /var/log/auth.log
@@ -92,13 +92,6 @@ echo $DOMAIN > /etc/mailname
 yunohost tools postinstall -d $DOMAIN -p $PASSWORD
 echo -e "\n[i] Install a Let's Encrypt certificate\n"
 yunohost domain cert-install
-
-# Additional scripts
-if [ -d "$EXTRA" ]; then
-  for file in $EXTRA/*; do
-      [ -f "$file" ] && [ -x "$file" ] && "$file"
-  done
-fi
 
 systemctl stop postinstall
 systemctl disable postinstall
@@ -220,6 +213,16 @@ fi
 
 if [ ! -d /run/php ]; then
  mkdir -p  /run/php
+fi
+
+if [ $EXTRASCRIPTS = "yes" ]; then
+  if [ -d "/extra-scripts" ]; then
+    for file in extra-scripts/*; do
+        [ -f "$file" ] && [ -x "$file" ] && "$file"
+    done
+  else 
+    echo "No folder /extra-scripts found"
+  fi
 fi
 
 exec "$@"

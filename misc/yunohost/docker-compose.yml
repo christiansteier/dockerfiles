@@ -1,7 +1,8 @@
-version: '3'
+version: '3.6'
 
 services:
   yunohost:
+    build: .
     image: cms0/yunohost:stable
     privileged: true
     restart: always
@@ -31,6 +32,7 @@ services:
       - yunohost-media:/media
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /var/run/docker.sock:/var/run/docker.sock
+    #  - ./extra-scripts:/extra-scripts # Set EXTRASCRIPTS=yes
     #environment:
     #  - POSTINSTALL=yes # Creates a start script for postinstall with HTTPS certificate
     #  - DOMAIN=yunohost.local # For postinstall
@@ -38,6 +40,7 @@ services:
     #  - DUMMYNIC=yes # Usefull if your server has a static external IP
     #  - SENDFROMDIFFERENTSENDER=yes # Allow user to send email from different address
     #  - SMTPRELAY=yes
+    #  - EXTRASCRIPTS=yes # Passing additional install scripts
       
 volumes:
   yunohost-backup:
